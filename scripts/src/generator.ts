@@ -109,17 +109,6 @@ function line(p1: BlockLocation, p2: BlockLocation) {
   return result;
 }
 
-function turtleTest(): BlockLocation[] {
-  let t = new Turtle2D();
-  for (let i = 0; i < 360; i++) {
-    t.forward(1);
-    // t.width(Math.round(i / 100) + 1);
-    t.forward(i);
-    t.rotate((30 * Math.PI) / 180);
-  }
-  return t.getTrack();
-}
-
 function turtle(actions: string) {
   let lsys = new LSystem(actions, {});
   return lsys.runProc();
