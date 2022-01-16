@@ -134,20 +134,4 @@ function embed(base: BlockLocation[], target: BlockLocation[]) {
   return target.filter((v) => xT.has(v.x) && xT.get(v.x)!.has(v.z));
 }
 
-function embed1(base: BlockLocation[], target: BlockLocation[]) {
-  let mapping: Map<number, Array<Number>> = new Map();
-  let res: BlockLocation[] = [];
-  target.forEach((v) => {
-    if (mapping.get(v.x) !== undefined) {
-      mapping.set(v.x, [...mapping!.get(v.x)![Symbol.iterator](), v.z]);
-    }
-  });
-  base.forEach((v) => {
-    if (mapping.get(v.x) !== undefined && mapping!.get(v.x)!.indexOf(v.z) !== -1) {
-      res.push(v);
-    }
-  });
-  return res;
-}
-
 export { sphere, circle, line, torus, turtle, embed };
