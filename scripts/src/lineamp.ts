@@ -124,20 +124,20 @@ class Matrix{
             }
         console.log(u.toString());
         let z:Array<number>,x:Array<number>,b:Array<number>;
-        function solve_z(n):void{
+        function solve_z(n:number):void{
             for(let i=1;i<=n;++i){
                 z[i]=b[i];
                 for(let j=1;j<i;++j)z[i]=(z[i]+mod-ksc(z[j],l.matrix[i][j]))%mod;
             }
         }
-        function solve_x(n):void{
+        function solve_x(n:number):void{
             for(let i=n;i>=1;--i){
                 x[i]=z[i];
                 for(let j=n;j>i;--j)x[i]=(x[i]+mod-ksc(u.matrix[i][j],x[j]))%mod;  
                 x[i]=x[i]*inv(u.matrix[i][i])%mod;
             }
         }
-        function summon(n):Array<number>{
+        function summon(n:number):Array<number>{
             let A=new Array<number>;
             for(let i=0;i<=n+5;++i)
                 A.push(0);
@@ -227,4 +227,4 @@ namespace operation{
         return true;
     }
 }
-export {Matrix,operation,construct}
+export {Matrix,operation,construct};
