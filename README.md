@@ -4,7 +4,8 @@
 - **Lindenmayer system** (**L-System**) : A parallel rewriting system. The recursive nature of the L-system rules leads to self-similarity and thereby, fractal-like forms are easy to describe with an L-system.
 - **Turtle Graphic** : Full features and extensions of turtle graphics.
 - **Linear and Nonlinear Transforom** : Mapping space into another one. TO DO.
-- **Surface generation** : TO DO
+- **Surface generation** : TO DO.
+- **Expression drawing** : TO DO.
 - **Basic Geometry**
 - **Markov Chains**
 - **Ramdom Theory**
