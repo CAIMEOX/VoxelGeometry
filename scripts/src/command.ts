@@ -58,7 +58,7 @@ export default class Command {
     let sp = this.message.split(" ");
     if (sp[0] == "get") {
       config.origin = config.player === null ? config.origin : LocationTrans(config.player.location);
-      config.dimension.runCommand(Tellraw("@a", `New Position: ${config.origin}`)));
+      config.dimension.runCommand(Tellraw("@a", `New Position: ${config.origin}`));
     }
     return config;
   }
