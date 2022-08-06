@@ -77,18 +77,18 @@ export default class Command {
 
 type ReadToken = string | string[]
 
-class Scheme {
-  token: string[]
-  constructor(code: string) {
-    this.tokenize(code)
-    this.read(this.token)
-  }
+// class Scheme {
+//   token: string[]
+//   constructor(code: string) {
+//     this.tokenize(code)
+//     this.read(this.token)
+//   }
 
-  tokenize(s: string){
-    this.token = s.replace(/\(/g, " ( ").replace(/\)/g, " ) ").trim().split(/\s+/);
-  }
+//   tokenize(s: string){
+//     this.token = s.replace(/\(/g, " ( ").replace(/\)/g, " ) ").trim().split(/\s+/);
+//   }
 
-  read(tokens: string[]) : ReadToken {
+//   read(tokens: string[]) : ReadToken {
     
-  }
-}
+//   }
+// }
