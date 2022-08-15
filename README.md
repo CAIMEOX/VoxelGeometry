@@ -11,9 +11,27 @@
 - **Ramdom Theory**
 
 # Command Design
+  Voxel Geometry supports data types like functions, arrays, numbers, strings and more. You can do everything through the combination of some basic functions.
+
+### Function Apply
+```
+function(arg1, arg2, ...)
+```
+
+## Variable
+Define a var:
+```
+let name = value
+```
+
+## Plot
+  Plot is the most important function in Voxel Geometry, which has the ability to affect the Minecraft world.
+```
+  plot
+```
+
 ## Pipe (Compose)
-## Array Modifier   
-(array x y z dx dy dz) => [Array Modifier]
-Apply Modifier -> pos => [Position Matrix] : All position will be shifted
+## Array Generator
+
 
 ### Clone

@@ -1,6 +1,5 @@
-import { BlockLocation, world } from "mojang-minecraft";
+import { BlockLocation } from "mojang-minecraft";
 import { Turtle2D } from "./turtle";
-import { Tellraw } from "./utils";
 
 export class LSystem {
   axiom: string;
@@ -53,12 +52,12 @@ export class LSystem {
         "^": () => t.penUp(),
         v: () => t.penDown(),
       };
-      this.axiom.split("").forEach((c) => {
-        if (proc[c]) {
-          proc[c]();
-        }
-      });
-      return t.getTrack();
     }
+    this.axiom.split("").forEach((c) => {
+      if (proc[c]) {
+        proc[c]();
+      }
+    });
+    return t.getTrack();
   }
 }

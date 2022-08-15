@@ -1,44 +1,7 @@
-import { world, Dimension, BlockLocation, BlockType, Block } from "mojang-minecraft";
+import { BlockLocation } from "mojang-minecraft";
 import { Turtle2D } from "./turtle";
 import { LSystem } from "./lsystem";
-import { Tellraw } from "./utils";
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
-
-export default class Generator {
-  dimension: Dimension;
-  constructor(dimension: Dimension) {
-    this.dimension = dimension;
-  }
-
-  fill(blockType: BlockType, xFrom: number, yFrom: number, zFrom: number, xTo: number, yTo: number, zTo: number) {
-    for (let x = xFrom; x <= xTo; x++) {
-      for (let y = yFrom; y <= yTo; y++) {
-        for (let z = zFrom; z <= zTo; z++) {
-          this.dimension.getBlock(new BlockLocation(x, y, z)).setType(blockType);
-        }
-      }
-    }
-  }
-  setblcok(blockType: BlockType, block: BlockLocation) {
-    this.dimension.getBlock(block).setType(blockType);
-  }
-
-  setblock(blockType: BlockType, blocks: BlockLocation[]) {
-    blocks.forEach((block) => {
-      this.dimension.getBlock(block).setType(blockType);
-    });
-  }
-
-  arrayGenerator() {}
-  matrixGenerator() {}
-
-  scale(size: number) {}
-  clone() {}
-  rotate(angle: number) {}
-  linearTransform() {}
-  transform() {}
-  pipe() {}
-}
 
 function sphere(radius: number, inner_radius: number): BlockLocation[] {
   let result: BlockLocation[] = [];
@@ -156,10 +119,7 @@ function turtleTest(): BlockLocation[] {
   return t.getTrack();
 }
 
-function fractal(n: number): BlockLocation[] {
-  // let lsys = new LSystem("F+F+F+F", {
-  //   F: "FF+F-F+F+FF",
-  // });
+function fractalTest(n: number): BlockLocation[] {
   let lsys = new LSystem("-YF", {
     X: "XFX-YF-YF+FX+FX-YF-YFFX+YF+FXFXYF-FX+YF+FXFX+YF-FXYF-YF-FX+FX+YFYF-",
     Y: "+FXFX-YF-YF+FX+FXYF+FX-YFYF-FX-YF+FXYFYF-FX-YFFX+FX+YF-YF-FX+FX+YFY",
@@ -168,4 +128,15 @@ function fractal(n: number): BlockLocation[] {
   return lsys.runProc();
 }
 
-export { sphere, circle, line, turtleTest, fractal, torus };
+function lsystem(axiom: string, rules: { [key: string]: string }, generation = 1): BlockLocation[] {
+  let lsys = new LSystem(axiom, rules);
+  lsys.generate(generation);
+  return lsys.runProc();
+}
+
+function turtle(actions: string) {
+  let lsys = new LSystem(actions, {});
+  return lsys.runProc();
+}
+
+export { sphere, circle, line, torus, lsystem, turtle };
