@@ -91,6 +91,7 @@ function expression(expr: string, start: number, end: number, step: number, k: n
   function pow(c: number, d: number) {
     return Math.pow(c, d);
   }
+  step /= k;
   const f = new Function("x", "y", "z", `return ${expr}`);
   for (let x = start; x <= end; x += step)
     for (let y = start; y <= end; y += step)
