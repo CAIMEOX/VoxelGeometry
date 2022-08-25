@@ -27,7 +27,7 @@ let name = value
 ## Plot
   Plot is the most important function in Voxel Geometry, which has the ability to affect the Minecraft world.
 ```
-  plot
+plot
 ```
 
 ## Pipe (Compose)
