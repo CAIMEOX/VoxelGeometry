@@ -1,4 +1,4 @@
-import { BlockLocation } from "mojang-minecraft";
+import { Block, BlockLocation } from "mojang-minecraft";
 import { Turtle2D } from "./turtle";
 import { LSystem } from "./lsystem";
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
@@ -119,24 +119,25 @@ function turtleTest(): BlockLocation[] {
   return t.getTrack();
 }
 
-function fractalTest(n: number): BlockLocation[] {
-  let lsys = new LSystem("-YF", {
-    X: "XFX-YF-YF+FX+FX-YF-YFFX+YF+FXFXYF-FX+YF+FXFX+YF-FXYF-YF-FX+FX+YFYF-",
-    Y: "+FXFX-YF-YF+FX+FXYF+FX-YFYF-FX-YF+FXYFYF-FX-YFFX+FX+YF-YF-FX+FX+YFY",
-  });
-  let r = lsys.generate(n);
-  return lsys.runProc();
-}
-
-function lsystem(axiom: string, rules: { [key: string]: string }, generation = 1): BlockLocation[] {
-  let lsys = new LSystem(axiom, rules);
-  lsys.generate(generation);
-  return lsys.runProc();
-}
-
 function turtle(actions: string) {
   let lsys = new LSystem(actions, {});
   return lsys.runProc();
 }
 
-export { sphere, circle, line, torus, lsystem, turtle };
+function embed(base: BlockLocation[], target: BlockLocation[]) {
+  let mapping: Map<number, Array<Number>> = new Map();
+  let res: BlockLocation[] = [];
+  target.forEach((v) => {
+    if (mapping.get(v.x) !== undefined) {
+      mapping.set(v.x, [...mapping!.get(v.x)![Symbol.iterator](), v.z]);
+    }
+  });
+  base.forEach((v) => {
+    if (mapping.get(v.x) !== undefined && mapping!.get(v.x)!.indexOf(v.z) !== -1) {
+      res.push(v);
+    }
+  });
+  return res;
+}
+
+export { sphere, circle, line, torus, turtle, embed };

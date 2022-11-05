@@ -1,6 +1,6 @@
 import { BlockLocation } from "mojang-minecraft";
 
-function expression(expr: string, start: number, end: number, step: number, k: number = 1): BlockLocation[] {
+function expression(expr: string, start: number, end: number, step: number = 1, k: number): BlockLocation[] {
   if (start > end) {
     let temp = start;
     start = end;
@@ -91,8 +91,8 @@ function expression(expr: string, start: number, end: number, step: number, k: n
   function pow(c: number, d: number) {
     return Math.pow(c, d);
   }
-  step /= k;
-  const f = new Function("x", "y", "z", `return ${expr}`);
+
+  const f = new Function("x", "y", "z", "o", `return ${expr}`);
   for (let x = start; x <= end; x += step)
     for (let y = start; y <= end; y += step)
       for (let z = start; z <= end; z += step)

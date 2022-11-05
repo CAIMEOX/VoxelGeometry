@@ -12,7 +12,8 @@ import {
 } from "mojang-minecraft";
 import { Sandbox } from "./command";
 import { expression } from "./expression";
-import { circle, sphere, line, torus, lsystem, turtle } from "./generator";
+import { circle, sphere, line, torus, turtle, embed } from "./generator";
+import * as LSystem from "./lsystem";
 import { LocationTrans, Tellraw } from "./utils";
 
 export type Config = {
@@ -27,15 +28,20 @@ export default class System {
   config: Config;
   evaluator: Sandbox;
   funcs: { [key: string]: Function } = {
+    // Pure
     circle,
     sphere,
-    lsystem,
     line,
     torus,
+    turtle,
     expression,
+    embed,
+    ...LSystem,
+    // Effect
     plot: this.plot,
     place: this.placeMode,
     brush: this.bursh,
+    say: this.tellraw,
     getpos: () => {
       this.setPosition(this.getPlayerPosition());
     },
