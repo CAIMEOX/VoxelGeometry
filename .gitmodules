@@ -1,0 +1,3 @@
+[submodule "PureEval"]
+	path = PureEval
+	url = https://github.com/pureeval/pureeval.git
