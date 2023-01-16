@@ -122,7 +122,6 @@ class Matrix {
         if (u.matrix[i][i] == 0) return construct.unit(this.row);
         l.matrix[j][i] = ksc(l.matrix[j][i], inv(u.matrix[i][i])) % mod;
       }
-    console.log(u.toString());
     let z: Array<number>, x: Array<number>, b: Array<number>;
     function solve_z(n: number): void {
       for (let i = 1; i <= n; ++i) {
