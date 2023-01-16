@@ -114,13 +114,4 @@ function turtle(actions: string) {
   return lsys.runProc();
 }
 
-function embed(base: BlockLocation[], target: BlockLocation[]) {
-  let xT: Map<number, Map<number, void>> = new Map();
-  base.map((v) => {
-    if (!xT.has(v.x)) xT.set(v.x, new Map());
-    xT.get(v.x)!.set(v.z);
-  });
-  return target.filter((v) => xT.has(v.x) && xT.get(v.x)!.has(v.z));
-}
-
-export { sphere, circle, line, torus, turtle, embed };
+export { sphere, circle, line, torus, turtle };

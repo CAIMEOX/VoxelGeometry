@@ -11,7 +11,8 @@ import {
 } from "@minecraft/server";
 import { Sandbox } from "./command";
 import { expression } from "./expression";
-import { circle, sphere, line, torus, turtle, embed } from "./generator";
+import { circle, sphere, line, torus, turtle } from "./generator";
+import { scale, rotate, swap, embed } from "./transform";
 import * as LSystem from "./lsystem";
 import { LocationTrans, Tellraw } from "./utils";
 export type Config = {
@@ -33,7 +34,12 @@ export default class System {
     torus,
     turtle,
     expression,
+    // Transform
+    scale,
+    rotate,
+    swap,
     embed,
+
     ...LSystem,
     // Effect
     plot: this.plot,
