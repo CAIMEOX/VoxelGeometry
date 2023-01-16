@@ -1,6 +1,7 @@
-import { Block, BlockLocation } from "mojang-minecraft";
+import { BlockLocation } from "@minecraft/server";
 import { Turtle2D } from "./turtle";
 import { LSystem } from "./lsystem";
+
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
 
 function sphere(radius: number, inner_radius: number): BlockLocation[] {
@@ -125,6 +126,15 @@ function turtle(actions: string) {
 }
 
 function embed(base: BlockLocation[], target: BlockLocation[]) {
+  let xT: Map<number, Map<number, void>> = new Map();
+  base.map((v) => {
+    if (!xT.has(v.x)) xT.set(v.x, new Map());
+    xT.get(v.x)!.set(v.z);
+  });
+  return target.filter((v) => xT.has(v.x) && xT.get(v.x)!.has(v.z));
+}
+
+function embed1(base: BlockLocation[], target: BlockLocation[]) {
   let mapping: Map<number, Array<Number>> = new Map();
   let res: BlockLocation[] = [];
   target.forEach((v) => {

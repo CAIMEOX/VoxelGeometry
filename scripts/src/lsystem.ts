@@ -1,4 +1,4 @@
-import { BlockLocation } from "mojang-minecraft";
+import { BlockLocation } from "@minecraft/server";
 import { Turtle2D } from "./turtle";
 
 export class LSystem {
@@ -41,12 +41,13 @@ export class LSystem {
   runProc(proc: { [key: string]: Function } = {}): BlockLocation[] {
     let t = new Turtle2D();
     let a: number = this.env["angle"];
+
     if (Object.keys(proc).length === 0) {
       proc = {
-        F: () => t.forward(1),
+        F: () => t.forward(3),
         f: () => {
           t.penUp();
-          t.forward(1);
+          t.forward(3);
           t.penDown();
         },
         "+": () => t.rotate(a),

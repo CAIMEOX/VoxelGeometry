@@ -6,16 +6,14 @@ import {
   BlockType,
   Player,
   Dimension,
-  BlockRaycastOptions,
   BlockPlaceEvent,
   ItemUseEvent,
-} from "mojang-minecraft";
+} from "@minecraft/server";
 import { Sandbox } from "./command";
 import { expression } from "./expression";
 import { circle, sphere, line, torus, turtle, embed } from "./generator";
 import * as LSystem from "./lsystem";
 import { LocationTrans, Tellraw } from "./utils";
-
 export type Config = {
   block: BlockType;
   origin: BlockLocation;
@@ -150,16 +148,16 @@ export default class System {
     }
     if (blocks.length !== 0) {
       this.callbacks["brush"] = world.events.itemUse.subscribe((eventData) => {
-        let opt = new BlockRaycastOptions();
-        opt.includeLiquidBlocks = true;
-        opt.maxDistance = 256;
-        opt.includePassableBlocks = true;
-        let block = eventData.source.getBlockFromViewVector(opt);
-        // TO DO : Detect stick or sth
-        if (block != undefined) {
-          let pos = block.location;
-          this.plot(blocks, pos);
-        }
+        // let opt = new BlockRaycastOptions
+        // opt.includeLiquidBlocks = true;
+        // opt.maxDistance = 256;
+        // opt.includePassableBlocks = true;
+        // let block = eventData.source.getBlockFrom
+        // // TO DO : Detect stick or sth
+        // if (block != undefined) {
+        //   let pos = block.location;
+        //   this.plot(blocks, pos);
+        // }
       });
     }
   }
@@ -181,11 +179,11 @@ export default class System {
   // Info :
 
   tellraw(...message: string[]) {
-    this.config.dimension.runCommand(Tellraw(this.config.player!.name, ...message.map((m) => `§6${m}`)));
+    this.config.dimension.runCommandAsync(Tellraw(this.config.player!.name, ...message.map((m) => `§6${m}`)));
   }
 
   boardcast(...message: string[]) {
-    this.config.dimension.runCommand(Tellraw("@a", ...message.map((m) => `§e${m}`)));
+    this.config.dimension.runCommandAsync(Tellraw("@a", ...message.map((m) => `§e${m}`)));
   }
 
   getPlayerPosition(): BlockLocation {

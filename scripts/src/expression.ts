@@ -1,4 +1,4 @@
-import { BlockLocation } from "mojang-minecraft";
+import { BlockLocation } from "@minecraft/server";
 
 function expression(expr: string, start: number, end: number, step: number = 1, k: number): BlockLocation[] {
   if (start > end) {
