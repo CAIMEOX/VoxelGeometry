@@ -14,7 +14,7 @@ import * as PureEval from "./pureeval/PureEval.js";
 import { Sandbox } from "./command";
 import { expression } from "./expression";
 import { circle, sphere, line, torus, turtle } from "./generator";
-import { scale, rotate, swap, embed } from "./transform";
+import { scale, rotate, swap, embed, move } from "./transform";
 import * as LSystem from "./lsystem";
 import { LocationTrans, Tellraw } from "./utils";
 export type Config = {
@@ -41,6 +41,7 @@ export default class System {
     rotate,
     swap,
     embed,
+    move,
     ...PureEval,
     ...LSystem,
     // Effect

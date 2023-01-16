@@ -33,7 +33,30 @@ function put(k: number[]) {
   return new BlockLocation(k[0], k[1], k[2]);
 }
 
-function scale(v: BlockLocation[], size: number) {}
+function scale(v: BlockLocation[], size: number): BlockLocation[] {
+  let r: BlockLocation[] = [];
+  v.map((b) => {
+    r = r.concat(move(duplicate(size), b.x * size - 1, b.y * size - 1, b.z * size - 1));
+  });
+  return r;
+}
+
+// Create a Tile
+function duplicate(n: number): BlockLocation[] {
+  let r: BlockLocation[] = [];
+  for (let x = -n; x < n; x++) {
+    for (let y = -n; y < n; y++) {
+      for (let z = -n; z < n; z++) {
+        r.push(new BlockLocation(x, y, z));
+      }
+    }
+  }
+  return r;
+}
+
+function move(b: BlockLocation[], x: number = 0, y: number = 0, z: number = 0): BlockLocation[] {
+  return b.map((k) => new BlockLocation(x + k.x, y + k.y, z + k.z));
+}
 
 function rotate(v: BlockLocation[], d: Direction, angle: number) {
   let R_y = construct.fromArray([
@@ -49,4 +72,4 @@ function rotate(v: BlockLocation[], d: Direction, angle: number) {
   });
 }
 
-export { scale, rotate, swap, embed };
+export { scale, rotate, swap, embed, move };
