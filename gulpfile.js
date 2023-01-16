@@ -68,7 +68,19 @@ function compile_scripts() {
     .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts"));
 }
 
-const build = gulp.series(clean_build, copy_content, compile_scripts);
+function copy_pure_eval_js() {
+  return gulp
+    .src(["scripts/src/pureeval/PureEval.js"])
+    .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts/src/pureeval/"));
+}
+
+function copy_pure_eval() {
+  return gulp
+    .src(["scripts/src/pureeval/src/**/**"])
+    .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts/src/pureeval/src"));
+}
+
+const build = gulp.series(clean_build, copy_content, compile_scripts, copy_pure_eval, copy_pure_eval_js);
 
 function clean_localmc(callbackFunction) {
   if (!bpfoldername || !bpfoldername.length || bpfoldername.length < 2) {
