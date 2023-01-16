@@ -7,8 +7,8 @@ export class Sandbox {
   }
 
   eval(code: string): any {
-    let body = `with(sb) { ${code} }`;
-    let fn = new Function("sb", body);
+    let body = `with(inside) { ${code} }`;
+    let fn = new Function("inside", body);
     return fn(this.sandbox);
   }
 

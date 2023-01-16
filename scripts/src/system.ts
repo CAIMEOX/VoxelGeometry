@@ -9,6 +9,7 @@ import {
   BlockPlaceEvent,
   ItemUseEvent,
 } from "@minecraft/server";
+import * as PureEval from './pureeval/PureEval.js'
 import { Sandbox } from "./command";
 import { expression } from "./expression";
 import { circle, sphere, line, torus, turtle, embed } from "./generator";
@@ -56,6 +57,7 @@ export default class System {
     };
     this.evaluator = new Sandbox(this.funcs);
     this.evaluator.updateEnv(this.config);
+    this.evaluator.updateEnv(...PureEval);
     this.subscribe();
     this.boardcast("System initialized");
   }
