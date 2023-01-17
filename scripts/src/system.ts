@@ -8,6 +8,10 @@ import {
   Dimension,
   BlockPlaceEvent,
   ItemUseEvent,
+  BlockRaycastOptions,
+  system,
+  ItemStack,
+  EntityInventoryComponent,
 } from "@minecraft/server";
 // @ts-ignore
 import * as PureEval from "./pureeval/PureEval.js";
@@ -65,7 +69,6 @@ export default class System {
     };
     this.evaluator = new Sandbox(this.funcs);
     this.evaluator.updateEnv(this.config);
-    // this.evaluator.updateEnv(...PureEval);
     this.subscribe();
     this.boardcast("System initialized");
   }
@@ -158,16 +161,16 @@ export default class System {
     }
     if (blocks.length !== 0) {
       this.callbacks["brush"] = world.events.itemUse.subscribe((eventData) => {
-        // let opt = new BlockRaycastOptions
-        // opt.includeLiquidBlocks = true;
-        // opt.maxDistance = 256;
-        // opt.includePassableBlocks = true;
-        // let block = eventData.source.getBlockFrom
-        // // TO DO : Detect stick or sth
-        // if (block != undefined) {
-        //   let pos = block.location;
-        //   this.plot(blocks, pos);
-        // }
+        let opt: BlockRaycastOptions = {
+          maxDistance: 256,
+          includeLiquidBlocks: false,
+          includePassableBlocks: true,
+        };
+        let block = eventData.source.getBlockFromViewVector(opt);
+        if (block != undefined) {
+          let pos = block.location;
+          this.plot(blocks, pos);
+        }
       });
     }
   }
@@ -210,8 +213,19 @@ export default class System {
     this.config.origin = pos;
   }
 
-  // getItemInHand(): ItemStack {
-  //   let playerComp: Player = this.config.player.getComponent("inventory");
-  //   return playerComp.getItem(this.config.player.selectedSlot);
-  // }
+  getItemInHand(): ItemStack {
+    let playerComp: EntityInventoryComponent = this.config.player!.getComponent(
+      "inventory"
+    ) as EntityInventoryComponent;
+    return playerComp.container.getItem(this.config.player!.selectedSlot);
+  }
+
+  // Watch Dog
+  watch_dog() {
+    system.events.beforeWatchdogTerminate.subscribe((e) => {
+      if (e.terminateReason == "hang") {
+        e.cancel = true;
+      }
+    });
+  }
 }

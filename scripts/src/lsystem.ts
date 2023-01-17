@@ -105,7 +105,7 @@ function triangle(n: number): BlockLocation[] {
   );
 }
 
-function QuadraticGosper(n: number): BlockLocation[] {
+function quadratic_gosper(n: number): BlockLocation[] {
   return lsystem(
     "-YF",
     {
@@ -116,7 +116,7 @@ function QuadraticGosper(n: number): BlockLocation[] {
   );
 }
 
-function SquareSierpinski(n: number): BlockLocation[] {
+function square_sierpinski(n: number): BlockLocation[] {
   return lsystem(
     "F+XF+F+XF",
     {
@@ -126,7 +126,7 @@ function SquareSierpinski(n: number): BlockLocation[] {
   );
 }
 
-function Crystal(n: number): BlockLocation[] {
+function crystal(n: number): BlockLocation[] {
   return lsystem(
     "F+F+F+F",
     {
@@ -136,7 +136,7 @@ function Crystal(n: number): BlockLocation[] {
   );
 }
 
-function PeanoCurve(n: number): BlockLocation[] {
+function peano_curve(n: number): BlockLocation[] {
   return lsystem(
     "X",
     {
@@ -147,7 +147,7 @@ function PeanoCurve(n: number): BlockLocation[] {
   );
 }
 
-function QuadraticSnowflakeSquare(n: number): BlockLocation[] {
+function quadratic_snowflake_square(n: number): BlockLocation[] {
   return lsystem(
     "FF+FF+FF+FF",
     {
@@ -157,7 +157,7 @@ function QuadraticSnowflakeSquare(n: number): BlockLocation[] {
   );
 }
 
-function Rings(n: number): BlockLocation[] {
+function rings(n: number): BlockLocation[] {
   return lsystem(
     "F+F+F+F",
     {
@@ -171,10 +171,10 @@ export {
   lsystem,
   leaf,
   triangle,
-  QuadraticGosper,
-  SquareSierpinski,
-  Crystal,
-  PeanoCurve,
-  QuadraticSnowflakeSquare,
-  Rings,
+  quadratic_gosper,
+  square_sierpinski,
+  crystal,
+  peano_curve,
+  quadratic_snowflake_square,
+  rings,
 };
