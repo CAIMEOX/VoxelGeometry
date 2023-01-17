@@ -2,9 +2,7 @@ import { BlockLocation } from "@minecraft/server";
 
 function expression(expr: string, start: number, end: number, step: number = 1, k: number): BlockLocation[] {
   if (start > end) {
-    let temp = start;
-    start = end;
-    end = temp;
+    [start,end]=[end,start];
   }
   let result: BlockLocation[] = [];
   function abs(c: number) {
@@ -92,7 +90,7 @@ function expression(expr: string, start: number, end: number, step: number = 1, 
     return Math.pow(c, d);
   }
 
-  const f = new Function("x", "y", "z", "o", `return ${expr}`);
+  const f = new Function("x", "y", "z", `return ${expr}`);
   for (let x = start; x <= end; x += step)
     for (let y = start; y <= end; y += step)
       for (let z = start; z <= end; z += step)

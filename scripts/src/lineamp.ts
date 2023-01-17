@@ -5,7 +5,7 @@
 | |___| | | | |  __/ (_| | | | | | | |_) |
 |_____|_|_| |_|\___|\__,_|_| |_| |_| .__/ 
                                    |_|    
-Lineamp v0.2 beta 2022/7/31 By Lampese
+Lineamp v0.3 2022/1/17 By Lampese
 */
 import { BlockLocation } from "@minecraft/server";
 class Matrix {
