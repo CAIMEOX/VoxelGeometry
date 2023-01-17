@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "http-server": "^14.1.1",
-    "three": "^0.126.1"
+    "three": "^0.126.1",
+    "ws": "^8.12.0"
   }
 }
