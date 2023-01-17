@@ -1,0 +1,15 @@
+{
+  "name": "vgviewer",
+  "description": "",
+  "version": "1.0.1",
+  "main": "index.js",
+  "scripts": {
+    "web": "http-server . -p 16384"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "three": "^0.126.1"
+  }
+}

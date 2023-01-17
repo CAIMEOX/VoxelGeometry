@@ -1,6 +1,4 @@
 node_modules
 build
 scripts/src/pureeval
-test/*
-!test/replace.js
-!test/client.js
+test/node_modules

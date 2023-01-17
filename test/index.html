@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>VGViewer</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script
+      async
+      src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"
+    ></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./node_modules/three/build/three.module.js",
+          "three/addons/": "./node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      var scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xbfd1e5);
+      const gridHelper = new THREE.GridHelper(100, 100);
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      const texture = new THREE.TextureLoader().load("./0.png");
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.DoubleSide,
+      });
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      function creatBlock(x, y, z) {
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        cube.position.x = x;
+        cube.position.y = y;
+        cube.position.z = z;
+      }
+      function clear() {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xbfd1e5);
+      }
+      camera.position.z = 5;
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.target.set(1, 1, 1);
+      controls.update();
+      (function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      })();
+      var ws = new WebSocket("ws://127.0.0.1:2333");
+      ws.onopen = function () {
+        alert("connected.");
+      };
+      ws.onmessage = function (msg) {
+        const op = JSON.parse(msg.data);
+        if (op["op"] == "clear") {
+          clear();
+        } else {
+          for (let x of op["raw"]) {
+            creatBlock(x[0], x[1], x[2]);
+          }
+        }
+      };
+    </script>
+  </body>
+</html>
