@@ -7,6 +7,7 @@
                                    |_|    
 Lineamp v0.2 beta 2022/7/31 By Lampese
 */
+import { BlockLocation } from "@minecraft/server";
 class Matrix {
   /** 矩阵实现，实际是一个二维数组 */
   matrix: Array<Array<number>> = new Array<Array<number>>();
@@ -42,10 +43,9 @@ class Matrix {
       this.matrix[i][b] = c;
     }
   }
-  /**将矩阵第r行全部乘以非零整数k(在线性代数规定中，k≠0，此处没有进行错误检测)*/
-  mul(r: number, k: number): void {
-    if (r > this.row) throw new Error("The row is too big");
-    for (let i = 0; i < this.column; ++i) this.matrix[r][i] *= k;
+  /**对一整行元素进行映射*/
+  map(r: number, f: (v: number) => number) {
+    for (let i = 0; i < this.column; ++i) this.matrix[r][i] = f(this.matrix[r][i]);
   }
   /**将矩阵第a行所有元素乘以一个数字后加到第b行(第a行元素不发生改变)*/
   add(a: number, b: number, k: number): void {
@@ -80,6 +80,10 @@ class Matrix {
         this.matrix[this.row - j + 1][this.row - i + 1] = temp;
       }
   }
+  /**获取单行的 BlockLocation 对象 */
+  getVector(row: number): BlockLocation {
+    return new BlockLocation(this.matrix[row][0], this.matrix[row][1], this.matrix[row][2]);
+  }
   /**把矩阵变为可输出的字符串，可用于debug */
   toString(): string {
     let result = "";
@@ -94,7 +98,7 @@ namespace construct {
   //**构造一个n*n的单位矩阵 */
   export function unit(n: number): Matrix {
     let result = new Matrix(n, n);
-    for (let i = 1; i <= n; ++i) result.matrix[i][i] = 1;
+    for (let i = 0; i < n; ++i) result.matrix[i][i] = 1;
     return result;
   }
   //**从二维数组构建矩阵 请保证下标从1开始 */

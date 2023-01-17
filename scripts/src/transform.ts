@@ -7,13 +7,6 @@ enum Direction {
   Z,
 }
 
-class Vector {
-  mat: Matrix;
-  constructor(b: BlockLocation) {
-    this.mat = construct.fromArray([view(b)]);
-  }
-}
-
 function embed(base: BlockLocation[], target: BlockLocation[]) {
   let xT: Map<number, Map<number, void>> = new Map();
   base.forEach((v) => {
@@ -94,9 +87,9 @@ function array_gen_fn(
   dz: (a: number) => number
 ): BlockLocation[] {
   let r: BlockLocation[] = [];
-  for (let x = 1; x < xn; x++) {
-    for (let y = 1; y < yn; y++) {
-      for (let z = 1; z < zn; z++) {
+  for (let x = 1; x < xn; ++x) {
+    for (let y = 1; y < yn; ++y) {
+      for (let z = 1; z < zn; ++z) {
         r.push(new BlockLocation(dx(x), dy(y), dz(z)));
       }
     }
@@ -113,8 +106,8 @@ function rotate(v: BlockLocation[], d: Direction, angle: number) {
 
   return v.map((b) => {
     let m = construct.fromArray([[b.x], [b.y], [b.z]]);
-    let r = operation.mul(R_y, m).matrix[0];
-    return put(r);
+    let r = operation.mul(R_y, m).getVector(0);
+    return r;
   });
 }
 
