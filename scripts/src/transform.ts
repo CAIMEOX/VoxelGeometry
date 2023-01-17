@@ -16,7 +16,7 @@ class Vector {
 
 function embed(base: BlockLocation[], target: BlockLocation[]) {
   let xT: Map<number, Map<number, void>> = new Map();
-  base.map((v) => {
+  base.forEach((v) => {
     if (!xT.has(v.x)) xT.set(v.x, new Map());
     xT.get(v.x)!.set(v.z);
   });
@@ -41,27 +41,19 @@ function put(k: number[]) {
 }
 
 function scale(v: BlockLocation[], size: number): BlockLocation[] {
-  let r: BlockLocation[] = [];
-  v.map((b) => {
-    r = r.concat(move(duplicate(size), b.x * size - 1, b.y * size - 1, b.z * size - 1));
-  });
-  return r;
+  return v.flatMap((b) => move(duplicate(size), b.x * size - 1, b.y * size - 1, b.z * size - 1));
 }
 
 function diffusion(v: BlockLocation[], factor: number): BlockLocation[] {
-  let r: BlockLocation[] = [];
-  v.map((b) => {
-    r.push(new BlockLocation(b.x * factor, b.y * factor, b.z * factor));
-  });
-  return r;
+  return v.map((b) => new BlockLocation(b.x * factor, b.y * factor, b.z * factor));
 }
 
 // Create a Tile
 function duplicate(n: number): BlockLocation[] {
   let r: BlockLocation[] = [];
-  for (let x = -n; x < n; x++) {
-    for (let y = -n; y < n; y++) {
-      for (let z = -n; z < n; z++) {
+  for (let x = -n; x < n; ++x) {
+    for (let y = -n; y < n; ++y) {
+      for (let z = -n; z < n; ++z) {
         r.push(new BlockLocation(x, y, z));
       }
     }
@@ -83,9 +75,9 @@ function array_gen(
   dz: number = 1
 ): BlockLocation[] {
   let r: BlockLocation[] = [];
-  for (let x = 1; x < xn; x++) {
-    for (let y = 1; y < yn; y++) {
-      for (let z = 1; z < zn; z++) {
+  for (let x = 1; x < xn; ++x) {
+    for (let y = 1; y < yn; ++y) {
+      for (let z = 1; z < zn; ++z) {
         r.push(new BlockLocation(x * dx, y * dy, z * dz));
       }
     }
@@ -122,7 +114,7 @@ function rotate(v: BlockLocation[], d: Direction, angle: number) {
   return v.map((b) => {
     let m = construct.fromArray([[b.x], [b.y], [b.z]]);
     let r = operation.mul(R_y, m).matrix[0];
-    return new BlockLocation(r[0], r[1], r[2]);
+    return put(r);
   });
 }
 
