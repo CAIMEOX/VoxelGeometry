@@ -1,5 +1,6 @@
 {
   "name": "vgviewer",
+  "type": "module",
   "description": "",
   "version": "1.0.1",
   "main": "index.js",
