@@ -4,7 +4,7 @@ import * as fs from "fs";
 let dirs = fs.readdirSync("../build/behavior_packs/gen/scripts/src");
 
 dirs.forEach((f) => {
-    try {
+    try {   
         let content = fs.readFileSync("../build/behavior_packs/gen/scripts/src/" + f);
         let c = content
             .toString()

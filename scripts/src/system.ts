@@ -113,9 +113,9 @@ export default class System {
   // World Action
   fill(blockType: BlockType, begin: BlockLocation, end: BlockLocation) {
     let [xFrom, yFrom, zFrom, xTo, yTo, zTo] = [begin.x, begin.y, begin.z, end.x, end.y, end.z];
-    for (let x = xFrom; x <= xTo; x++) {
-      for (let y = yFrom; y <= yTo; y++) {
-        for (let z = zFrom; z <= zTo; z++) {
+    for (let x = xFrom; x <= xTo; ++x) {
+      for (let y = yFrom; y <= yTo; ++y) {
+        for (let z = zFrom; z <= zTo; ++z) {
           this.config.dimension.getBlock(new BlockLocation(x, y, z)).setType(blockType);
         }
       }
@@ -177,9 +177,9 @@ export default class System {
 
   cloneArea(target: BlockLocation, begin: BlockLocation, end: BlockLocation) {
     let [xFrom, yFrom, zFrom, xTo, yTo, zTo] = [begin.x, begin.y, begin.z, end.x, end.y, end.z];
-    for (let x = xFrom; x <= xTo; x++) {
-      for (let y = yFrom; y <= yTo; y++) {
-        for (let z = zFrom; z <= zTo; z++) {
+    for (let x = xFrom; x <= xTo; ++x) {
+      for (let y = yFrom; y <= yTo; ++y) {
+        for (let z = zFrom; z <= zTo; ++z) {
           this.setBlock(
             this.getBlock(new BlockLocation(x, y, z)),
             new BlockLocation(target.x + x - xFrom, target.y + y - yFrom, target.z + z - zFrom)
