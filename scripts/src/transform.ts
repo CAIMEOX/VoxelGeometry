@@ -119,7 +119,7 @@ function pipe(...mat: BlockLocation[][]): BlockLocation[] {
     r.forEach((k) => {
       res = res.concat(move(next, k.x, k.y, k.z));
     });
-    r = r.concat(res);
+    r = res;
   });
   return r;
 }

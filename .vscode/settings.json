@@ -19,10 +19,9 @@
         "**/build": true
     },
     "files.exclude": {
-        "**/.git": true,    
         "**/.DS_Store": true,
-        "**/node_modules": true, 
-        "**/build": true
+        "**/.git": true,
+        "**/node_modules": true
     },
     "cSpell.words": [
         "gametest",

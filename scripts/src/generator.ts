@@ -1,5 +1,4 @@
 import { BlockLocation } from "@minecraft/server";
-import { Turtle2D } from "./turtle";
 import { LSystem } from "./lsystem";
 
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
