@@ -165,3 +165,10 @@ array_gen_fn :: (xn, yn, zn, num -> num, num -> num, num -> num) -> Space
 
 ## Diffusion Limited Aggression
 
+### DLA
+
+ Simulating particles undergoing a random walk due to Brownian motion cluster together to form aggregates of such particles.
+ 
+ ```haskell
+DLA :: (width, maxWalk, iterations, stepLength, temperature, stuckSpace) -> Space
+```
