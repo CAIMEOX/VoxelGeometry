@@ -1,5 +1,5 @@
 import { BlockLocation } from "@minecraft/server";
-import { construct, Matrix, operation } from "./lineamp";
+import { construct, operation } from "./lineamp";
 
 enum Direction {
   X = 0,
@@ -124,4 +124,4 @@ function pipe(...mat: BlockLocation[][]): BlockLocation[] {
   return r;
 }
 
-export { scale, diffusion, rotate, swap, embed, move, pipe, array_gen, array_gen_fn };
+export { put, scale, diffusion, rotate, swap, embed, move, pipe, array_gen, array_gen_fn };

@@ -1,5 +1,6 @@
 import { BlockLocation } from "@minecraft/server";
 import { LSystem } from "./lsystem";
+import { put } from "./transform";
 
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
 
@@ -50,63 +51,80 @@ function torus(radius: number, ringRadius: number): BlockLocation[] {
 }
 
 // https://replit.com/@Michael_Nicol/Bresenhams-Algorithm#index.js
-function line(p1: BlockLocation, p2: BlockLocation) {
-  let dx = Math.abs(p2.x - p1.x);
-  let dy = Math.abs(p2.y - p1.y);
-  let dz = Math.abs(p2.z - p1.z);
-  let xc = p2.x > p1.x ? 1 : -1;
-  let yc = p2.y > p1.y ? 1 : -1;
-  let zc = p2.z > p1.z ? 1 : -1;
-  let result = [p1];
-  let pk = [p1.x, p1.y, p1.z];
-  if (dx >= dy && dx >= dz) {
-    let pyk = 2 * dy - dx;
-    let pzk = 2 * dz - dx;
-    for (let k = 0; k < dx - 1; k++) {
-      pk[0] += xc;
-      pyk += 2 * dy;
-      pzk += 2 * dz;
-      if (pyk > 0 && pzk < 0) {
-        pk[1] += yc;
-        pyk -= 2 * dx;
-      } else if (pyk === 0) {
-        pk[2] += zc;
-        pzk -= 2 * dx;
-      } else {
-        pk[1] += yc;
-        pk[2] += zc;
-        pyk -= 2 * dx;
-        pzk -= 2 * dx;
+const line = (p1: BlockLocation, p2: BlockLocation) => {
+  let [x1, y1, z1] = [p1.x, p1.y, p1.z];
+  let [x2, y2, z2] = [p2.x, p2.y, p2.z];
+  let dy = y2 - y1;
+  let dx = x2 - x1;
+  let dz = z2 - z1;
+  let qChange = [dx < 0 ? -1 : 1, dy < 0 ? -1 : 1, dz < 0 ? -1 : 1];
+  dx = Math.abs(dx);
+  dy = Math.abs(dy);
+  dz = Math.abs(dz);
+  let largestChange;
+  if (dy >= dz && dy >= dx) {
+    largestChange = 1;
+  } else if (dx >= dy && dx >= dz) {
+    largestChange = 0;
+  } else {
+    largestChange = 2;
+  }
+  let largestTarget = Math.max(dy, dx, dz);
+  let startAxis = largestChange === 1 ? y1 : largestChange === 0 ? x1 : z1;
+  let x = x1;
+  let y = y1;
+  let z = z1;
+  let points: BlockLocation[] = [];
+  let rx = 0;
+  let ry = 0;
+  let rz = 0;
+  let endCoord = qChange[largestChange] === 1 ? startAxis + largestTarget : startAxis - largestTarget;
+  for (let i = startAxis; qChange[largestChange] === 1 ? i <= endCoord : i >= endCoord; i += qChange[largestChange]) {
+    if (largestChange === 0) {
+      if (ry >= dx) {
+        ry -= dx;
+        y += qChange[1];
       }
-      result.push(new BlockLocation(pk[0], pk[1], pk[2]));
+      if (rz >= dx) {
+        rz -= dx;
+        z += qChange[2];
+      }
+      ry += dy;
+      rz += dz;
+      points.push(put([i, y, z]));
+      continue;
     }
-  } else if (dy >= dx && dy >= dz) {
-    console.log("dy drive");
-    let pxk = 2 * dx - dy;
-    let pzk = 2 * dz - dy;
-    for (let k = 0; k < dy - 1; k++) {
-      pk[1] += yc;
-      pxk += 2 * dx;
-      pzk += 2 * dz;
-      if (pxk < 0 && pzk < 0) {
+    if (largestChange === 1) {
+      if (rx >= dy) {
+        rx -= dy;
+        x += qChange[0];
       }
-      result.push(new BlockLocation(pk[0], pk[1], pk[2]));
+      if (rz >= dy) {
+        rz -= dy;
+        z += qChange[2];
+      }
+      rx += dx;
+      rz += dz;
+      points.push(put([x, i, z]));
+      continue;
     }
-  } else if (dz >= dy && dz >= dx) {
-    let pxk = 2 * dx - dz;
-    let pyk = 2 * dy - dz;
-    for (let k = 0; k < dz - 1; k++) {
-      pk[2] += zc;
-      pxk += 2 * dx;
-      pyk += 2 * dy;
-      if (pxk < 0 && pyk < 0) {
+    if (largestChange === 2) {
+      if (rx >= dz) {
+        rx -= dz;
+        x += qChange[2];
       }
-      result.push(new BlockLocation(pk[0], pk[1], pk[2]));
+      if (ry >= dz) {
+        ry -= dz;
+        y += qChange[1];
+      }
+      ry += dy;
+      rx += dx;
+      points.push(put([x, y, i]));
+      continue;
     }
   }
-  result.push(p2);
-  return result;
-}
+  return points;
+};
 
 function turtle(actions: string) {
   let lsys = new LSystem(actions, {});

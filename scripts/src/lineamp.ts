@@ -84,6 +84,10 @@ class Matrix {
   getVector(row: number): BlockLocation {
     return new BlockLocation(this.matrix[row][0], this.matrix[row][1], this.matrix[row][2]);
   }
+
+  getVectorCol(col: number): BlockLocation {
+    return new BlockLocation(this.matrix[0][col], this.matrix[1][col], this.matrix[2][col]);
+  }
   /**把矩阵变为可输出的字符串，可用于debug */
   toString(): string {
     let result = "";

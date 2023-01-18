@@ -16,8 +16,6 @@
   "type": "module",
   "dependencies": {
     "@minecraft/server": "^1.1.0-beta.preview.1.19.50.22",
-    "decode-uri-component": "^0.2.2",
-    "fp-ts": "^2.13.1",
     "ws": "^8.12.0"
   },
   "scripts": {
