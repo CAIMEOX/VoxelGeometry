@@ -8,13 +8,18 @@ class Point {
     this.x = x;
     this.y = y;
   }
-  #Vary(steplength: number) {
-    return [this.x + Math.random() * steplength, this.y + Math.random() * steplength];
+  private Vary(steplength: number) {
+    function rand() {
+      let p = Math.random();
+      if (p > 0.5) return Math.random();
+      else return -Math.random();
+    }
+    return [this.x + rand() * steplength, this.y + rand() * steplength];
   }
   Walk(width: number, steplength: number) {
-    let [tox, toy] = this.#Vary(steplength);
+    let [tox, toy] = this.Vary(steplength);
     while (tox < 0 || tox > width || toy < 0 || toy > width) {
-      [tox, toy] = this.#Vary(steplength);
+      [tox, toy] = this.Vary(steplength);
     }
     [this.x, this.y] = [tox, toy];
   }
@@ -31,6 +36,8 @@ class DLASystem {
     this.width = width;
     this.maxWalk = maxWalk;
     this.iterations = iterations;
+    this.Walkering = [];
+    this.Stucked = [];
     this.Stucked.push(new Point(this.width / 2, this.width / 2));
     while (this.Walkering.length < maxWalk) {
       this.Walkering.push(randPoint(this.width));
@@ -38,11 +45,11 @@ class DLASystem {
   }
 
   run(): BlockLocation[] {
-    while (this.Walkering) {
+    while (this.Walkering.length) {
       for (let i = 1; i <= this.iterations; ++i) {
         for (let j = 0; j < this.Walkering.length; ++j) {
           if (this.Walkering[j].Stucked === true) continue;
-          this.Walkering[j].Walk(this.width, this.width);
+          this.Walkering[j].Walk(this.width, 1);
           for (let k = 0; k < this.Stucked.length; ++k) {
             if (checkStuck(this.Walkering[j], this.Stucked[k])) {
               this.Walkering[j].Stucked = true;

@@ -1,4 +1,4 @@
-import { BlockLocation } from "@minecraft/server";
+import { Block, BlockLocation } from "@minecraft/server";
 import { construct, operation } from "./lineamp";
 
 enum Direction {
@@ -56,6 +56,11 @@ function duplicate(n: number): BlockLocation[] {
 
 function move(b: BlockLocation[], x: number = 0, y: number = 0, z: number = 0): BlockLocation[] {
   return b.map((k) => new BlockLocation(x + k.x, y + k.y, z + k.z));
+}
+
+function moveZero(b: BlockLocation[]): BlockLocation[] {
+  let [px, py, pz] = [-b[0].x, -b[0].y, -b[0].z];
+  return move(b, px, py, pz);
 }
 
 // Array Generator
@@ -124,4 +129,4 @@ function pipe(...mat: BlockLocation[][]): BlockLocation[] {
   return r;
 }
 
-export { put, scale, diffusion, rotate, swap, embed, move, pipe, array_gen, array_gen_fn };
+export { put, scale, diffusion, rotate, swap, embed, move, moveZero, pipe, array_gen, array_gen_fn };

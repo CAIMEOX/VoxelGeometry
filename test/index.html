@@ -9,10 +9,7 @@
     </style>
   </head>
   <body>
-    <script
-      async
-      src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"
-    ></script>
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
     <script type="importmap">
       {
         "imports": {
@@ -27,12 +24,7 @@
       var scene = new THREE.Scene();
       scene.background = new THREE.Color(0xbfd1e5);
       const gridHelper = new THREE.GridHelper(100, 100);
-      const camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-      );
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
@@ -53,6 +45,11 @@
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0xbfd1e5);
       }
+      function setCamera(x, y, z) {
+        camera.position.x = x;
+        camera.position.y = y;
+        camera.position.z = z;
+      }
       camera.position.z = 5;
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.target.set(1, 1, 1);
@@ -69,6 +66,9 @@
         const op = JSON.parse(msg.data);
         if (op["op"] == "clear") {
           clear();
+        } else if (op["op"] == "camera") {
+          let pos = op["raw"];
+          setCamera(pos[0], pos[1], pos[2]);
         } else {
           for (let x of op["raw"]) {
             creatBlock(x[0], x[1], x[2]);
