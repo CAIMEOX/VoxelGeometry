@@ -25,6 +25,19 @@ class BlockLocation {
   }
 }
 
+function clifford_attractor(x, z, a, b, c, d) {
+  let res = [];
+  for (let t = 0; t < 100000; t++) {
+    x = Math.sin(a * z) + c * Math.cos(a * x);
+    z = Math.sin(b * x) + d * Math.cos(b * z);
+    res.push(new BlockLocation(x, 0, z));
+  }
+
+  return res;
+}
+
+function peter_de_jong_attractors() {}
+
 let wss = new ws.WebSocketServer({ port: 2333 });
 
 function pack(bs) {
