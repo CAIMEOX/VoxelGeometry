@@ -7,4 +7,4 @@ test/*
 !test/server.js
 !test/package.json
 !test/index.html
-!test/0.png
+!test/texture.png
