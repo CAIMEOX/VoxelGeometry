@@ -154,4 +154,5 @@ namespace operation {
     return true;
   }
 }
+
 export { Matrix, operation, construct };

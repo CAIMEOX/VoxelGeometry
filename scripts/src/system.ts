@@ -21,6 +21,7 @@ import { circle, sphere, line, torus, turtle } from "./generator";
 import { scale, rotate, swap, embed, move } from "./transform";
 import * as LSystem from "./lsystem";
 import { LocationTrans, Tellraw } from "./utils";
+import { DLA } from "./DLA.js";
 export type Config = {
   block: BlockType;
   origin: BlockLocation;
@@ -46,6 +47,7 @@ export default class System {
     swap,
     embed,
     move,
+    DLA,
     ...PureEval,
     ...LSystem,
     // Effect
