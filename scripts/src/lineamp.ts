@@ -84,7 +84,7 @@ class Matrix {
   getVector(row: number): BlockLocation {
     return new BlockLocation(this.matrix[row][0], this.matrix[row][1], this.matrix[row][2]);
   }
-
+  /**获取单列的 BlockLocation 对象*/
   getVectorCol(col: number): BlockLocation {
     return new BlockLocation(this.matrix[0][col], this.matrix[1][col], this.matrix[2][col]);
   }
