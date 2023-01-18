@@ -1,12 +1,6 @@
 import { Block, BlockLocation } from "@minecraft/server";
 import { construct, operation } from "./lineamp";
 
-enum Direction {
-  X = 0,
-  Y,
-  Z,
-}
-
 function embed(base: BlockLocation[], target: BlockLocation[]) {
   let xT: Map<number, Map<number, void>> = new Map();
   base.forEach((v) => {
@@ -33,12 +27,20 @@ function put(k: number[]) {
   return new BlockLocation(k[0], k[1], k[2]);
 }
 
+function blockFromFloat(x: number, y: number, z: number): BlockLocation {
+  return new BlockLocation(Math.round(x), Math.round(y), Math.round(z));
+}
+
 function scale(v: BlockLocation[], size: number): BlockLocation[] {
   return v.flatMap((b) => move(duplicate(size), b.x * size - 1, b.y * size - 1, b.z * size - 1));
 }
 
 function diffusion(v: BlockLocation[], factor: number): BlockLocation[] {
   return v.map((b) => new BlockLocation(b.x * factor, b.y * factor, b.z * factor));
+}
+
+function P(x: number, y: number, z: number): BlockLocation {
+  return new BlockLocation(x, y, z);
 }
 
 // Create a Tile
@@ -54,13 +56,31 @@ function duplicate(n: number): BlockLocation[] {
   return r;
 }
 
+function center(b: BlockLocation[]): BlockLocation {
+  let [xmin, xmax, ymin, ymax, zmin, zmax] = [
+    1000000000, -1000000000, 1000000000, -1000000000, 1000000000, -1000000000,
+  ];
+  b.forEach((v) => {
+    xmin = Math.min(v.x);
+    xmax = Math.max(v.x);
+    ymin = Math.min(v.y);
+    ymax = Math.max(v.y);
+    zmin = Math.min(v.z);
+    zmax = Math.max(v.z);
+  });
+  return blockFromFloat((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2);
+}
+
 function move(b: BlockLocation[], x: number = 0, y: number = 0, z: number = 0): BlockLocation[] {
   return b.map((k) => new BlockLocation(x + k.x, y + k.y, z + k.z));
 }
 
-function moveZero(b: BlockLocation[]): BlockLocation[] {
-  let [px, py, pz] = [-b[0].x, -b[0].y, -b[0].z];
-  return move(b, px, py, pz);
+function moveTo(b: BlockLocation[], from: BlockLocation, to: BlockLocation): BlockLocation[] {
+  return move(b, to.x - from.x, to.y - from.y, to.z - from.z);
+}
+
+function moveCenter(b: BlockLocation[]): BlockLocation[] {
+  return moveTo(b, center(b), P(0, 0, 0));
 }
 
 // Array Generator
@@ -102,7 +122,7 @@ function array_gen_fn(
   return r;
 }
 
-function rotate(v: BlockLocation[], d: Direction, angle: number) {
+function rotate(v: BlockLocation[], angle: number) {
   let R_y = construct.fromArray([
     [Math.cos(angle), 0, Math.sin(angle)],
     [0, 1, 0],
@@ -129,4 +149,4 @@ function pipe(...mat: BlockLocation[][]): BlockLocation[] {
   return r;
 }
 
-export { put, scale, diffusion, rotate, swap, embed, move, moveZero, pipe, array_gen, array_gen_fn };
+export { put, scale, diffusion, rotate, swap, embed, move, center, moveCenter, moveTo, pipe, array_gen, array_gen_fn };
