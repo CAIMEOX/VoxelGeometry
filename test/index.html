@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>VGViewer</title>
+    <title>VoxelGeometry Viewer</title>
     <style>
       body {
         margin: 0;
@@ -22,19 +22,24 @@
       import * as THREE from "three";
       import { OrbitControls } from "three/addons/controls/OrbitControls.js";
       var scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xa1aaa6);
+      scene.background = new THREE.Color(0xbfd1e5);
       const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      const renderer = new THREE.WebGLRenderer();
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true
+      });
+      renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
-      const texture = new THREE.TextureLoader().load("./0.png");
-      const material = new THREE.MeshBasicMaterial({
+      var texture = new THREE.TextureLoader().load("./texture.png");
+      var material = new THREE.MeshBasicMaterial({
         map: texture,
         side: THREE.DoubleSide,
       });
-      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      material.transparent = true;
+      texture.magFilter = THREE.NearestFilter;
+      var geometry = new THREE.BoxGeometry(1, 1, 1);
       function creatBlock(x, y, z) {
-        const cube = new THREE.Mesh(geometry, material);
+        var cube = new THREE.Mesh(geometry, material);
         scene.add(cube);
         cube.position.x = x;
         cube.position.y = y;
@@ -42,7 +47,7 @@
       }
       function clear() {
         scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xa1aaa6);
+        scene.background = new THREE.Color(0xbfd1e5);
       }
       function setCamera(x, y, z) {
         camera.position.x = x;

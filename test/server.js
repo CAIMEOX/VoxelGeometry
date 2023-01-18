@@ -15,7 +15,7 @@ import {
 } from "./lsystem.js";
 import { expression } from "./expression.js";
 import { Turtle3D } from "./turtle.js";
-import { scale, diffusion, rotate, swap, embed, move, moveZero, pipe, array_gen, array_gen_fn } from "./transform.js";
+import { scale, diffusion, rotate, swap, embed, move, moveCenter, moveTo, center, pipe, array_gen, array_gen_fn } from "./transform.js";
 import { DLA } from './DLA.js'
 
 class BlockLocation {
@@ -27,17 +27,17 @@ class BlockLocation {
 }
 
 function clifford_attractor(x, z, a, b, c, d) {
-  let res = [];
-  for (let t = 0; t < 100000; t++) {
-    x = Math.sin(a * z) + c * Math.cos(a * x);
-    z = Math.sin(b * x) + d * Math.cos(b * z);
-    res.push(new BlockLocation(x, 0, z));
-  }
+    let res = [];
+    for (let t = 0; t < 100000; t++) {
+        x = Math.sin(a * z) + c * Math.cos(a * x);
+        z = Math.sin(b * x) + d * Math.cos(b * z);
+        res.push(new BlockLocation(x, 0, z));
+    }
 
-  return res;
+    return res;
 }
 
-function peter_de_jong_attractors() {}
+function peter_de_jong_attractors() { }
 
 let wss = new ws.WebSocketServer({ port: 2333 });
 

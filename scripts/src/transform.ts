@@ -61,12 +61,12 @@ function center(b: BlockLocation[]): BlockLocation {
     1000000000, -1000000000, 1000000000, -1000000000, 1000000000, -1000000000,
   ];
   b.forEach((v) => {
-    xmin = Math.min(v.x);
-    xmax = Math.max(v.x);
-    ymin = Math.min(v.y);
-    ymax = Math.max(v.y);
-    zmin = Math.min(v.z);
-    zmax = Math.max(v.z);
+    xmin = Math.min(xmin, v.x);
+    xmax = Math.max(xmax, v.x);
+    ymin = Math.min(ymin, v.y);
+    ymax = Math.max(ymax, v.y);
+    zmin = Math.min(zmin, v.z);
+    zmax = Math.max(zmax, v.z);
   });
   return blockFromFloat((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2);
 }
