@@ -46,6 +46,8 @@ function copy_resource_packs() {
 
 const copy_content = gulp.parallel(copy_behavior_packs, copy_resource_packs);
 
+const r = require("./test/replace.js");
+
 function compile_scripts() {
   return gulp
     .src("scripts/**/*.ts")
@@ -80,7 +82,12 @@ function copy_pure_eval() {
     .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts/src/pureeval/src"));
 }
 
-const build = gulp.series(clean_build, copy_content, compile_scripts, copy_pure_eval, copy_pure_eval_js);
+function load_test(fn) {
+  r.Replace("build/behavior_packs/gen/scripts/src");
+  fn();
+}
+
+const build = gulp.series(clean_build, copy_content, compile_scripts, copy_pure_eval, copy_pure_eval_js, load_test);
 
 function clean_localmc(callbackFunction) {
   if (!bpfoldername || !bpfoldername.length || bpfoldername.length < 2) {
