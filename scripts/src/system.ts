@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import {
   BeforeChatEvent,
@@ -23,7 +22,8 @@ import { circle, sphere, line, torus, turtle } from "./generator";
 import { scale, rotate, swap, embed, move, center, moveCenter, moveTo } from "./transform";
 import * as LSystem from "./lsystem";
 import { LocationTrans, Tellraw } from "./utils";
-import { DLA } from "./DLA.js";
+import { DLA2D } from "./DLA2D.js";
+import { DLA3D } from "./DLA3D.js";
 export type Config = {
   block: BlockType;
   origin: BlockLocation;
@@ -48,12 +48,13 @@ export default class System {
     scale,
     rotate,
     center,
-    moveCenter, 
+    moveCenter,
     moveTo,
     swap,
     embed,
     move,
-    DLA,
+    DLA2D,
+    DLA3D,
     ...PureEval,
     ...LSystem,
     // Effect
@@ -65,7 +66,7 @@ export default class System {
       this.setPosition(this.getPlayerPosition());
     },
   };
-  callbacks: { [key: string]: (a: unknown) => void } = {};
+  callbacks: { [key: string]: (a: any) => void } = {};
   // callbacks: { [key: string]: Function } = {};
   constructor() {
     this.config = {
@@ -79,7 +80,7 @@ export default class System {
     this.evaluator.updateEnv(this.config);
   }
 
-  run(){
+  run() {
     this.subscribe();
     this.boardcast("System initialized");
   }
@@ -203,7 +204,7 @@ export default class System {
   // Info :
 
   tellraw(...message: string[]) {
-    this.config.dimension.runCommandAsync(Tellraw(this.config.player?.name, ...message.map((m) => `§6${m}`)));
+    this.config.dimension.runCommandAsync(Tellraw(this.config.player!.name, ...message.map((m) => `§6${m}`)));
   }
 
   boardcast(...message: string[]) {
@@ -211,7 +212,7 @@ export default class System {
   }
 
   getPlayerPosition(): BlockLocation {
-    return LocationTrans(this.config.player?.location);
+    return LocationTrans(this.config.player!.location);
   }
 
   getBlock(pos: BlockLocation): BlockType {
@@ -225,10 +226,10 @@ export default class System {
   }
 
   getItemInHand(): ItemStack {
-    const playerComp: EntityInventoryComponent = this.config.player?.getComponent(
+    const playerComp: EntityInventoryComponent = this.config.player!.getComponent(
       "inventory"
     ) as EntityInventoryComponent;
-    return playerComp.container.getItem(this.config.player?.selectedSlot);
+    return playerComp.container.getItem(this.config.player!.selectedSlot);
   }
 
   // Watch Dog

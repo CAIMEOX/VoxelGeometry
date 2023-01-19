@@ -16,7 +16,8 @@ import {
 import { expression } from "./expression.js";
 import { Turtle3D } from "./turtle.js";
 import { scale, diffusion, rotate, swap, embed, move, moveCenter, moveTo, center, pipe, array_gen, array_gen_fn } from "./transform.js";
-import { DLA } from './DLA.js'
+import { DLA2D } from './DLA2D.js';
+import { DLA3D } from './DLA3D.js';
 
 class BlockLocation {
     constructor(x, y, z) {
@@ -56,7 +57,7 @@ wss.on("error", (e) => {
     console.log(e);
 });
 
-wss.on("connection", (socket, req) => {
+wss.on("connection", (socket) => {
     const rl = readline.createInterface({ input: stdin, output: stdout });
     rl.on("line", (s) => {
         if (s === "clear") {

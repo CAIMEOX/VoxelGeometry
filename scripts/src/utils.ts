@@ -17,4 +17,10 @@ function now(): string {
   return ["[", date.toTimeString().slice(0, 8), "]"].join("");
 }
 
-export { LocationAdd, Tellraw, LocationTrans };
+function rand(): number {
+  const p = Math.random();
+  if (p > 0.5) return Math.random();
+  else return -Math.random();
+}
+
+export { LocationAdd, Tellraw, LocationTrans, rand };

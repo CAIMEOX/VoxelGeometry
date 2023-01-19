@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
 /*
  _     _                                  
 | |   (_)_ __   ___  __ _ _ __ ___  _ __  
