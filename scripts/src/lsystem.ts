@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { BlockLocation } from "@minecraft/server";
 import { Turtle2D } from "./turtle";
 
@@ -24,7 +25,7 @@ export class LSystem {
   iterate(str: string): string {
     let result = "";
     for (let i = 0; i < str.length; i++) {
-      let symbol = str[i];
+      const symbol = str[i];
       if (this.rules[symbol]) {
         result += this.rules[symbol];
       } else {
@@ -39,8 +40,8 @@ export class LSystem {
   }
 
   runProc(proc: { [key: string]: Function } = {}): BlockLocation[] {
-    let t = new Turtle2D();
-    let a: number = this.env["angle"];
+    const t = new Turtle2D();
+    const a: number = this.env["angle"];
 
     if (Object.keys(proc).length === 0) {
       proc = {
@@ -74,7 +75,7 @@ function lsystem(
   generation = 1,
   angle = Math.PI / 2
 ): BlockLocation[] {
-  let lsys = new LSystem(axiom, rules);
+  const lsys = new LSystem(axiom, rules);
   lsys.setEnv("angle", angle);
   lsys.generate(generation);
   return lsys.runProc();

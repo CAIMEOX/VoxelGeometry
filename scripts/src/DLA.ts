@@ -3,7 +3,7 @@ import { BlockLocation } from "@minecraft/server";
 class Point {
   x: number;
   y: number;
-  Stucked: boolean = false;
+  Stucked = false;
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
@@ -77,7 +77,7 @@ class DLASystem {
 }
 
 function rand(): number {
-  let p = Math.random();
+  const p = Math.random();
   if (p > 0.5) return Math.random();
   else return -Math.random();
 }

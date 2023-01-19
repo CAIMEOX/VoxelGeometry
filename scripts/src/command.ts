@@ -1,18 +1,18 @@
 export class Sandbox {
-  sandbox: Object;
+  sandbox: object;
   // boxProxy: Object;
-  constructor(sandbox: Object) {
+  constructor(sandbox: object) {
     this.sandbox = sandbox;
     // this.boxProxy = new Proxy(this.sandbox, {});
   }
 
-  eval(code: string): any {
-    let body = `with(inside) { ${code} }`;
-    let fn = new Function("inside", body);
+  eval(code: string): unknown {
+    const body = `with(inside) { ${code} }`;
+    const fn = new Function("inside", body);
     return fn(this.sandbox);
   }
 
-  updateEnv(...env: Object[]) {
+  updateEnv(...env: object[]) {
     Object.assign(this.sandbox, ...env);
   }
 }

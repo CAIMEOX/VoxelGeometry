@@ -5,13 +5,16 @@
   "description": "voxel_geometry",
   "private": true,
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/parser": "^5.48.2",
     "del": "^6.0.0",
+    "eslint": "^8.32.0",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "source-map": "^0.7.4",
-    "typescript": "^4.4.3"
+    "typescript": "^4.9.4"
   },
   "type": "module",
   "dependencies": {
@@ -19,6 +22,7 @@
     "ws": "^8.12.0"
   },
   "scripts": {
+    "lint": "eslint . --ext .ts",
     "enablemcloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436",
     "enablemcpreviewloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-424268864-5579737-879501358-346833251-474568803-887069379-4040235476"
   }

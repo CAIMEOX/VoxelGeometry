@@ -13,7 +13,7 @@ function LocationTrans(pos: Vector3): BlockLocation {
 }
 
 function now(): string {
-  let date = new Date();
+  const date = new Date();
   return ["[", date.toTimeString().slice(0, 8), "]"].join("");
 }
 
