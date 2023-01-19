@@ -1,5 +1,5 @@
 // === CONFIGURABLE VARIABLES
-
+const fs = require("fs");
 const bpfoldername = "gen";
 const useMinecraftPreview = false; // Whether to target the "Minecraft Preview" version of Minecraft vs. the main store version of Minecraft
 const useMinecraftDedicatedServer = false; // Whether to use Bedrock Dedicated Server - see https://www.minecraft.net/download/server/bedrock
@@ -46,8 +46,6 @@ function copy_resource_packs() {
 
 const copy_content = gulp.parallel(copy_behavior_packs, copy_resource_packs);
 
-const r = require("./test/replace.js");
-
 function compile_scripts() {
   return gulp
     .src("scripts/**/*.ts")
@@ -82,8 +80,33 @@ function copy_pure_eval() {
     .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts/src/pureeval/src"));
 }
 
+function Replace(dir) {
+  let files = fs.readdirSync(dir);
+  files.forEach((f) => {
+    try {
+      let content = fs.readFileSync("build/behavior_packs/gen/scripts/src/" + f);
+      let c = content
+        .toString()
+        .split("\n")
+        .filter((val) => !val.endsWith('"@minecraft/server";'))
+        .map((v) =>
+          v.startsWith("import") && v.endsWith('";') && !v.endsWith('.js";') ? insert(v, v.length - 2, ".js") : v
+        );
+      c.unshift(`class BlockLocation {
+          constructor(x, y, z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+          }
+        }`);
+      c = c.join("\n");
+      fs.writeFileSync("test/" + f, c);
+    } catch (e) {}
+  });
+}
+
 function load_test(fn) {
-  r.Replace("build/behavior_packs/gen/scripts/src");
+  Replace("build/behavior_packs/gen/scripts/src");
   fn();
 }
 
@@ -318,6 +341,10 @@ function startServer(callbackFunction) {
   activeServer.stderr.on("data", serverLogger);
 
   callbackFunction();
+}
+
+function insert(str, index, value) {
+  return str.substr(0, index) + value + str.substr(index);
 }
 
 exports.clean_build = clean_build;
