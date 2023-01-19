@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import {
   BeforeChatEvent,
   world,
@@ -21,18 +22,20 @@ import { circle, sphere, line, torus, turtle } from "./generator";
 import { scale, rotate, swap, embed, move, center, moveCenter, moveTo } from "./transform";
 import * as LSystem from "./lsystem";
 import { LocationTrans, Tellraw } from "./utils";
-import { DLA } from "./DLA.js";
+import { DLA2D } from "./DLA2D.js";
+import { DLA3D } from "./DLA3D.js";
 export type Config = {
   block: BlockType;
   origin: BlockLocation;
   player: Player | null;
   dimension: Dimension;
-  env: Object;
+  env: object;
 };
 
 export default class System {
   config: Config;
   evaluator: Sandbox;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   funcs: { [key: string]: Function } = {
     // Pure
     circle,
@@ -50,7 +53,8 @@ export default class System {
     swap,
     embed,
     move,
-    DLA,
+    DLA2D,
+    DLA3D,
     ...PureEval,
     ...LSystem,
     // Effect
@@ -74,6 +78,9 @@ export default class System {
     };
     this.evaluator = new Sandbox(this.funcs);
     this.evaluator.updateEnv(this.config);
+  }
+
+  run() {
     this.subscribe();
     this.boardcast("System initialized");
   }
@@ -82,13 +89,13 @@ export default class System {
 
   subscribe() {
     world.events.beforeChat.subscribe((eventData: BeforeChatEvent) => {
-      let Player = eventData.sender;
+      const Player = eventData.sender;
       if (this.config.player === null) this.config.player = Player;
-      let Chat = eventData.message;
+      const Chat = eventData.message;
 
       if (Chat.startsWith("-")) {
         eventData.cancel = true;
-        let script = Chat.substring(1).trim();
+        const script = Chat.substring(1).trim();
         this.tellraw(`<< §3${script}`);
         this.evaluator.updateEnv({
           callbacks: this.callbacks,
@@ -97,7 +104,7 @@ export default class System {
           player: Player,
         });
         try {
-          let result = this.evaluator.eval(script);
+          const result = this.evaluator.eval(script);
           if (result) {
             this.tellraw(`>> §e${result}`);
           } else {
@@ -117,7 +124,7 @@ export default class System {
 
   // World Action
   fill(blockType: BlockType, begin: BlockLocation, end: BlockLocation) {
-    let [xFrom, yFrom, zFrom, xTo, yTo, zTo] = [begin.x, begin.y, begin.z, end.x, end.y, end.z];
+    const [xFrom, yFrom, zFrom, xTo, yTo, zTo] = [begin.x, begin.y, begin.z, end.x, end.y, end.z];
     for (let x = xFrom; x <= xTo; ++x) {
       for (let y = yFrom; y <= yTo; ++y) {
         for (let z = zFrom; z <= zTo; ++z) {
@@ -145,14 +152,14 @@ export default class System {
 
   placeMode(blocks: BlockLocation[] = []): void {
     if (this.callbacks["place"]) {
-      let callback: (a: BlockPlaceEvent) => void = this.callbacks["place"];
+      const callback: (a: BlockPlaceEvent) => void = this.callbacks["place"];
       world.events.blockPlace.unsubscribe(callback);
       delete this.callbacks["place"];
     }
     if (blocks.length !== 0) {
       this.callbacks["place"] = world.events.blockPlace.subscribe((eventData) => {
-        let pos = eventData.block.location;
-        let block = eventData.block.type;
+        const pos = eventData.block.location;
+        const block = eventData.block.type;
         this.plot(blocks, pos, block);
       });
     }
@@ -160,20 +167,20 @@ export default class System {
 
   bursh(blocks: BlockLocation[] = []): void {
     if (this.callbacks["brush"]) {
-      let callback: (a: ItemUseEvent) => void = this.callbacks["brush"];
+      const callback: (a: ItemUseEvent) => void = this.callbacks["brush"];
       world.events.itemUse.unsubscribe(callback);
       delete this.callbacks["brush"];
     }
     if (blocks.length !== 0) {
       this.callbacks["brush"] = world.events.itemUse.subscribe((eventData) => {
-        let opt: BlockRaycastOptions = {
+        const opt: BlockRaycastOptions = {
           maxDistance: 256,
           includeLiquidBlocks: false,
           includePassableBlocks: true,
         };
-        let block = eventData.source.getBlockFromViewVector(opt);
+        const block = eventData.source.getBlockFromViewVector(opt);
         if (block != undefined) {
-          let pos = block.location;
+          const pos = block.location;
           this.plot(blocks, pos);
         }
       });
@@ -181,7 +188,7 @@ export default class System {
   }
 
   cloneArea(target: BlockLocation, begin: BlockLocation, end: BlockLocation) {
-    let [xFrom, yFrom, zFrom, xTo, yTo, zTo] = [begin.x, begin.y, begin.z, end.x, end.y, end.z];
+    const [xFrom, yFrom, zFrom, xTo, yTo, zTo] = [begin.x, begin.y, begin.z, end.x, end.y, end.z];
     for (let x = xFrom; x <= xTo; ++x) {
       for (let y = yFrom; y <= yTo; ++y) {
         for (let z = zFrom; z <= zTo; ++z) {
@@ -219,7 +226,7 @@ export default class System {
   }
 
   getItemInHand(): ItemStack {
-    let playerComp: EntityInventoryComponent = this.config.player!.getComponent(
+    const playerComp: EntityInventoryComponent = this.config.player!.getComponent(
       "inventory"
     ) as EntityInventoryComponent;
     return playerComp.container.getItem(this.config.player!.selectedSlot);

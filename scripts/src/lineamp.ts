@@ -16,7 +16,7 @@ class Matrix {
   /**矩阵的列数 */
   column: number;
   /**构造一个矩阵，r为行数，c为列数，val为矩阵的初值，默认为0。*/
-  constructor(r: number, c: number, val: number = 0) {
+  constructor(r: number, c: number, val = 0) {
     (this.row = r), (this.column = c);
     for (let i = 0; i < r; ++i) {
       this.matrix[i] = new Array<number>();
@@ -65,7 +65,7 @@ class Matrix {
     if (this.row != this.column) throw new Error("The row must be equal to the column");
     for (let i = 0; i < this.row; ++i)
       for (let j = i + 1; j < this.row; ++j) {
-        let temp = this.matrix[i][j];
+        const temp = this.matrix[i][j];
         this.matrix[i][j] = this.matrix[j][i];
         this.matrix[j][i] = temp;
       }
@@ -75,7 +75,7 @@ class Matrix {
     if (this.row != this.column) throw new Error("The row must be equal to the column");
     for (let i = 0; i < this.row; ++i)
       for (let j = 0; j < this.row - i + 1; ++j) {
-        let temp = this.matrix[i][j];
+        const temp = this.matrix[i][j];
         this.matrix[i][j] = this.matrix[this.row - j + 1][this.row - i + 1];
         this.matrix[this.row - j + 1][this.row - i + 1] = temp;
       }
@@ -101,13 +101,13 @@ class Matrix {
 namespace construct {
   //**构造一个n*n的单位矩阵 */
   export function unit(n: number): Matrix {
-    let result = new Matrix(n, n);
+    const result = new Matrix(n, n);
     for (let i = 0; i < n; ++i) result.matrix[i][i] = 1;
     return result;
   }
   //**从二维数组构建矩阵 请保证下标从1开始 */
   export function fromArray(A: Array<Array<number>>): Matrix {
-    let temp = new Matrix(A.length, A[0].length);
+    const temp = new Matrix(A.length, A[0].length);
     temp.matrix = A;
     return temp;
   }
@@ -116,21 +116,21 @@ namespace operation {
   /**计算两个矩阵的和 */
   export function add(a: Matrix, b: Matrix): Matrix {
     if (a.row != b.row || a.column != b.column) throw new Error("Matrix size error");
-    let result = a;
+    const result = a;
     for (let i = 0; i < a.row; ++i) for (let j = 0; j < a.column; ++j) result.matrix[i][j] += b.matrix[i][j];
     return result;
   }
   /**计算两个矩阵的差 */
   export function sub(a: Matrix, b: Matrix): Matrix {
     if (a.row != b.row || a.column != b.column) throw new Error("Matrix size error");
-    let result = a;
+    const result = a;
     for (let i = 0; i < a.row; ++i) for (let j = 0; j < a.column; ++j) result.matrix[i][j] -= b.matrix[i][j];
     return result;
   }
   /**计算两个矩阵的乘积 */
   export function mul(a: Matrix, b: Matrix): Matrix {
     if (a.column != b.row) throw new Error("Matrix size error");
-    let result = new Matrix(a.row, b.column);
+    const result = new Matrix(a.row, b.column);
     for (let i = 0; i < a.row; ++i)
       for (let k = 0; k < a.column; ++k)
         for (let j = 0; j < b.column; ++j) result.matrix[i][j] += a.matrix[i][k] * b.matrix[k][j];

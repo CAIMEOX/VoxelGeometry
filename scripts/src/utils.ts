@@ -21,7 +21,7 @@ function BMul(p: BlockLocation, k: number): BlockLocation {
 }
 
 function now(): string {
-  let date = new Date();
+  const date = new Date();
   return ["[", date.toTimeString().slice(0, 8), "]"].join("");
 }
 
@@ -33,4 +33,10 @@ function getDistacne(p1: BlockLocation, p2: BlockLocation): number {
   return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z));
 }
 
-export { LocationAdd, Tellraw, LocationTrans, BAdd, BMul, random, getDistacne };
+function rand(): number {
+  const p = Math.random();
+  if (p > 0.5) return Math.random();
+  else return -Math.random();
+}
+
+export { LocationAdd, Tellraw, LocationTrans, rand, BAdd, BMul, random, getDistacne };

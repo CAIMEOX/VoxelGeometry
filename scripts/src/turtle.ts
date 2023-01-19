@@ -7,7 +7,7 @@ class Turtle2D {
   y: number;
   angle: number;
   thickness: number;
-  pen: boolean = true;
+  pen = true;
   stack: { x: number; y: number; angle: number; pen: boolean; thickness: number }[];
   track: Array<BlockLocation>;
   constructor() {
@@ -50,7 +50,7 @@ class Turtle2D {
   }
 
   pop() {
-    let state = this.stack.pop();
+    const state = this.stack.pop();
     if (state) {
       this.x = state.x;
       this.y = state.y;
@@ -77,7 +77,7 @@ class Turtle2D {
       if (this.thickness === 1) {
         this.track.push(new BlockLocation(x, 0, y));
       } else {
-        let r = this.thickness / 2;
+        const r = this.thickness / 2;
         for (let i = -r; i <= r; i++) {
           for (let j = -r; j <= r; j++) {
             for (let k = -r; k <= r; k++) {
@@ -92,17 +92,17 @@ class Turtle2D {
   line(x1: number, y1: number) {
     let x0 = this.x;
     let y0 = this.y;
-    var dx = Math.abs(x1 - x0);
-    var dy = Math.abs(y1 - y0);
-    var sx = x0 < x1 ? 1 : -1;
-    var sy = y0 < y1 ? 1 : -1;
-    var err = dx - dy;
+    const dx = Math.abs(x1 - x0);
+    const dy = Math.abs(y1 - y0);
+    const sx = x0 < x1 ? 1 : -1;
+    const sy = y0 < y1 ? 1 : -1;
+    let err = dx - dy;
 
-    while (true) {
+    for(;;) {
       this.dot(x0, y0);
 
       if (x0 === x1 && y0 === y1) break;
-      var e2 = 2 * err;
+      const e2 = 2 * err;
       if (e2 > -dy) {
         err -= dy;
         x0 += sx;
@@ -115,8 +115,8 @@ class Turtle2D {
   }
 
   forward(distance: number) {
-    let x = this.x + Math.round(distance * Math.cos(this.angle));
-    let y = this.y + Math.round(distance * Math.sin(this.angle));
+    const x = this.x + Math.round(distance * Math.cos(this.angle));
+    const y = this.y + Math.round(distance * Math.sin(this.angle));
     this.line(x, y);
     this.x = x;
     this.y = y;
@@ -139,7 +139,7 @@ const sin = Math.sin;
 class Turtle3D {
   pos: BlockLocation;
   // pitch: number;
-  pen: Boolean;
+  pen: boolean;
   // H x L = U
   mat: Matrix;
 
@@ -196,7 +196,7 @@ class Turtle3D {
   }
 
   makeMatrix(compass: number, vertical: number, roll: number) {
-    let m = operation.mul(this.RotateL(compass), this.RotateH(vertical));
+    const m = operation.mul(this.RotateL(compass), this.RotateH(vertical));
     return operation.mul(m, this.RotateU(roll));
   }
 
@@ -205,10 +205,10 @@ class Turtle3D {
   }
 
   getAngles(): number[] {
-    let heading: BlockLocation = this.getHeading();
-    let xz = Math.sqrt(heading.x * heading.x + heading.z * heading.z);
-    let rot = xz > 1e-9 ? Math.atan2(-heading.x, heading.z) : 0;
-    let pitch = Math.atan2(-heading.x, xz);
+    const heading: BlockLocation = this.getHeading();
+    const xz = Math.sqrt(heading.x * heading.x + heading.z * heading.z);
+    const rot = xz > 1e-9 ? Math.atan2(-heading.x, heading.z) : 0;
+    const pitch = Math.atan2(-heading.x, xz);
     return [rot * TO_DEGRESS, pitch * TO_DEGRESS];
   }
 
@@ -233,8 +233,8 @@ class Turtle3D {
   }
 
   forward(d: number) {
-    let heading = this.getHeading();
-    let newPos = put([this.pos.x + heading.x * d, this.pos.y + heading.y * d, this.pos.z + heading.z * d]);
+    const heading = this.getHeading();
+    const newPos = put([this.pos.x + heading.x * d, this.pos.y + heading.y * d, this.pos.z + heading.z * d]);
     this.track = this.track.concat(line(this.pos, newPos));
     this.pos = newPos;
   }

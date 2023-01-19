@@ -1,9 +1,10 @@
 import { BlockLocation } from "@minecraft/server";
+import { rand } from "./utils";
 
 class Point {
   x: number;
   y: number;
-  Stucked: boolean = false;
+  Stucked = false;
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
@@ -25,29 +26,32 @@ class DLASystem {
   maxWalk: number;
   iterations: number;
   step: number;
-  T: number;
+  Temperature: number;
   Walkering: Point[];
   Stucked: Point[];
+  summoner: (width: number) => number[];
 
   constructor(
     width: number,
     maxWalk: number,
     iterations: number,
     step: number,
-    T: number,
-    stuck: BlockLocation[] = []
+    Temperature: number,
+    stuck: BlockLocation[] = [],
+    summoner: (width: number) => number[] = randPoint
   ) {
     this.width = width;
     this.maxWalk = maxWalk;
     this.iterations = iterations;
-    this.T = T;
+    this.Temperature = Temperature;
     this.Walkering = [];
     this.Stucked = [];
     this.step = step;
+    this.summoner = summoner;
     if (stuck.length === 0) this.Stucked.push(new Point(0, 0));
     else this.Stucked = stuck.map((v) => new Point(v.x, v.z));
     while (this.Walkering.length < maxWalk) {
-      this.Walkering.push(randPoint(this.width));
+      this.Walkering.push(toPoint(randPoint(this.width)));
     }
   }
 
@@ -67,23 +71,17 @@ class DLASystem {
         }
         this.Walkering = this.Walkering.filter((v) => v.Stucked === false);
       }
-      while (this.Walkering.length < this.maxWalk && this.T > 1) {
-        this.Walkering.push(randPoint(this.width));
-        this.T *= 0.995;
+      while (this.Walkering.length < this.maxWalk && this.Temperature > 1) {
+        this.Walkering.push(toPoint(randPoint(this.width)));
+        this.Temperature *= 0.995;
       }
     }
     return this.Stucked.map((v) => new BlockLocation(Math.round(v.x), 0, Math.round(v.y)));
   }
 }
 
-function rand(): number {
-  let p = Math.random();
-  if (p > 0.5) return Math.random();
-  else return -Math.random();
-}
-
-function randPoint(width: number): Point {
-  return new Point(rand() * (width / 2), rand() * (width / 2));
+function randPoint(width: number): number[] {
+  return [rand() * (width / 2), rand() * (width / 2)];
 }
 
 function distance(a: Point, b: Point): number {
@@ -94,16 +92,21 @@ function checkStuck(a: Point, b: Point, step: number): boolean {
   return distance(a, b) < 1.8 * step;
 }
 
-function DLA(
+function toPoint(arr: number[]): Point {
+  return new Point(arr[0], arr[1]);
+}
+
+function DLA2D(
   width: number,
   maxWalk: number,
   iterations: number,
   step: number,
-  T: number,
-  stuck: BlockLocation[] = []
+  Temperature: number,
+  stuck: BlockLocation[] = [],
+  summoner: (width: number) => number[] = randPoint
 ): BlockLocation[] {
-  const sys = new DLASystem(width, maxWalk, iterations, step, T, stuck);
+  const sys = new DLASystem(width, maxWalk, iterations, step, Temperature, stuck, summoner);
   return sys.run();
 }
 
-export { DLA };
+export { DLA2D };

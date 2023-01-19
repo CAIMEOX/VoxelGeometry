@@ -1,8 +1,8 @@
 import { BlockLocation } from "@minecraft/server";
 
-function expression(expr: string, start: number, end: number, step: number = 1, k: number): BlockLocation[] {
+function expression(expr: string, start: number, end: number, step = 1, k: number): BlockLocation[] {
   if (start > end) [start, end] = [end, start];
-  let result: BlockLocation[] = [];
+  const result: BlockLocation[] = [];
   const f = new Function("x", "y", "z", `return ${expr}`);
   for (let x = start; x <= end; x += step)
     for (let y = start; y <= end; y += step)

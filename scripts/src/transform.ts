@@ -1,19 +1,19 @@
-import { Block, BlockLocation } from "@minecraft/server";
+import { BlockLocation } from "@minecraft/server";
 import { construct, operation } from "./lineamp";
 
 function embed(base: BlockLocation[], target: BlockLocation[]) {
-  let xT: Map<number, Map<number, void>> = new Map();
+  const xT: Map<number, Map<number, void>> = new Map();
   base.forEach((v) => {
     if (!xT.has(v.x)) xT.set(v.x, new Map());
-    xT.get(v.x)!.set(v.z);
+    xT.get(v.x)?.set(v.z);
   });
-  return target.filter((v) => xT.has(v.x) && xT.get(v.x)!.has(v.z));
+  return target.filter((v) => xT.has(v.x) && xT.get(v.x)?.has(v.z));
 }
 
 // Swap The Direction of the Structure
 function swap(v: BlockLocation[], d1: number, d2: number): BlockLocation[] {
   return v.map((b) => {
-    let k = view(b);
+    const k = view(b);
     [k[d1], k[d2]] = [k[d2], k[d1]];
     return put(k);
   });
@@ -45,7 +45,7 @@ function P(x: number, y: number, z: number): BlockLocation {
 
 // Create a Tile
 function duplicate(n: number): BlockLocation[] {
-  let r: BlockLocation[] = [];
+  const r: BlockLocation[] = [];
   for (let x = -n; x < n; ++x) {
     for (let y = -n; y < n; ++y) {
       for (let z = -n; z < n; ++z) {
@@ -71,7 +71,7 @@ function center(b: BlockLocation[]): BlockLocation {
   return blockFromFloat((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2);
 }
 
-function move(b: BlockLocation[], x: number = 0, y: number = 0, z: number = 0): BlockLocation[] {
+function move(b: BlockLocation[], x = 0, y = 0, z = 0): BlockLocation[] {
   return b.map((k) => new BlockLocation(x + k.x, y + k.y, z + k.z));
 }
 
@@ -88,11 +88,11 @@ function array_gen(
   xn: number,
   yn: number,
   zn: number,
-  dx: number = 1,
-  dy: number = 1,
-  dz: number = 1
+  dx = 1,
+  dy = 1,
+  dz = 1
 ): BlockLocation[] {
-  let r: BlockLocation[] = [];
+  const r: BlockLocation[] = [];
   for (let x = 1; x < xn; ++x) {
     for (let y = 1; y < yn; ++y) {
       for (let z = 1; z < zn; ++z) {
@@ -111,7 +111,7 @@ function array_gen_fn(
   dy: (a: number) => number,
   dz: (a: number) => number
 ): BlockLocation[] {
-  let r: BlockLocation[] = [];
+  const r: BlockLocation[] = [];
   for (let x = 1; x < xn; ++x) {
     for (let y = 1; y < yn; ++y) {
       for (let z = 1; z < zn; ++z) {
@@ -123,15 +123,15 @@ function array_gen_fn(
 }
 
 function rotate(v: BlockLocation[], angle: number) {
-  let R_y = construct.fromArray([
+  const R_y = construct.fromArray([
     [Math.cos(angle), 0, Math.sin(angle)],
     [0, 1, 0],
     [-Math.sin(angle), 0, Math.cos(angle)],
   ]);
 
   return v.map((b) => {
-    let m = construct.fromArray([[b.x], [b.y], [b.z]]);
-    let r = operation.mul(R_y, m).getVector(0);
+    const m = construct.fromArray([[b.x], [b.y], [b.z]]);
+    const r = operation.mul(R_y, m).getVector(0);
     return r;
   });
 }

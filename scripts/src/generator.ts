@@ -5,7 +5,7 @@ import { put } from "./transform";
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
 
 function sphere(radius: number, inner_radius: number): BlockLocation[] {
-  let result: BlockLocation[] = [];
+  const result: BlockLocation[] = [];
   for (let x = -radius; x <= radius; x++) {
     for (let y = -radius; y <= radius; y++) {
       for (let z = -radius; z <= radius; z++) {
@@ -19,7 +19,7 @@ function sphere(radius: number, inner_radius: number): BlockLocation[] {
 }
 
 function circle(radius: number, inner_radius: number): BlockLocation[] {
-  let result: BlockLocation[] = [];
+  const result: BlockLocation[] = [];
   for (let x = -radius; x <= radius; x++) {
     for (let z = -radius; z <= radius; z++) {
       if (x * x + z * z <= radius * radius && x * x + z * z >= inner_radius * inner_radius) {
@@ -31,14 +31,14 @@ function circle(radius: number, inner_radius: number): BlockLocation[] {
 }
 
 function torus(radius: number, ringRadius: number): BlockLocation[] {
-  let result: BlockLocation[] = [];
+  const result: BlockLocation[] = [];
   for (let x = -radius - ringRadius; x <= radius + ringRadius; x++) {
     for (let z = -radius - ringRadius; z <= radius + ringRadius; z++) {
-      let xz_distance = Math.sqrt(x * x + z * z);
+      const xz_distance = Math.sqrt(x * x + z * z);
       if (xz_distance > 0) {
-        let rx = (x / xz_distance) * ringRadius;
-        let rz = (z / xz_distance) * ringRadius;
-        let rd = Math.sqrt(x - rx) + Math.sqrt(z - rz);
+        const rx = (x / xz_distance) * ringRadius;
+        const rz = (z / xz_distance) * ringRadius;
+        const rd = Math.sqrt(x - rx) + Math.sqrt(z - rz);
         for (let y = -radius - ringRadius; y <= radius + ringRadius; y++) {
           if (rd + z * z <= radius * radius) {
             result.push(new BlockLocation(x, y, z));
@@ -52,12 +52,12 @@ function torus(radius: number, ringRadius: number): BlockLocation[] {
 
 // https://replit.com/@Michael_Nicol/Bresenhams-Algorithm#index.js
 const line = (p1: BlockLocation, p2: BlockLocation) => {
-  let [x1, y1, z1] = [p1.x, p1.y, p1.z];
-  let [x2, y2, z2] = [p2.x, p2.y, p2.z];
+  const [x1, y1, z1] = [p1.x, p1.y, p1.z];
+  const [x2, y2, z2] = [p2.x, p2.y, p2.z];
   let dy = y2 - y1;
   let dx = x2 - x1;
   let dz = z2 - z1;
-  let qChange = [dx < 0 ? -1 : 1, dy < 0 ? -1 : 1, dz < 0 ? -1 : 1];
+  const qChange = [dx < 0 ? -1 : 1, dy < 0 ? -1 : 1, dz < 0 ? -1 : 1];
   dx = Math.abs(dx);
   dy = Math.abs(dy);
   dz = Math.abs(dz);
@@ -69,16 +69,16 @@ const line = (p1: BlockLocation, p2: BlockLocation) => {
   } else {
     largestChange = 2;
   }
-  let largestTarget = Math.max(dy, dx, dz);
-  let startAxis = largestChange === 1 ? y1 : largestChange === 0 ? x1 : z1;
+  const largestTarget = Math.max(dy, dx, dz);
+  const startAxis = largestChange === 1 ? y1 : largestChange === 0 ? x1 : z1;
   let x = x1;
   let y = y1;
   let z = z1;
-  let points: BlockLocation[] = [];
+  const points: BlockLocation[] = [];
   let rx = 0;
   let ry = 0;
   let rz = 0;
-  let endCoord = qChange[largestChange] === 1 ? startAxis + largestTarget : startAxis - largestTarget;
+  const endCoord = qChange[largestChange] === 1 ? startAxis + largestTarget : startAxis - largestTarget;
   for (let i = startAxis; qChange[largestChange] === 1 ? i <= endCoord : i >= endCoord; i += qChange[largestChange]) {
     if (largestChange === 0) {
       if (ry >= dx) {
@@ -127,7 +127,7 @@ const line = (p1: BlockLocation, p2: BlockLocation) => {
 };
 
 function turtle(actions: string) {
-  let lsys = new LSystem(actions, {});
+  const lsys = new LSystem(actions, {});
   return lsys.runProc();
 }
 
