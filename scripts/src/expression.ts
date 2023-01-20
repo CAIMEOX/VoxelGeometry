@@ -10,4 +10,5 @@ function expression(expr: string, start: number, end: number, step = 1, k: numbe
         if (f(x, y, z)) result.push(new BlockLocation(Math.trunc(k * x), Math.trunc(k * y), Math.trunc(k * z)));
   return result;
 }
+
 export { expression };

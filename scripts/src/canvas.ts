@@ -473,7 +473,6 @@ function calcSortedIntersections(lines: string | any[], y: number) {
 function pathToLines(path: any[]) {
   const lines: Line[] = [];
   let curr: Point | null = null;
-
   path.forEach(function (cmd: any[]) {
     if (cmd[0] == PATH_COMMAND.MOVE) {
       curr = cmd[1];
