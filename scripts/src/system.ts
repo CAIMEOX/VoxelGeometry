@@ -14,6 +14,7 @@ import {
   ItemStack,
   EntityInventoryComponent,
 } from "@minecraft/server";
+import { ModalFormData, ModalFormResponse } from "@minecraft/server-ui";
 // @ts-ignore
 import * as PureEval from "./pureeval/PureEval.js";
 import { Sandbox } from "./command";
@@ -62,11 +63,13 @@ export default class System {
     place: this.placeMode,
     brush: this.bursh,
     say: this.tellraw,
+    code: this.codeEditor,
     getpos: () => {
       this.setPosition(this.getPlayerPosition());
     },
   };
   callbacks: { [key: string]: (a: any) => void } = {};
+  savedCode = "";
   // callbacks: { [key: string]: Function } = {};
   constructor() {
     this.config = {
@@ -76,6 +79,9 @@ export default class System {
       dimension: world.getDimension("overworld"),
       env: {},
     };
+    for (const p of this.config.dimension.getPlayers({ closest: 5 })) {
+      this.config.player = p;
+    }
     this.evaluator = new Sandbox(this.funcs);
     this.evaluator.updateEnv(this.config);
   }
@@ -88,11 +94,15 @@ export default class System {
   // Subscribe
 
   subscribe() {
+    world.events.itemUse.subscribe((eventData) => {
+      if (eventData.item.typeId === "minecraft:blaze_rod") {
+        this.codeEditor(this.config.player!);
+      }
+    });
     world.events.beforeChat.subscribe((eventData: BeforeChatEvent) => {
-      const Player = eventData.sender;
-      if (this.config.player === null) this.config.player = Player;
+      const player = eventData.sender;
+      if (this.config.player === null) this.config.player = player;
       const Chat = eventData.message;
-
       if (Chat.startsWith("-")) {
         eventData.cancel = true;
         const script = Chat.substring(1).trim();
@@ -116,11 +126,38 @@ export default class System {
       }
     });
 
-    world.events.blockPlace.subscribe((eventData) => {});
+    world.events.blockPlace.subscribe(() => {});
   }
 
   // Code editor : For long script editing
-  codeEditor() {}
+  codeEditor(player: Player) {
+    const m = new ModalFormData();
+    m.title("Voxel Geometry");
+    m.textField("Console", "code here", this.savedCode);
+    m.show(player).then((v: ModalFormResponse) => {
+      if (!v.canceled) {
+        v.formValues?.forEach((v: string) => {
+          this.savedCode = v;
+          this.evaluator.updateEnv({
+            callbacks: this.callbacks,
+            setBlock: this.setBlock,
+            config: this.config,
+            player: player,
+          });
+          try {
+            const result = this.evaluator.eval(v);
+            if (result) {
+              this.tellraw(`>> §e${result}`);
+            } else {
+              this.tellraw(`>> §eSuccess`);
+            }
+          } catch (e) {
+            this.tellraw(`>> §4${e}`);
+          }
+        });
+      }
+    });
+  }
 
   // World Action
   fill(blockType: BlockType, begin: BlockLocation, end: BlockLocation) {
@@ -179,7 +216,7 @@ export default class System {
           includePassableBlocks: true,
         };
         const block = eventData.source.getBlockFromViewVector(opt);
-        if (block != undefined) {
+        if (block != undefined && eventData.item.typeId === "minecraft:stick") {
           const pos = block.location;
           this.plot(blocks, pos);
         }
@@ -226,7 +263,7 @@ export default class System {
   }
 
   getItemInHand(): ItemStack {
-    const playerComp: EntityInventoryComponent = this.config.player!.getComponent(
+    const playerComp: EntityInventoryComponent = this.config.player?.getComponent(
       "inventory"
     ) as EntityInventoryComponent;
     return playerComp.container.getItem(this.config.player!.selectedSlot);
