@@ -38,24 +38,12 @@ interface varObject {
   define: [start: number, end: number, step: number];
 }
 
-//https://github.com/PureEval/PureEval/blob/main/src/iterate.js
-function __boom(args: any[][]): any[] {
-  let now = args.shift().map((x) => [x]),
-    upper: any[][] = [];
-  args.forEach((v) => {
-    v.forEach((u) => now.forEach((x) => upper.push([...x, u])));
-    now = [...upper];
-    upper = [];
-  });
-  return now;
-}
-
 function expression(exprx: string, expry: string, exprz: string, ...vars: varObject[]): BlockLocation[] {
   const arg: string[] = vars.map((v) => v.name);
   const funs: Function[] = vars.map((v) => new Function(v.varname, `return ${v.expr}`));
   const summoner: number[][] = vars.map((v) => {
     const [start, end, step] = v.define;
-    return new Array((end - start) / step).fill(start).map((v, i) => start + i * step);
+    return new Array(Math.floor((end - start) / step)).fill(start).map((v, i) => start + i * step);
   });
   const [costx, costy, costz] = [
     new Function(...arg, `return ${exprx}`),
@@ -66,6 +54,18 @@ function expression(exprx: string, expry: string, exprz: string, ...vars: varObj
     const values = funs.map((f, i) => f(v[i]));
     return new BlockLocation(costx(...values), costy(...values), costz(...values));
   });
+}
+
+//https://github.com/PureEval/PureEval/blob/main/src/iterate.js
+function __boom(args: any[][]): any[] {
+  let now = args.shift().map((x) => [x]),
+    upper: any[][] = [];
+  args.forEach((v) => {
+    v.forEach((u) => now.forEach((x) => upper.push([...x, u])));
+    now = [...upper];
+    upper = [];
+  });
+  return now;
 }
 
 export { simpleEquation, equation, expression };
