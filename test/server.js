@@ -9,7 +9,7 @@ import * as D from "./turtle.js";
 import * as L from "./lsystem.js";
 import { DLA2D } from "./DLA2D.js";
 import { DLA3D } from "./DLA3D.js";
-import { IFS } from "./ifs.js";
+import { create_IFS } from "./ifs.js";
 
 class BlockLocation {
   constructor(x, y, z) {
@@ -22,6 +22,7 @@ class BlockLocation {
 function hilbert(n) {
   let tt = new D.Turtle3D();
   let sys = new L.LSystem("X", { X: "^<XF^<XFX+F^>>XFX&F->>XFX+F>X+>" });
+  sys.generate(n);
   let go = () => {
     tt.forward(3);
   };
