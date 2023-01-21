@@ -52,7 +52,7 @@ function parametric(exprx: string, expry: string, exprz: string, ...vars: varObj
   ];
   return __boom(summoner).map((v) => {
     const values = funs.map((f, i) => f(v[i]));
-    return new BlockLocation(costx(...values), costy(...values), costz(...values));
+    return new BlockLocation(Math.round(costx(...values)), Math.round(costy(...values)), Math.round(costz(...values)));
   });
 }
 
