@@ -78,7 +78,7 @@ class DLASystem {
         this.Temperature *= 0.995;
       }
     }
-    return this.Stucked.map((v) => new BlockLocation(Math.round(v.x), Math.round(v.y), Math.round(v.z)));
+    return this.Stucked.map((v) => new BlockLocation(v.x, v.y, v.z));
   }
 }
 
