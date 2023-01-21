@@ -1,4 +1,6 @@
-# Voxel Geometry
+# <center>Voxel Geometry</center>
+
+![logo](./gallery/logo.png)
 
 Voxel Geometry is the next generation of Fast Builder (Or World Edit, But focus more on Geometry) based on Minecraft Game Test engine. It is turning complete, which supports native JavaScript grammar. If you are familiar with JavaScript , you can consider Voxel Geometry as a geometric library that effects on Minecraft world.
 
