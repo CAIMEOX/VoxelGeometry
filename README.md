@@ -14,12 +14,12 @@ A voxel represents a value on a regular grid in three-dimensional space. Geometr
 - **Expression drawing** : Constructing from math expression.
 - **Linear and Nonlinear Transform** : Mapping space into another one.
 - **Diffusion Limited Aggression** : Simulating particles undergoing a random walk due to Brownian motion cluster together to form aggregates of such particles.
-- **Markov Chains**
+- **Web Viewer**
 - **Chaos Theory**
 
 ## Installation
 
-​ For users , just simply download the mcpack file from the releases page (Not done yet).
+ For users , just simply download the mcpack file from the releases page (Not done yet).
 
 - Clone the repository:
 
@@ -38,11 +38,11 @@ A voxel represents a value on a regular grid in three-dimensional space. Geometr
 
 ### Console
 
-​ The **chat** window in the game is the **console**, you can use it to interact with Voxel Geometry. VG commands start with **-** , which supports JavaScript grammar. (We will ignore this flag in the following document.)
+ The **chat** window in the game is the **console**, you can use it to interact with Voxel Geometry. VG commands start with **-** , which supports JavaScript grammar. (We will ignore this flag in the following document.)
 
 ### Space
 
-​ Many Voxel Geometry functions will return a **Space** (A array of 3D vectors, or Block Location).
+ Many Voxel Geometry functions will return a **Space** (A array of 3D vectors, or Block Location).
 
 ### Grammar
 
@@ -56,7 +56,7 @@ function(arg1, arg2, ...)
 
 #### Variable
 
-​ Define a var:
+ Define a var:
 
 ```javascript
 let name = value;
@@ -64,11 +64,11 @@ let name = value;
 
 ## Effect
 
-​ Most function in Voxel Geometry is pure function (A function has no side effects), which means it **can not** do anything on Minecraft world. Only a part of function has the ability to affect the Minecraft world.
+ Most function in Voxel Geometry is pure function (A function has no side effects), which means it **can not** do anything on Minecraft world. Only a part of function has the ability to affect the Minecraft world.
 
 ### Plot
 
-​ Most functions return Space, but this wont affect the world, you should use the function **plot** to "map" the Space into Minecraft world.
+ Most functions return Space, but this wont affect the world, you should use the function **plot** to "map" the Space into Minecraft world.
 
 ```javascript
 plot(Space)
@@ -77,7 +77,7 @@ plot(sphere(5, 4)) # Generate a hollow sphere
 
 ### Get Position
 
-​ Use the function **getpos** can get player's position and set it as the mapping **origin** of the **plot**.
+ Use the function **getpos** can get player's position and set it as the mapping **origin** of the **plot**.
 
 ### Brush
 
@@ -107,7 +107,7 @@ If you are tired with using the chat window to execute your command. You can hol
 
 ### Sphere
 
-​ Create a sphere with radius.
+ Create a sphere with radius.
 
 ```haskell
 sphere :: (radius, inner_radius) -> Space
@@ -116,7 +116,7 @@ plot(sphere(5, 4))
 
 ### Circle
 
-​ Create a circle with radius.
+ Create a circle with radius.
 
 ```haskell
 circle :: (radius, inner_radius) -> Space
@@ -125,7 +125,7 @@ plot(circle(5, 4))
 
 ### Torus
 
-​ Create a torus.
+ Create a torus.
 
 ```haskell
 torus :: (radius, ring_radius) -> Space
@@ -136,7 +136,7 @@ plot(torus(10,8))
 
 ### scale
 
-​ Scale up a Space
+ Scale up a Space
 
 ```haskell
 scale :: (Space, size) -> Space
@@ -152,7 +152,7 @@ swap :: (Space, number, number) -> Space
 
 ### pipe
 
-​ Take the point of the previous space as the origin of the next space.
+ Take the point of the previous space as the origin of the next space.
 
 ```haskell
 pipe :: (Space_1, Space_2, ...) -> Space
@@ -160,7 +160,7 @@ pipe :: (Space_1, Space_2, ...) -> Space
 
 ### diffusion
 
-​ Spread out points of a space by a factor.
+ Spread out points of a space by a factor.
 
 ```haskell
 diffusion :: (Space, factor) -> Space
@@ -168,7 +168,7 @@ diffusion :: (Space, factor) -> Space
 
 ### move
 
-​ Move a space into a specific point.
+ Move a space into a specific point.
 
 ```haskell
 move :: (Space, x, y, z) -> Space
@@ -176,7 +176,7 @@ move :: (Space, x, y, z) -> Space
 
 ### embed
 
-​ Embed a space into another space
+ Embed a space into another space
 
 ```haskell
 embed :: (Space, Space) -> Space
@@ -184,7 +184,7 @@ embed :: (Space, Space) -> Space
 
 ### Array Generator
 
-​ Construct a discrete set of points.
+ Construct a discrete set of points.
 
 ```haskell
 array_gen :: (xn, yn, zn, dx, dy, dz) -> Space
@@ -193,7 +193,7 @@ array_gen :: (xn, yn, zn, dx, dy, dz) -> Space
 - \_n : Count
 - d\_ : Interval
 
-​ With step function:
+ With step function:
 
 ```haskell
 array_gen_fn :: (xn, yn, zn, num -> num, num -> num, num -> num) -> Space
@@ -216,7 +216,7 @@ plot(t.getTrack());
 
 ### Turtle3D
 
-Same as Turtle3D but lives in 3D space.
+Same as Turtle2D but lives in 3D space.
 
 ## L-System
 
@@ -286,8 +286,25 @@ plot(simple_equation("x*x+y*y+z*z<=5", -5, 5, 1));
 
 Simulating particles undergoing a random walk due to Brownian motion cluster together to form aggregates of such particles.
 
+### DLA2D
+
 ```haskell
-DLA :: (width, maxWalk, iterations, stepLength, temperature, stuckSpace) -> Space
+DLA2D :: (width, maxWalk, iterations, stepLength, temperature, stuckSpace = centerPoint) -> Space
+```
+
+- width : Width of operation space.
+- maxWalk : Maximum number of particles that can exist simultaneously.
+- iterations : Determine how many times before each particle supplement.
+- stepLength : Step size of particles.
+- temperature : The temperature of the iterative system will gradually decrease, which is related to the number of subsequent replenishment points.
+- stuckSpace : A collection of particles that have been fixed at the beginning.
+
+### DLA3D
+
+Same as DLA2D but lives in 3D space.
+
+```haskell
+DLA3D :: (width, maxWalk, iterations, stepLength, temperature, stuckSpace = centerPoint) -> Space
 ```
 
 ## Iterated Function System
@@ -316,3 +333,25 @@ Here is a classic to try:
 // Create an IFS with Fractals.angle, 100000 iteration
 plot(create_IFS(Fractals.angle, 100, 100).run(100000));
 ```
+
+## Web Viewer
+
+In order to make testing more convenient, we wrote a Web Viewer based on  [three.js](https://threejs.org/).
+
+If you want to run it, please ensure the following two conditions:
+
+- Node.js LTS
+
+- TypeScript and gulp
+
+Next, you can enter `gulp build` in the project root directory to construct the VG code body.
+
+Then, enter the test folder and perform the following operations:
+
+``` bash
+npm i
+node server.js // Here is console and the server of web page.
+npm run web // Web page runs on https://localhost:16384.
+```
+
+You can normally use various functions in the Web Viewer without using `polt`. In particular, you can also use `clear` to clear the placed blocks.
