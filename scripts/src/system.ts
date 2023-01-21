@@ -19,41 +19,32 @@ import { ModalFormData, ModalFormResponse } from "@minecraft/server-ui";
 import * as PureEval from "./pureeval/PureEval.js";
 import { Sandbox } from "./command";
 import { expression } from "./expression";
-import { circle, sphere, line, torus, turtle } from "./generator";
-import { scale, rotate, swap, embed, move, center, moveCenter, moveTo } from "./transform";
+import * as Generator from "./generator";
+import * as Transform from "./transform";
 import * as LSystem from "./lsystem";
 import { LocationTrans, Tellraw } from "./utils";
 import { DLA2D } from "./DLA2D.js";
 import { DLA3D } from "./DLA3D.js";
-export type Config = {
+
+interface Setting {
   block: BlockType;
   origin: BlockLocation;
-  player: Player | null;
-  dimension: Dimension;
-  env: object;
-};
+  brush: string;
+  console: string;
+}
 
 export default class System {
-  config: Config;
+  operator: Player | null = null;
   evaluator: Sandbox;
+  dimension: Dimension;
+  setting: Setting;
   // eslint-disable-next-line @typescript-eslint/ban-types
   funcs: { [key: string]: Function } = {
     // Pure
-    circle,
-    sphere,
-    line,
-    torus,
-    turtle,
+    ...Generator,
     expression,
     // Transform
-    scale,
-    rotate,
-    center,
-    moveCenter,
-    moveTo,
-    swap,
-    embed,
-    move,
+    ...Transform,
     DLA2D,
     DLA3D,
     ...PureEval,
@@ -68,27 +59,28 @@ export default class System {
       this.setPosition(this.getPlayerPosition());
     },
   };
-  callbacks: { [key: string]: (a: any) => void } = {};
+  callbacks: { [key: string]: (arg: any) => void } = {};
   savedCode = "";
   // callbacks: { [key: string]: Function } = {};
   constructor() {
-    this.config = {
-      block: MinecraftBlockTypes.ironBlock,
+    this.setting = {
+      block: MinecraftBlockTypes.stainedGlass,
       origin: new BlockLocation(0, 0, 0),
-      player: null,
-      dimension: world.getDimension("overworld"),
-      env: {},
+      brush: "minecraft:stick",
+      console: "minecraft:blaze_rod",
     };
-    for (const p of this.config.dimension.getPlayers({ closest: 5 })) {
-      this.config.player = p;
+    this.dimension = world.getDimension("overworld");
+    for (const p of this.dimension.getPlayers({ closest: 5 })) {
+      this.operator = p;
     }
     this.evaluator = new Sandbox(this.funcs);
-    this.evaluator.updateEnv(this.config);
+    this.evaluator.updateEnv(this.setting);
   }
 
   run() {
     this.subscribe();
     this.boardcast("System initialized");
+    this.watch_dog();
   }
 
   // Subscribe
@@ -96,12 +88,12 @@ export default class System {
   subscribe() {
     world.events.itemUse.subscribe((eventData) => {
       if (eventData.item.typeId === "minecraft:blaze_rod") {
-        this.codeEditor(this.config.player!);
+        this.codeEditor(this.operator!);
       }
     });
     world.events.beforeChat.subscribe((eventData: BeforeChatEvent) => {
       const player = eventData.sender;
-      if (this.config.player === null) this.config.player = player;
+      if (this.operator === null) this.operator = player;
       const Chat = eventData.message;
       if (Chat.startsWith("-")) {
         eventData.cancel = true;
@@ -110,7 +102,7 @@ export default class System {
         this.evaluator.updateEnv({
           callbacks: this.callbacks,
           setBlock: this.setBlock,
-          config: this.config,
+          config: this.setting,
           player: Player,
         });
         try {
@@ -141,7 +133,7 @@ export default class System {
           this.evaluator.updateEnv({
             callbacks: this.callbacks,
             setBlock: this.setBlock,
-            config: this.config,
+            config: this.setting,
             player: player,
           });
           try {
@@ -165,13 +157,13 @@ export default class System {
     for (let x = xFrom; x <= xTo; ++x) {
       for (let y = yFrom; y <= yTo; ++y) {
         for (let z = zFrom; z <= zTo; ++z) {
-          this.config.dimension.getBlock(new BlockLocation(x, y, z)).setType(blockType);
+          this.dimension.getBlock(new BlockLocation(x, y, z)).setType(blockType);
         }
       }
     }
   }
 
-  plot(blocks: BlockLocation[], pos = this.config.origin, tile = this.config.block): void {
+  plot(blocks: BlockLocation[], pos = this.setting.origin, tile = this.setting.block): void {
     blocks.forEach((block) => {
       this.setBlock(tile, new BlockLocation(block.x + pos.x, block.y + pos.y, block.z + pos.z));
     });
@@ -179,12 +171,12 @@ export default class System {
 
   setBlocks(blockType: BlockType, blocks: BlockLocation[]) {
     blocks.forEach((block) => {
-      this.config.dimension.getBlock(block).setType(blockType);
+      this.dimension.getBlock(block).setType(blockType);
     });
   }
 
   setBlock(block: BlockType, pos: BlockLocation) {
-    this.config.dimension.getBlock(pos).setType(block);
+    this.dimension.getBlock(pos).setType(block);
   }
 
   placeMode(blocks: BlockLocation[] = []): void {
@@ -241,32 +233,30 @@ export default class System {
   // Info :
 
   tellraw(...message: string[]) {
-    this.config.dimension.runCommandAsync(Tellraw(this.config.player!.name, ...message.map((m) => `§6${m}`)));
+    this.dimension.runCommandAsync(Tellraw(this.operator!.name, ...message.map((m) => `§6${m}`)));
   }
 
   boardcast(...message: string[]) {
-    this.config.dimension.runCommandAsync(Tellraw("@a", ...message.map((m) => `§e${m}`)));
+    this.dimension.runCommandAsync(Tellraw("@a", ...message.map((m) => `§e${m}`)));
   }
 
   getPlayerPosition(): BlockLocation {
-    return LocationTrans(this.config.player!.location);
+    return LocationTrans(this.operator!.location);
   }
 
   getBlock(pos: BlockLocation): BlockType {
-    return this.config.dimension.getBlock(pos).type;
+    return this.dimension.getBlock(pos).type;
   }
 
   // Modify config
 
   setPosition(pos: BlockLocation) {
-    this.config.origin = pos;
+    this.setting.origin = pos;
   }
 
   getItemInHand(): ItemStack {
-    const playerComp: EntityInventoryComponent = this.config.player?.getComponent(
-      "inventory"
-    ) as EntityInventoryComponent;
-    return playerComp.container.getItem(this.config.player!.selectedSlot);
+    const playerComp: EntityInventoryComponent = this.operator?.getComponent("inventory") as EntityInventoryComponent;
+    return playerComp.container.getItem(this.operator!.selectedSlot);
   }
 
   // Watch Dog
