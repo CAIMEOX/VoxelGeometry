@@ -38,6 +38,24 @@ interface varObject {
   define: [start: number, end: number, step: number];
 }
 
+function parametric(exprx: string, expry: string, exprz: string, ...vars: varObject[]): BlockLocation[] {
+  const arg: string[] = vars.map((v) => v.name);
+  const funs: Function[] = vars.map((v) => new Function(v.varname, `return ${v.expr}`));
+  const summoner: number[][] = vars.map((v) => {
+    const [start, end, step] = v.define;
+    return new Array(Math.floor((end - start) / step)).fill(start).map((v, i) => start + i * step);
+  });
+  const [costx, costy, costz] = [
+    new Function(...arg, `return ${exprx}`),
+    new Function(...arg, `return ${expry}`),
+    new Function(...arg, `return ${exprz}`),
+  ];
+  return __boom(summoner).map((v) => {
+    const values = funs.map((f, i) => f(v[i]));
+    return new BlockLocation(costx(...values), costy(...values), costz(...values));
+  });
+}
+
 //https://github.com/PureEval/PureEval/blob/main/src/iterate.js
 function __boom(args: any[][]): any[] {
   // @ts-ignore
@@ -51,25 +69,7 @@ function __boom(args: any[][]): any[] {
   return now;
 }
 
-function parametric(exprx: string, expry: string, exprz: string, ...vars: varObject[]): BlockLocation[] {
-  const arg: string[] = vars.map((v) => v.name);
-  const funs: Function[] = vars.map((v) => new Function(v.varname, `return ${v.expr}`));
-  const summoner: number[][] = vars.map((v) => {
-    const [start, end, step] = v.define;
-    return new Array((end - start) / step).fill(start).map((v, i) => start + i * step);
-  });
-  const [costx, costy, costz] = [
-    new Function(...arg, `return ${exprx}`),
-    new Function(...arg, `return ${expry}`),
-    new Function(...arg, `return ${exprz}`),
-  ];
-  return __boom(summoner).map((v) => {
-    const values = funs.map((f, i) => f(v[i]));
-    return new BlockLocation(costx(...values), costy(...values), costz(...values));
-  });
-}
-
-type Interval = number | string;
+type Interval = string | number;
 
 function simple_parametric(exprx: string, expry: string, exprz: string, ...intervals: Interval[][]): BlockLocation[] {
   const vars: varObject[] = intervals.map((v) => {
@@ -83,8 +83,22 @@ function simple_parametric(exprx: string, expry: string, exprz: string, ...inter
   return parametric(exprx, expry, exprz, ...vars);
 }
 
-function ellipse(a: number, b: number): BlockLocation[] {
-  return simple_parametric(a.toString() + "*Math.cos(t)", "1", b.toString() + "*Math.cos(t)", ["t", 0, Math.PI * 2]);
+function ellipse(a: number, b: number, step: number): BlockLocation[] {
+  return simple_parametric(a.toString() + "*Math.cos(t)", "1", b.toString() + "*Math.sin(t)", [
+    "t",
+    0,
+    Math.PI * 2,
+    step,
+  ]);
 }
 
-export { simple_equation, equation, parametric, simple_parametric, ellipse };
+function helix(a: number, b: number, period: number, step: number): BlockLocation[] {
+  return simple_parametric(a.toString() + "*Math.cos(t)", b.toString() + "*t", a.toString() + "*Math.sin(t)", [
+    "t",
+    0,
+    Math.PI * 2 * period,
+    step,
+  ]);
+}
+
+export { ellipse, simple_equation, equation, parametric, simple_parametric, helix };
