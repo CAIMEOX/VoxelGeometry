@@ -1,23 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { BlockLocation } from "@minecraft/server";
 
-function simple_equation(expr: string, start: number, end: number, step = 1, k = 1): BlockLocation[] {
-  if (start > end) [start, end] = [end, start];
-  const result: BlockLocation[] = [];
-  const f = new Function("x", "y", "z", `return ${expr}`);
-  for (let x = start; x <= end; x += step)
-    for (let y = start; y <= end; y += step)
-      for (let z = start; z <= end; z += step)
-        if (f(x, y, z)) result.push(new BlockLocation(Math.trunc(k * x), Math.trunc(k * y), Math.trunc(k * z)));
-  return result;
-}
-
 function equation(
   expr: string,
   [xstart, xend, xstep]: [number, number, number],
   [ystart, yend, ystep]: [number, number, number],
-  [zstart, zend, zstep]: [number, number, number],
-  k = 1
+  [zstart, zend, zstep]: [number, number, number]
 ): BlockLocation[] {
   if (xstart > xend) [xstart, xend] = [xend, xstart];
   if (ystart > yend) [ystart, yend] = [yend, ystart];
@@ -26,9 +14,12 @@ function equation(
   const f = new Function("x", "y", "z", `return ${expr}`);
   for (let x = xstart; x <= xend; x += xstep)
     for (let y = ystart; y <= yend; y += ystep)
-      for (let z = zstart; z <= zend; z += zstep)
-        if (f(x, y, z)) result.push(new BlockLocation(Math.trunc(k * x), Math.trunc(k * y), Math.trunc(k * z)));
+      for (let z = zstart; z <= zend; z += zstep) if (f(x, y, z)) result.push(new BlockLocation(x, y, z));
   return result;
+}
+
+function simple_equation(expr: string, start: number, end: number, step = 1): BlockLocation[] {
+  return equation(expr, [start, end, step], [start, end, step], [start, end, step]);
 }
 
 interface varObject {
@@ -52,7 +43,7 @@ function parametric(exprx: string, expry: string, exprz: string, ...vars: varObj
   ];
   return __boom(summoner).map((v) => {
     const values = funs.map((f, i) => f(v[i]));
-    return new BlockLocation(Math.round(costx(...values)), Math.round(costy(...values)), Math.round(costz(...values)));
+    return new BlockLocation(costx(...values), costy(...values), costz(...values));
   });
 }
 
@@ -101,4 +92,11 @@ function helix(a: number, b: number, period: number, step: number): BlockLocatio
   ]);
 }
 
-export { ellipse, simple_equation, equation, parametric, simple_parametric, helix };
+function knot(p: number, q: number, step: number) {
+  let x = `(Math.cos(${q}*t)+2)*Math.cos(${p}*t)`;
+  let z = `(Math.cos(${q}*t)+2)*Math.sin(${p}*t)`;
+  let y = `-Math.sin(${q}*t)`;
+  return simple_parametric(x, y, z, ["t", 0, Math.PI * 2, step]);
+}
+
+export { ellipse, knot, simple_equation, equation, parametric, simple_parametric, helix };

@@ -1,10 +1,11 @@
 import * as ws from "ws";
 import readline from "readline";
 import { stdin, stdout } from "process";
-import * as Exp from "./expression.js";
-import * as Generator from "./generator.js";
-import * as Transform from "./transform.js";
-import * as LSystem from "./lsystem.js";
+import * as E from "./expression.js";
+import * as G from "./generator.js";
+import * as T from "./transform.js";
+import * as D from "./turtle.js";
+import * as L from "./lsystem.js";
 import { DLA2D } from "./DLA2D.js";
 import { DLA3D } from "./DLA3D.js";
 
@@ -15,6 +16,51 @@ class BlockLocation {
     this.z = z;
   }
 }
+
+function hilbert(n) {
+  let tt = new D.Turtle3D();
+  let sys = new L.LSystem("X", { X: "^<XF^<XFX+F^>>XFX&F->>XFX+F>X+>" });
+  let go = () => {
+    tt.forward(3);
+  };
+  sys.runProc({
+    F: go,
+    "+": () => tt.yaw(90),
+    "-": () => tt.yaw(-90),
+    "^": () => tt.pitch(90),
+    "&": () => tt.pitch(-90),
+    ">": () => tt.roll(90),
+    "<": () => tt.roll(-90),
+  });
+  return tt.getTrack();
+}
+
+function fancy_tree(depth, thickness, branchLen) {
+  let t = new D.Turtle3D();
+  function tree(depth, thickness, branchLen) {
+    if (depth <= 0 || Math.random() < 0.2) {
+      return;
+    }
+    // t.penwidth(thickness);
+    t.forward(branchLen);
+    let newThickness = thickness / 2 < 1 ? 1 : thickness / 2;
+    let newBranchLen = branchLen * 0.75 < 1 ? 1 : branchLen * 0.75;
+    for (let i = 0; i < 4; i++) {
+      t.pitch(30);
+      tree(depth - 1, newThickness, newBranchLen);
+      t.pitch(-30);
+      t.roll(90);
+    }
+    t.penUp();
+    t.backward(branchLen);
+    t.penDown();
+  }
+
+  tree(depth, thickness, branchLen);
+  return t.getTrack();
+}
+
+// console.log(s3d(3));
 
 function clifford_attractor(x, z, a, b, c, d) {
   let res = [];

@@ -98,7 +98,7 @@ class Turtle2D {
     const sy = y0 < y1 ? 1 : -1;
     let err = dx - dy;
 
-    for(;;) {
+    for (;;) {
       this.dot(x0, y0);
 
       if (x0 === x1 && y0 === y1) break;
@@ -142,7 +142,7 @@ class Turtle3D {
   pen: boolean;
   // H x L = U
   mat: Matrix;
-
+  stack: { pos: BlockLocation; mat: Matrix }[] = [];
   track: BlockLocation[];
   constructor(compass = 0, vertical = 0, roll = 0) {
     this.mat = this.makeMatrix(compass, vertical, roll);
@@ -160,6 +160,16 @@ class Turtle3D {
 
   penDown() {
     this.pen = true;
+  }
+
+  pop() {
+    const state = this.stack.pop();
+    this.pos = state!.pos;
+    this.mat = state!.mat;
+  }
+
+  push() {
+    this.stack.push({ pos: this.pos, mat: this.mat });
   }
 
   // rotation matrix
