@@ -84,14 +84,7 @@ function moveCenter(b: BlockLocation[]): BlockLocation[] {
 }
 
 // Array Generator
-function array_gen(
-  xn: number,
-  yn: number,
-  zn: number,
-  dx = 1,
-  dy = 1,
-  dz = 1
-): BlockLocation[] {
+function array_gen(xn: number, yn: number, zn: number, dx = 1, dy = 1, dz = 1): BlockLocation[] {
   const r: BlockLocation[] = [];
   for (let x = 1; x < xn; ++x) {
     for (let y = 1; y < yn; ++y) {
@@ -149,4 +142,33 @@ function pipe(...mat: BlockLocation[][]): BlockLocation[] {
   return r;
 }
 
-export { put, scale, diffusion, rotate, swap, embed, move, center, moveCenter, moveTo, pipe, array_gen, array_gen_fn };
+function reduce_pos(v: BlockLocation[]): BlockLocation[] {
+  return embed(v, v);
+}
+
+function round_pos(v: BlockLocation[]): BlockLocation[] {
+  return v.map(fmap(Math.round));
+}
+
+const fmap = (f: (arg: number) => number) => (v: BlockLocation) => {
+  return new BlockLocation(f(v.x), f(v.y), f(v.z));
+};
+
+export {
+  put,
+  fmap,
+  round_pos,
+  scale,
+  diffusion,
+  rotate,
+  swap,
+  embed,
+  move,
+  center,
+  moveCenter,
+  moveTo,
+  pipe,
+  array_gen,
+  array_gen_fn,
+  reduce_pos,
+};

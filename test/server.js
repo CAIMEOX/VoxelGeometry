@@ -4,10 +4,12 @@ import { stdin, stdout } from "process";
 import * as E from "./expression.js";
 import * as G from "./generator.js";
 import * as T from "./transform.js";
+import * as I from "./ifs.js";
 import * as D from "./turtle.js";
 import * as L from "./lsystem.js";
 import { DLA2D } from "./DLA2D.js";
 import { DLA3D } from "./DLA3D.js";
+import { IFS } from "./ifs.js";
 
 class BlockLocation {
   constructor(x, y, z) {
@@ -59,8 +61,6 @@ function fancy_tree(depth, thickness, branchLen) {
   tree(depth, thickness, branchLen);
   return t.getTrack();
 }
-
-// console.log(s3d(3));
 
 function clifford_attractor(x, z, a, b, c, d) {
   let res = [];

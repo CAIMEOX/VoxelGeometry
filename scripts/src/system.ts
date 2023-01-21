@@ -21,6 +21,7 @@ import * as Exp from "./expression";
 import * as Generator from "./generator";
 import * as Transform from "./transform";
 import * as LSystem from "./lsystem";
+import * as IFS from "./ifs";
 import { DLA2D } from "./DLA2D.js";
 import { DLA3D } from "./DLA3D.js";
 import { Sandbox } from "./command";
@@ -45,6 +46,7 @@ export default class System {
     ...Transform,
     ...PureEval,
     ...LSystem,
+    ...IFS,
     DLA2D,
     DLA3D,
     // Effect
