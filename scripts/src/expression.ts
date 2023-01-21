@@ -38,7 +38,7 @@ interface varObject {
   define: [start: number, end: number, step: number];
 }
 
-function expression(exprx: string, expry: string, exprz: string, ...vars: varObject[]): BlockLocation[] {
+function expression(exprx: string, expry: string, exprz: string, ...vars: varObject[], k = 1): BlockLocation[] {
   const arg: string[] = vars.map((v) => v.name);
   const funs: Function[] = vars.map((v) => new Function(v.varname, `return ${v.expr}`));
   const summoner: number[][] = vars.map((v) => {
@@ -52,7 +52,11 @@ function expression(exprx: string, expry: string, exprz: string, ...vars: varObj
   ];
   return __boom(summoner).map((v) => {
     const values = funs.map((f, i) => f(v[i]));
-    return new BlockLocation(costx(...values), costy(...values), costz(...values));
+    return new BlockLocation(
+      Math.round(costx(...values) * k),
+      Math.round(costy(...values) * k),
+      Math.round(costz(...values) * k)
+    );
   });
 }
 
