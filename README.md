@@ -41,7 +41,7 @@ For users , just simply download the mcpack file from the releases page (Not don
 
 ## Web Viewer (For developer)
 
-Voxel Geometry viewer (A web viewer base on [three.js](https://threejs.org/)) enables you more conveniently and efficiently debug geometric functions.
+Voxel Geometry Viewer (A web viewer base on [three.js](https://threejs.org/)) enables you more conveniently and efficiently debug geometric functions.
 
 To run it, please ensure the following two program installed:
 
