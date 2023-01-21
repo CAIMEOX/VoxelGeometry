@@ -18,7 +18,7 @@ import { ModalFormData, ModalFormResponse } from "@minecraft/server-ui";
 // @ts-ignore
 import * as PureEval from "./pureeval/PureEval.js";
 import { Sandbox } from "./command";
-import { expression } from "./expression";
+import { expression, equation, simpleEquation } from "./expression";
 import { circle, sphere, line, torus, turtle } from "./generator";
 import { scale, rotate, swap, embed, move, center, moveCenter, moveTo } from "./transform";
 import * as LSystem from "./lsystem";
@@ -45,6 +45,8 @@ export default class System {
     torus,
     turtle,
     expression,
+    equation,
+    simpleEquation,
     // Transform
     scale,
     rotate,
