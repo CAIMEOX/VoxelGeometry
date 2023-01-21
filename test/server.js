@@ -1,37 +1,13 @@
 import * as ws from "ws";
 import readline from "readline";
 import { stdin, stdout } from "process";
-import { sphere, circle, line, torus, turtle } from "./generator.js";
-import {
-  lsystem,
-  leaf,
-  triangle,
-  quadratic_gosper,
-  square_sierpinski,
-  crystal,
-  peano_curve,
-  quadratic_snowflake_square,
-  rings,
-} from "./lsystem.js";
-import { expression } from "./expression.js";
-import { Turtle3D } from "./turtle.js";
-import {
-  scale,
-  diffusion,
-  rotate,
-  swap,
-  embed,
-  move,
-  moveCenter,
-  moveTo,
-  center,
-  pipe,
-  array_gen,
-  array_gen_fn,
-} from "./transform.js";
+import * as Exp from "./expression.js";
+import * as Generator from "./generator.js";
+import * as Transform from "./transform.js";
+import * as LSystem from "./lsystem.js";
 import { DLA2D } from "./DLA2D.js";
 import { DLA3D } from "./DLA3D.js";
-import { Bitmap, Line, Point } from "./canvas.js";
+
 class BlockLocation {
   constructor(x, y, z) {
     this.x = x;

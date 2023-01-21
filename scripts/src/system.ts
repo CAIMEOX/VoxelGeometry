@@ -17,14 +17,14 @@ import {
 import { ModalFormData, ModalFormResponse } from "@minecraft/server-ui";
 // @ts-ignore
 import * as PureEval from "./pureeval/PureEval.js";
-import { Sandbox } from "./command";
-import { expression } from "./expression";
+import * as Exp from "./expression";
 import * as Generator from "./generator";
 import * as Transform from "./transform";
 import * as LSystem from "./lsystem";
-import { LocationTrans, Tellraw } from "./utils";
 import { DLA2D } from "./DLA2D.js";
 import { DLA3D } from "./DLA3D.js";
+import { Sandbox } from "./command";
+import { LocationTrans, Tellraw } from "./utils";
 
 interface Setting {
   block: BlockType;
@@ -40,15 +40,13 @@ export default class System {
   setting: Setting;
   // eslint-disable-next-line @typescript-eslint/ban-types
   funcs: { [key: string]: Function } = {
-    // Pure
     ...Generator,
-    expression,
-    // Transform
+    ...Exp,
     ...Transform,
-    DLA2D,
-    DLA3D,
     ...PureEval,
     ...LSystem,
+    DLA2D,
+    DLA3D,
     // Effect
     plot: this.plot,
     place: this.placeMode,
