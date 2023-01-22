@@ -1,0 +1,5 @@
+index.ts
+tsconfig.json
+src
+build
+src/*.ts
