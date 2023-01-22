@@ -27,8 +27,8 @@ jobs:
 
       - name: Build
         run: tsc
-        
-      - name CI
+
+      - name: CI
         run: npm ci
 
       - name: Publish
