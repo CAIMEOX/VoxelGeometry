@@ -1,8 +1,8 @@
 {
-  "name": "voxelgeometry",
+  "name": "@pureeval/voxel-geometry",
   "version": "1.0.7",
   "type": "module",
-  "description": "voxelgeometry",
+  "description": "voxel-geometry",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
