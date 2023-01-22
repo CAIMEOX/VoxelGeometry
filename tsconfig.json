@@ -7,7 +7,6 @@
        "noLib":false,
        "emitDecoratorMetadata":true,
        "experimentalDecorators":true,
-       "sourceMap":true,
        "pretty":true,
        "allowUnreachableCode":true,
        "allowUnusedLabels":true,
@@ -21,7 +20,8 @@
        "noEmitHelpers":true
     },
     "include":[ 
-       "scripts/**/*"
+       "index.ts",
+       "src/*"
     ],
     "exclude":[ 
       //  "node_modules"
