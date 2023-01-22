@@ -31,9 +31,13 @@ jobs:
         gulp build
         node release
 
+    - name: Provide release version
+      id: release_version
+      run: echo "release_version=$(cat version)"  >> $GITHUB_OUTPUT
+
     - name: Publish
       uses: softprops/action-gh-release@v1
       with:
         files: VoxelGeometry.mcpack
-        tag_name : stream
+        tag_name : v${{ steps.release_version.outputs.release_version }}
 
