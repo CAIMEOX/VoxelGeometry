@@ -29,12 +29,8 @@ jobs:
       run: |
         npm install
         gulp build
-
-    - name: Zip
-      uses: montudor/action-zip@v1
-      with:
-        args: "zip -r VoxelGeometry.zip build/behavior_packs/gen/*"
-      
+        node release
+        
     - name: Publish
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
