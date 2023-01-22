@@ -2,7 +2,7 @@ name: gt-release
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "gt" ]
     paths :
       - "behavior_packs/gen/manifest.json"
 
