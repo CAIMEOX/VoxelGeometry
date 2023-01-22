@@ -28,10 +28,6 @@ jobs:
       - name: Build
         run: tsc
 
-      - name: CI
-        run: npm ci
-
       - name: Publish
         run: npm publish
-        env: 
-          Node_AUTH_TOKEN:${{secrets.LAMPESE_PUSSY}}
+        env: NODE_AUTH_TOKEN:${{secrets.LAMPESE_PUSSY}}
