@@ -4,7 +4,6 @@
   "type": "module",
   "productName": "voxel_geometry",
   "description": "voxel_geometry",
-  "private": true,
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
