@@ -3,7 +3,9 @@ name: core-release
 on:
   push:
     branches: [ "core" ]
-
+    paths :
+      - "package.json"
+      
 jobs:
   build:
     runs-on: ubuntu-latest
