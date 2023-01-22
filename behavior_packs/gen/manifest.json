@@ -4,7 +4,7 @@
     "name": "Voxel Geometry",
     "description": "Play with Geometry!",
     "uuid": "14e467b4-e3aa-49d3-8352-f8439fd7b2ee",
-    "version": [2, 0, 5],
+    "version": [2, 0, 6],
     "min_engine_version": [1, 19, 20]
   },
   "modules": [
