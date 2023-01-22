@@ -30,7 +30,7 @@ import { LocationTrans, Tellraw } from "./utils";
 interface Setting {
   block: BlockType;
   origin: BlockLocation;
-  brush: string;
+  brush_item: string;
   console: string;
 }
 
@@ -52,7 +52,7 @@ export default class System {
     // Effect
     plot: this.plot,
     place: this.placeMode,
-    brush: this.bursh,
+    brush: this.brush,
     say: this.tellraw,
     code: this.codeEditor,
     getpos: () => {
@@ -66,7 +66,7 @@ export default class System {
     this.setting = {
       block: MinecraftBlockTypes.stainedGlass,
       origin: new BlockLocation(0, 0, 0),
-      brush: "minecraft:stick",
+      brush_item: "minecraft:stick",
       console: "minecraft:blaze_rod",
     };
     this.dimension = world.getDimension("overworld");
@@ -79,7 +79,7 @@ export default class System {
 
   run() {
     this.subscribe();
-    this.boardcast("System initialized");
+    world.events.worldInitialize.subscribe(() => this.boardcast("Voxel Geometry :: System initialized"));
     this.watch_dog();
   }
 
@@ -87,7 +87,7 @@ export default class System {
 
   subscribe() {
     world.events.itemUse.subscribe((eventData) => {
-      if (eventData.item.typeId === "minecraft:blaze_rod") {
+      if (eventData.item.typeId === this.setting.console) {
         this.codeEditor(this.operator!);
       }
     });
@@ -102,8 +102,9 @@ export default class System {
         this.evaluator.updateEnv({
           callbacks: this.callbacks,
           setBlock: this.setBlock,
-          config: this.setting,
-          player: Player,
+          setting: this.setting,
+          operator: player,
+          dimension: this.dimension,
         });
         try {
           const result = this.evaluator.eval(script);
@@ -133,8 +134,9 @@ export default class System {
           this.evaluator.updateEnv({
             callbacks: this.callbacks,
             setBlock: this.setBlock,
-            config: this.setting,
-            player: player,
+            setting: this.setting,
+            operator: player,
+            dimension: this.dimension,
           });
           try {
             const result = this.evaluator.eval(v);
@@ -194,7 +196,7 @@ export default class System {
     }
   }
 
-  bursh(blocks: BlockLocation[] = []): void {
+  brush(blocks: BlockLocation[] = []): void {
     if (this.callbacks["brush"]) {
       const callback: (a: ItemUseEvent) => void = this.callbacks["brush"];
       world.events.itemUse.unsubscribe(callback);
@@ -208,7 +210,7 @@ export default class System {
           includePassableBlocks: true,
         };
         const block = eventData.source.getBlockFromViewVector(opt);
-        if (block != undefined && eventData.item.typeId === "minecraft:stick") {
+        if (block != undefined && eventData.item.typeId === this.setting.brush_item) {
           const pos = block.location;
           this.plot(blocks, pos);
         }
