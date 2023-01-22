@@ -34,6 +34,6 @@ jobs:
     - name: Publish
       uses: softprops/action-gh-release@v1
       with:
-        file: VoxelGeometry.mcpack
+        files: VoxelGeometry.mcpack
         tag_name : stream
 
