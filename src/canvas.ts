@@ -1,4 +1,4 @@
-import { BlockLocation } from "@minecraft/server";
+import { Vec3 } from "./vector";
 
 const PATH_COMMAND = {
   MOVE: "m",
@@ -138,8 +138,14 @@ class Transform {
     const m21 = this.matrix[0] * matrix.m[2] + this.matrix[2] * matrix.m[3];
     const m22 = this.matrix[1] * matrix.m[2] + this.matrix[3] * matrix.m[3];
 
-    const dx = this.matrix[0] * matrix.m[4] + this.matrix[2] * matrix.m[5] + this.matrix[4];
-    const dy = this.matrix[1] * matrix.m[4] + this.matrix[3] * matrix.m[5] + this.matrix[5];
+    const dx =
+      this.matrix[0] * matrix.m[4] +
+      this.matrix[2] * matrix.m[5] +
+      this.matrix[4];
+    const dy =
+      this.matrix[1] * matrix.m[4] +
+      this.matrix[3] * matrix.m[5] +
+      this.matrix[5];
 
     this.matrix[0] = m11;
     this.matrix[1] = m12;
@@ -151,13 +157,16 @@ class Transform {
   }
 
   invert() {
-    const d = 1 / (this.matrix[0] * this.matrix[3] - this.matrix[1] * this.matrix[2]);
+    const d =
+      1 / (this.matrix[0] * this.matrix[3] - this.matrix[1] * this.matrix[2]);
     const m0 = this.matrix[3] * d;
     const m1 = -this.matrix[1] * d;
     const m2 = -this.matrix[2] * d;
     const m3 = this.matrix[0] * d;
-    const m4 = d * (this.matrix[2] * this.matrix[5] - this.matrix[3] * this.matrix[4]);
-    const m5 = d * (this.matrix[1] * this.matrix[4] - this.matrix[0] * this.matrix[5]);
+    const m4 =
+      d * (this.matrix[2] * this.matrix[5] - this.matrix[3] * this.matrix[4]);
+    const m5 =
+      d * (this.matrix[1] * this.matrix[4] - this.matrix[0] * this.matrix[5]);
     this.matrix[0] = m0;
     this.matrix[1] = m1;
     this.matrix[2] = m2;
@@ -192,7 +201,7 @@ class Point {
 class Bitmap {
   width: number;
   height: number;
-  data: BlockLocation[];
+  data: Vec3[];
 
   constructor(w: number, h: number) {
     this.width = Math.floor(w);
@@ -201,7 +210,7 @@ class Bitmap {
   }
 
   dot(x: number, y: number) {
-    this.data.push(new BlockLocation(x, 0, y));
+    this.data.push(new Vec3(x, 0, y));
   }
 
   getContext() {
@@ -307,7 +316,11 @@ class Context {
   }
 
   bezierCurveTo(cp1x: any, cp1y: any, cp2x: any, cp2y: any, x: any, y: any) {
-    this._bezierCurveTo(new Point(cp1x, cp1y), new Point(cp2x, cp2y), new Point(x, y));
+    this._bezierCurveTo(
+      new Point(cp1x, cp1y),
+      new Point(cp2x, cp2y),
+      new Point(x, y)
+    );
   }
 
   _bezierCurveTo(cp1: Point, cp2: Point, pt: Point) {
@@ -317,7 +330,14 @@ class Context {
     this.path.push([PATH_COMMAND.BEZIER_CURVE, cp1, cp2, pt]);
   }
 
-  arc(x: number, y: number, rad: number, start: number, end: number, clockwise: any) {
+  arc(
+    x: number,
+    y: number,
+    rad: number,
+    start: number,
+    end: number,
+    clockwise: any
+  ) {
     function calcPoint(angle: number) {
       const px = x + Math.sin(angle) * rad;
       const py = y + Math.cos(angle) * rad;
@@ -350,7 +370,10 @@ class Context {
     pathToLines(this.path).forEach((line) => this.drawLine(line));
   }
 
-  drawLine(line: { start: { x: number; y: number }; end: { x: number; y: number } }) {
+  drawLine(line: {
+    start: { x: number; y: number };
+    end: { x: number; y: number };
+  }) {
     let x0 = Math.floor(line.start.x);
     let y0 = Math.floor(line.start.y);
     const x1 = Math.floor(line.end.x);
@@ -417,12 +440,17 @@ class Line {
     this.end = end;
   }
   getLength() {
-    return Math.sqrt(Math.pow(this.start.x - this.end.x, 2) + Math.pow(this.start.y - this.end.y, 2));
+    return Math.sqrt(
+      Math.pow(this.start.x - this.end.x, 2) +
+        Math.pow(this.start.y - this.end.y, 2)
+    );
   }
 }
 function calcQuadraticAtT(p: Point[], t: number) {
-  const x = (1 - t) * (1 - t) * p[0].x + 2 * (1 - t) * t * p[1].x + t * t * p[2].x;
-  const y = (1 - t) * (1 - t) * p[0].y + 2 * (1 - t) * t * p[1].y + t * t * p[2].y;
+  const x =
+    (1 - t) * (1 - t) * p[0].x + 2 * (1 - t) * t * p[1].x + t * t * p[2].x;
+  const y =
+    (1 - t) * (1 - t) * p[0].y + 2 * (1 - t) * t * p[1].y + t * t * p[2].y;
   return new Point(x, y);
 }
 
@@ -441,7 +469,12 @@ function calcBezierAtT(p: Point[], t: number) {
 }
 
 function calcMinimumBounds(lines: any[]) {
-  const bounds = { x: Number.MAX_VALUE, y: Number.MAX_VALUE, x2: Number.MIN_VALUE, y2: Number.MIN_VALUE };
+  const bounds = {
+    x: Number.MAX_VALUE,
+    y: Number.MAX_VALUE,
+    x2: Number.MIN_VALUE,
+    y2: Number.MIN_VALUE,
+  };
   function checkPoint(pt: { x: number; y: number }) {
     bounds.x = Math.min(bounds.x, pt.x);
     bounds.y = Math.min(bounds.y, pt.y);

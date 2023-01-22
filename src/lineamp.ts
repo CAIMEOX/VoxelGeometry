@@ -1,4 +1,4 @@
-import { BlockLocation } from "@minecraft/server";
+import { Vec3 } from "./vector";
 
 class Matrix {
   matrix: Array<Array<number>> = new Array<Array<number>>();
@@ -24,7 +24,8 @@ class Matrix {
   }
 
   swap_column(a: number, b: number): void {
-    if (a > this.column || b > this.column) throw new Error("The column is too big");
+    if (a > this.column || b > this.column)
+      throw new Error("The column is too big");
     let c: number;
     for (let i = 0; i < this.row; ++i) {
       c = this.matrix[i][a];
@@ -34,12 +35,14 @@ class Matrix {
   }
 
   map(r: number, f: (v: number) => number) {
-    for (let i = 0; i < this.column; ++i) this.matrix[r][i] = f(this.matrix[r][i]);
+    for (let i = 0; i < this.column; ++i)
+      this.matrix[r][i] = f(this.matrix[r][i]);
   }
 
   add(a: number, b: number, k: number): void {
     if (a > this.row || b > this.row) throw new Error("The row is too big");
-    for (let i = 0; i < this.column; ++i) this.matrix[b][i] += this.matrix[a][i] * k;
+    for (let i = 0; i < this.column; ++i)
+      this.matrix[b][i] += this.matrix[a][i] * k;
   }
 
   fliphorizontal(): void {
@@ -47,11 +50,13 @@ class Matrix {
   }
 
   flipvertica(): void {
-    for (let i = 0; i < this.column / 2; ++i) this.swap_column(i, this.column + 1);
+    for (let i = 0; i < this.column / 2; ++i)
+      this.swap_column(i, this.column + 1);
   }
 
   flipmdiagonal(): void {
-    if (this.row != this.column) throw new Error("The row must be equal to the column");
+    if (this.row != this.column)
+      throw new Error("The row must be equal to the column");
     for (let i = 0; i < this.row; ++i)
       for (let j = i + 1; j < this.row; ++j) {
         const temp = this.matrix[i][j];
@@ -61,7 +66,8 @@ class Matrix {
   }
 
   flipsdiagonal(): void {
-    if (this.row != this.column) throw new Error("The row must be equal to the column");
+    if (this.row != this.column)
+      throw new Error("The row must be equal to the column");
     for (let i = 0; i < this.row; ++i)
       for (let j = 0; j < this.row - i + 1; ++j) {
         const temp = this.matrix[i][j];
@@ -70,18 +76,27 @@ class Matrix {
       }
   }
 
-  getVector(row: number): BlockLocation {
-    return new BlockLocation(this.matrix[row][0], this.matrix[row][1], this.matrix[row][2]);
+  getVector(row: number): Vec3 {
+    return new Vec3(
+      this.matrix[row][0],
+      this.matrix[row][1],
+      this.matrix[row][2]
+    );
   }
 
-  getVectorCol(col: number): BlockLocation {
-    return new BlockLocation(this.matrix[0][col], this.matrix[1][col], this.matrix[2][col]);
+  getVectorCol(col: number): Vec3 {
+    return new Vec3(
+      this.matrix[0][col],
+      this.matrix[1][col],
+      this.matrix[2][col]
+    );
   }
 
   toString(): string {
     let result = "";
     for (let i = 0; i < this.row; ++i) {
-      for (let j = 0; j < this.column; ++j) result += this.matrix[i][j].toString() + " ";
+      for (let j = 0; j < this.column; ++j)
+        result += this.matrix[i][j].toString() + " ";
       result += "\n";
     }
     return result;
@@ -102,16 +117,20 @@ namespace construct {
 }
 namespace operation {
   export function add(a: Matrix, b: Matrix): Matrix {
-    if (a.row != b.row || a.column != b.column) throw new Error("Matrix size error");
+    if (a.row != b.row || a.column != b.column)
+      throw new Error("Matrix size error");
     const result = a;
-    for (let i = 0; i < a.row; ++i) for (let j = 0; j < a.column; ++j) result.matrix[i][j] += b.matrix[i][j];
+    for (let i = 0; i < a.row; ++i)
+      for (let j = 0; j < a.column; ++j) result.matrix[i][j] += b.matrix[i][j];
     return result;
   }
 
   export function sub(a: Matrix, b: Matrix): Matrix {
-    if (a.row != b.row || a.column != b.column) throw new Error("Matrix size error");
+    if (a.row != b.row || a.column != b.column)
+      throw new Error("Matrix size error");
     const result = a;
-    for (let i = 0; i < a.row; ++i) for (let j = 0; j < a.column; ++j) result.matrix[i][j] -= b.matrix[i][j];
+    for (let i = 0; i < a.row; ++i)
+      for (let j = 0; j < a.column; ++j) result.matrix[i][j] -= b.matrix[i][j];
     return result;
   }
 
@@ -120,7 +139,8 @@ namespace operation {
     const result = new Matrix(a.row, b.column);
     for (let i = 0; i < a.row; ++i)
       for (let k = 0; k < a.column; ++k)
-        for (let j = 0; j < b.column; ++j) result.matrix[i][j] += a.matrix[i][k] * b.matrix[k][j];
+        for (let j = 0; j < b.column; ++j)
+          result.matrix[i][j] += a.matrix[i][k] * b.matrix[k][j];
     return result;
   }
 
@@ -137,7 +157,8 @@ namespace operation {
   export function equal(a: Matrix, b: Matrix): boolean {
     if (a.row != b.row || a.column != b.column) return false;
     for (let i = 0; i < a.row; ++i)
-      for (let j = 0; j < a.column; ++j) if (a.matrix[i][j] != b.matrix[i][j]) return false;
+      for (let j = 0; j < a.column; ++j)
+        if (a.matrix[i][j] != b.matrix[i][j]) return false;
     return true;
   }
 }

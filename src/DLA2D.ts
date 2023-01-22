@@ -1,25 +1,23 @@
-import { BlockLocation } from "@minecraft/server";
+import { Vec3 } from "./vector";
 import { rand } from "./utils";
 
 class Point {
   x: number;
   y: number;
-  z: number;
   Stucked = false;
-  constructor(x: number, y: number, z: number) {
+  constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
-    this.z = z;
   }
   private Vary(steplength: number) {
-    return [this.x + rand() * steplength, this.y + rand() * steplength, this.z + rand() * steplength];
+    return [this.x + rand() * steplength, this.y + rand() * steplength];
   }
   Walk(width: number, steplength: number) {
-    let [tox, toy, toz] = this.Vary(steplength);
-    while (Math.abs(tox) > width / 2 || Math.abs(toy) > width / 2 || Math.abs(toz) > width / 2) {
-      [tox, toy, toz] = this.Vary(steplength);
+    let [tox, toy] = this.Vary(steplength);
+    while (Math.abs(tox) > width / 2 || Math.abs(toy) > width / 2) {
+      [tox, toy] = this.Vary(steplength);
     }
-    [this.x, this.y, this.z] = [tox, toy, toz];
+    [this.x, this.y] = [tox, toy];
   }
 }
 
@@ -39,7 +37,7 @@ class DLASystem {
     iterations: number,
     step: number,
     Temperature: number,
-    stuck: BlockLocation[] = [],
+    stuck: Vec3[] = [],
     summoner: (width: number) => number[] = randPoint
   ) {
     this.width = width;
@@ -50,14 +48,14 @@ class DLASystem {
     this.Stucked = [];
     this.step = step;
     this.summoner = summoner;
-    if (stuck.length === 0) this.Stucked.push(new Point(0, 0, 0));
-    else this.Stucked = stuck.map((v) => new Point(v.x, v.y, v.z));
+    if (stuck.length === 0) this.Stucked.push(new Point(0, 0));
+    else this.Stucked = stuck.map((v) => new Point(v.x, v.z));
     while (this.Walkering.length < maxWalk) {
-      this.Walkering.push(toPoint(this.summoner(this.width)));
+      this.Walkering.push(toPoint(randPoint(this.width)));
     }
   }
 
-  run(): BlockLocation[] {
+  run(): Vec3[] {
     while (this.Walkering.length) {
       for (let i = 1; i <= this.iterations; ++i) {
         for (let j = 0; j < this.Walkering.length; ++j) {
@@ -74,20 +72,20 @@ class DLASystem {
         this.Walkering = this.Walkering.filter((v) => v.Stucked === false);
       }
       while (this.Walkering.length < this.maxWalk && this.Temperature > 1) {
-        this.Walkering.push(toPoint(this.summoner(this.width)));
+        this.Walkering.push(toPoint(randPoint(this.width)));
         this.Temperature *= 0.995;
       }
     }
-    return this.Stucked.map((v) => new BlockLocation(v.x, v.y, v.z));
+    return this.Stucked.map((v) => new Vec3(v.x, 0, v.y));
   }
 }
 
 function randPoint(width: number): number[] {
-  return [rand() * (width / 2), rand() * (width / 2), rand() * (width / 2)];
+  return [rand() * (width / 2), rand() * (width / 2)];
 }
 
 function distance(a: Point, b: Point): number {
-  return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z);
+  return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 }
 
 function checkStuck(a: Point, b: Point, step: number): boolean {
@@ -95,20 +93,28 @@ function checkStuck(a: Point, b: Point, step: number): boolean {
 }
 
 function toPoint(arr: number[]): Point {
-  return new Point(arr[0], arr[1], arr[2]);
+  return new Point(arr[0], arr[1]);
 }
 
-function DLA3D(
+function DLA2D(
   width: number,
   maxWalk: number,
   iterations: number,
   step: number,
   Temperature: number,
-  stuck: BlockLocation[] = [],
+  stuck: Vec3[] = [],
   summoner: (width: number) => number[] = randPoint
-): BlockLocation[] {
-  const sys = new DLASystem(width, maxWalk, iterations, step, Temperature, stuck, summoner);
+): Vec3[] {
+  const sys = new DLASystem(
+    width,
+    maxWalk,
+    iterations,
+    step,
+    Temperature,
+    stuck,
+    summoner
+  );
   return sys.run();
 }
 
-export { DLA3D };
+export { DLA2D };

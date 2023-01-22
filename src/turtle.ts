@@ -1,4 +1,4 @@
-import { BlockLocation } from "@minecraft/server";
+import { Vec3 } from "./vector";
 import { construct, Matrix, operation } from "./lineamp";
 import { put } from "./transform";
 import { line } from "./generator";
@@ -8,8 +8,14 @@ class Turtle2D {
   angle: number;
   thickness: number;
   pen = true;
-  stack: { x: number; y: number; angle: number; pen: boolean; thickness: number }[];
-  track: Array<BlockLocation>;
+  stack: {
+    x: number;
+    y: number;
+    angle: number;
+    pen: boolean;
+    thickness: number;
+  }[];
+  track: Array<Vec3>;
   constructor() {
     this.x = 0;
     this.y = 0;
@@ -62,7 +68,7 @@ class Turtle2D {
 
   goto(x: number, y: number) {
     if (this.pen) {
-      this.track.push(new BlockLocation(this.x, 0, this.y));
+      this.track.push(new Vec3(this.x, 0, this.y));
     }
     this.x = x;
     this.y = y;
@@ -75,13 +81,13 @@ class Turtle2D {
   dot(x: number, y: number) {
     if (this.pen) {
       if (this.thickness === 1) {
-        this.track.push(new BlockLocation(x, 0, y));
+        this.track.push(new Vec3(x, 0, y));
       } else {
         const r = this.thickness / 2;
         for (let i = -r; i <= r; i++) {
           for (let j = -r; j <= r; j++) {
             for (let k = -r; k <= r; k++) {
-              this.track.push(new BlockLocation(x + i, k, y + j));
+              this.track.push(new Vec3(x + i, k, y + j));
             }
           }
         }
@@ -126,7 +132,7 @@ class Turtle2D {
     this.forward(-distance);
   }
 
-  getTrack(): BlockLocation[] {
+  getTrack(): Vec3[] {
     return this.track;
   }
 }
@@ -137,19 +143,19 @@ const cos = Math.cos;
 const sin = Math.sin;
 
 class Turtle3D {
-  pos: BlockLocation;
+  pos: Vec3;
   // pitch: number;
   pen: boolean;
   // H x L = U
   mat: Matrix;
-  stack: { pos: BlockLocation; mat: Matrix }[] = [];
-  track: BlockLocation[];
+  stack: { pos: Vec3; mat: Matrix }[] = [];
+  track: Vec3[];
   constructor(compass = 0, vertical = 0, roll = 0) {
     this.mat = this.makeMatrix(compass, vertical, roll);
     this.pen = true;
     this.track = [];
 
-    this.pos = new BlockLocation(0, 0, 0);
+    this.pos = new Vec3(0, 0, 0);
     this.mat = operation.mul(this.RotateL(0.1), this.RotateH(0));
   }
 
@@ -202,7 +208,7 @@ class Turtle3D {
   }
 
   goto(x: number, y: number, z: number) {
-    this.pos = new BlockLocation(x, y, z);
+    this.pos = new Vec3(x, y, z);
   }
 
   makeMatrix(compass: number, vertical: number, roll: number) {
@@ -210,12 +216,12 @@ class Turtle3D {
     return operation.mul(m, this.RotateU(roll));
   }
 
-  getHeading(): BlockLocation {
+  getHeading(): Vec3 {
     return this.mat.getVectorCol(2);
   }
 
   getAngles(): number[] {
-    const heading: BlockLocation = this.getHeading();
+    const heading: Vec3 = this.getHeading();
     const xz = Math.sqrt(heading.x * heading.x + heading.z * heading.z);
     const rot = xz > 1e-9 ? Math.atan2(-heading.x, heading.z) : 0;
     const pitch = Math.atan2(-heading.x, xz);
@@ -244,7 +250,11 @@ class Turtle3D {
 
   forward(d: number) {
     const heading = this.getHeading();
-    const newPos = put([this.pos.x + heading.x * d, this.pos.y + heading.y * d, this.pos.z + heading.z * d]);
+    const newPos = put([
+      this.pos.x + heading.x * d,
+      this.pos.y + heading.y * d,
+      this.pos.z + heading.z * d,
+    ]);
     this.track = this.track.concat(line(this.pos, newPos));
     this.pos = newPos;
   }
@@ -253,7 +263,7 @@ class Turtle3D {
     this.forward(-d);
   }
 
-  getTrack(): BlockLocation[] {
+  getTrack(): Vec3[] {
     return this.track;
   }
 }

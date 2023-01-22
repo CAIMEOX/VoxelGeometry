@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
-import { BlockLocation } from "@minecraft/server";
+import { Vec3 } from "./vector";
 import { Turtle2D } from "./turtle";
 
 export class LSystem {
@@ -7,7 +6,11 @@ export class LSystem {
   rules: { [key: string]: string };
   env: { [key: string]: any } = {};
   symbols: string[];
-  constructor(axioms: string, rules: { [key: string]: string }, symbols: string[] = []) {
+  constructor(
+    axioms: string,
+    rules: { [key: string]: string },
+    symbols: string[] = []
+  ) {
     this.axiom = axioms;
     this.rules = rules;
     this.symbols = symbols;
@@ -39,7 +42,7 @@ export class LSystem {
     this.env[key] = v;
   }
 
-  runProc(proc: { [key: string]: Function } = {}): BlockLocation[] {
+  runProc(proc: { [key: string]: Function } = {}): Vec3[] {
     const t = new Turtle2D();
     const a: number = this.env["angle"];
 
@@ -74,14 +77,14 @@ function lsystem(
   rules: { [key: string]: string },
   generation = 1,
   angle = Math.PI / 2
-): BlockLocation[] {
+): Vec3[] {
   const lsys = new LSystem(axiom, rules);
   lsys.setEnv("angle", angle);
   lsys.generate(generation);
   return lsys.runProc();
 }
 
-function leaf(n: number): BlockLocation[] {
+function leaf(n: number): Vec3[] {
   return lsystem(
     "a",
     {
@@ -95,7 +98,7 @@ function leaf(n: number): BlockLocation[] {
   );
 }
 
-function triangle(n: number): BlockLocation[] {
+function triangle(n: number): Vec3[] {
   return lsystem(
     "F+F+F",
     {
@@ -106,7 +109,7 @@ function triangle(n: number): BlockLocation[] {
   );
 }
 
-function quadratic_gosper(n: number): BlockLocation[] {
+function quadratic_gosper(n: number): Vec3[] {
   return lsystem(
     "-YF",
     {
@@ -117,7 +120,7 @@ function quadratic_gosper(n: number): BlockLocation[] {
   );
 }
 
-function square_sierpinski(n: number): BlockLocation[] {
+function square_sierpinski(n: number): Vec3[] {
   return lsystem(
     "F+XF+F+XF",
     {
@@ -127,7 +130,7 @@ function square_sierpinski(n: number): BlockLocation[] {
   );
 }
 
-function crystal(n: number): BlockLocation[] {
+function crystal(n: number): Vec3[] {
   return lsystem(
     "F+F+F+F",
     {
@@ -137,7 +140,7 @@ function crystal(n: number): BlockLocation[] {
   );
 }
 
-function peano_curve(n: number): BlockLocation[] {
+function peano_curve(n: number): Vec3[] {
   return lsystem(
     "X",
     {
@@ -148,7 +151,7 @@ function peano_curve(n: number): BlockLocation[] {
   );
 }
 
-function quadratic_snowflake_square(n: number): BlockLocation[] {
+function quadratic_snowflake_square(n: number): Vec3[] {
   return lsystem(
     "FF+FF+FF+FF",
     {
@@ -158,7 +161,7 @@ function quadratic_snowflake_square(n: number): BlockLocation[] {
   );
 }
 
-function rings(n: number): BlockLocation[] {
+function rings(n: number): Vec3[] {
   return lsystem(
     "F+F+F+F",
     {

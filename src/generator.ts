@@ -1,16 +1,19 @@
-import { BlockLocation } from "@minecraft/server";
+import { Vec3 } from "./vector";
 import { LSystem } from "./lsystem";
 import { put } from "./transform";
 
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
 
-function sphere(radius: number, inner_radius: number): BlockLocation[] {
-  const result: BlockLocation[] = [];
+function sphere(radius: number, inner_radius: number): Vec3[] {
+  const result: Vec3[] = [];
   for (let x = -radius; x <= radius; x++) {
     for (let y = -radius; y <= radius; y++) {
       for (let z = -radius; z <= radius; z++) {
-        if (x * x + y * y + z * z <= radius * radius && x * x + y * y + z * z >= inner_radius * inner_radius) {
-          result.push(new BlockLocation(x, y, z));
+        if (
+          x * x + y * y + z * z <= radius * radius &&
+          x * x + y * y + z * z >= inner_radius * inner_radius
+        ) {
+          result.push(new Vec3(x, y, z));
         }
       }
     }
@@ -18,20 +21,23 @@ function sphere(radius: number, inner_radius: number): BlockLocation[] {
   return result;
 }
 
-function circle(radius: number, inner_radius: number): BlockLocation[] {
-  const result: BlockLocation[] = [];
+function circle(radius: number, inner_radius: number): Vec3[] {
+  const result: Vec3[] = [];
   for (let x = -radius; x <= radius; x++) {
     for (let z = -radius; z <= radius; z++) {
-      if (x * x + z * z <= radius * radius && x * x + z * z >= inner_radius * inner_radius) {
-        result.push(new BlockLocation(x, 0, z));
+      if (
+        x * x + z * z <= radius * radius &&
+        x * x + z * z >= inner_radius * inner_radius
+      ) {
+        result.push(new Vec3(x, 0, z));
       }
     }
   }
   return result;
 }
 
-function torus(radius: number, ringRadius: number): BlockLocation[] {
-  const result: BlockLocation[] = [];
+function torus(radius: number, ringRadius: number): Vec3[] {
+  const result: Vec3[] = [];
   for (let x = -radius - ringRadius; x <= radius + ringRadius; x++) {
     for (let z = -radius - ringRadius; z <= radius + ringRadius; z++) {
       const xz_distance = Math.sqrt(x * x + z * z);
@@ -41,7 +47,7 @@ function torus(radius: number, ringRadius: number): BlockLocation[] {
         const rd = Math.sqrt(x - rx) + Math.sqrt(z - rz);
         for (let y = -radius - ringRadius; y <= radius + ringRadius; y++) {
           if (rd + z * z <= radius * radius) {
-            result.push(new BlockLocation(x, y, z));
+            result.push(new Vec3(x, y, z));
           }
         }
       }
@@ -51,7 +57,7 @@ function torus(radius: number, ringRadius: number): BlockLocation[] {
 }
 
 // https://replit.com/@Michael_Nicol/Bresenhams-Algorithm#index.js
-const line = (p1: BlockLocation, p2: BlockLocation) => {
+const line = (p1: Vec3, p2: Vec3) => {
   const [x1, y1, z1] = [p1.x, p1.y, p1.z];
   const [x2, y2, z2] = [p2.x, p2.y, p2.z];
   let dy = y2 - y1;
@@ -74,12 +80,19 @@ const line = (p1: BlockLocation, p2: BlockLocation) => {
   let x = x1;
   let y = y1;
   let z = z1;
-  const points: BlockLocation[] = [];
+  const points: Vec3[] = [];
   let rx = 0;
   let ry = 0;
   let rz = 0;
-  const endCoord = qChange[largestChange] === 1 ? startAxis + largestTarget : startAxis - largestTarget;
-  for (let i = startAxis; qChange[largestChange] === 1 ? i <= endCoord : i >= endCoord; i += qChange[largestChange]) {
+  const endCoord =
+    qChange[largestChange] === 1
+      ? startAxis + largestTarget
+      : startAxis - largestTarget;
+  for (
+    let i = startAxis;
+    qChange[largestChange] === 1 ? i <= endCoord : i >= endCoord;
+    i += qChange[largestChange]
+  ) {
     if (largestChange === 0) {
       if (ry >= dx) {
         ry -= dx;

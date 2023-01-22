@@ -1,6 +1,6 @@
 {
   "name": "voxel_geometry",
-  "version": "0.2.0",
+  "version": "2.0.0",
   "productName": "voxel_geometry",
   "description": "voxel_geometry",
   "private": true,
@@ -17,14 +17,20 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "@minecraft/server": "^1.1.0-beta.preview.1.19.50.22",
-    "@minecraft/server-ui": "^1.0.0-beta.preview.1.19.50.22",
     "adm-zip": "^0.5.10",
     "ws": "^8.12.0"
   },
   "scripts": {
-    "lint": "eslint . --ext .ts",
-    "enablemcloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436",
-    "enablemcpreviewloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-424268864-5579737-879501358-346833251-474568803-887069379-4040235476"
-  }
+    "lint": "eslint . --ext .ts"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CAIMEOX/VoxelGeometry.git"
+  },
+  "author": "CAIMEO,Lampese",
+  "bugs": {
+    "url": "https://github.com/CAIMEOX/VoxelGeometry/issues"
+  },
+  "homepage": "https://github.com/CAIMEOX/VoxelGeometry#readme"
 }
