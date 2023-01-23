@@ -1,7 +1,18 @@
 import * as ws from "ws";
 import readline from "readline";
 import { stdin, stdout } from "process";
-import {Vec3, Exp, Generator, Transform, LSystem, IFS, DLA2D, DLA3D, Turtle2D, Turtle3D} from '@pureeval/voxel-geometry'
+import {
+  Vec3,
+  Exp,
+  Generator,
+  Transform,
+  LSystem,
+  IFS,
+  DLA2D,
+  DLA3D,
+  Turtle2D,
+  Turtle3D,
+} from "@pureeval/voxel-geometry";
 
 function hilbert(n) {
   let tt = new Turtle3D();

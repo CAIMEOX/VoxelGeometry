@@ -13,6 +13,6 @@
     "http-server": "^14.1.1",
     "three": "^0.126.1",
     "ws": "^8.12.0",
-    "@pureeval/voxel-geometry": "1.0.8"
+    "@pureeval/voxel-geometry": "^1.0.9"
   }
 }
