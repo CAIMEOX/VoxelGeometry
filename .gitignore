@@ -2,8 +2,4 @@ node_modules
 build
 scripts/src/pureeval
 test/node_modules
-test/*
-!test/server.js
-!test/package.json
-!test/index.html
-!test/texture.png
+version

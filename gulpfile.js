@@ -1,18 +1,20 @@
 // === CONFIGURABLE VARIABLES
-const fs = require("fs");
 const bpfoldername = "gen";
 const useMinecraftPreview = false; // Whether to target the "Minecraft Preview" version of Minecraft vs. the main store version of Minecraft
 const useMinecraftDedicatedServer = false; // Whether to use Bedrock Dedicated Server - see https://www.minecraft.net/download/server/bedrock
 const dedicatedServerPath = "C:/mc/bds/1.19.0/"; // if using Bedrock Dedicated Server, where to find the extracted contents of the zip package
 
 // === END CONFIGURABLE VARIABLES
-
+const fs = require("fs");
+const zip = require("gulp-zip");
 const gulp = require("gulp");
 const ts = require("gulp-typescript");
 const del = require("del");
 const os = require("os");
 const spawn = require("child_process").spawn;
 const sourcemaps = require("gulp-sourcemaps");
+const gulpEsbuild = require("gulp-esbuild");
+const Vinyl = require("vinyl");
 
 const worldsFolderName = useMinecraftDedicatedServer ? "worlds" : "minecraftWorlds";
 
@@ -44,11 +46,50 @@ function copy_resource_packs() {
   return gulp.src(["resource_packs/**/*"]).pipe(gulp.dest("build/resource_packs"));
 }
 
+function string_src(filename, string) {
+  var src = require("stream").Readable({ objectMode: true });
+  src._read = function () {
+    this.push(
+      new Vinyl({
+        cwd: "",
+        base: null,
+        path: filename,
+        contents: Buffer.from(string, "utf-8"),
+      })
+    );
+    this.push(null);
+  };
+  return src;
+}
+
+function esbuild_system() {
+  return gulp
+    .src("./build/behavior_packs/gen/scripts/main.js")
+    .pipe(
+      gulpEsbuild({
+        outfile: "main.js",
+        bundle: true,
+        external: ["@minecraft/server-ui", "@minecraft/server"],
+        format: "esm",
+      })
+    )
+    .pipe(gulp.dest("./build/scripts/"));
+}
+
+function pack_zip() {
+  return gulp.src("./build/behavior_packs/gen/**/*").pipe(zip("VoxelGeometry.mcpack")).pipe(gulp.dest("./build"));
+}
+
+function exact_version() {
+  var pkg = require("./behavior_packs/gen/manifest.json");
+  return string_src("version", pkg.header.version.join(".")).pipe(gulp.dest("./"));
+}
+
 const copy_content = gulp.parallel(copy_behavior_packs, copy_resource_packs);
 
 function compile_scripts() {
   return gulp
-    .src("scripts/**/*.ts")
+    .src("scripts/main.ts")
     .pipe(sourcemaps.init())
     .pipe(
       ts({
@@ -68,19 +109,7 @@ function compile_scripts() {
     .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts"));
 }
 
-function copy_pure_eval_js() {
-  return gulp
-    .src(["scripts/src/pureeval/PureEval.js"])
-    .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts/src/pureeval/"));
-}
-
-function copy_pure_eval() {
-  return gulp
-    .src(["scripts/src/pureeval/src/**/**"])
-    .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts/src/pureeval/src"));
-}
-
-const build = gulp.series(clean_build, copy_content, compile_scripts, copy_pure_eval, copy_pure_eval_js);
+const build = gulp.series(clean_build, copy_content, compile_scripts, esbuild_system, pack_zip, exact_version);
 
 function clean_localmc(callbackFunction) {
   if (!bpfoldername || !bpfoldername.length || bpfoldername.length < 2) {
@@ -323,6 +352,7 @@ exports.copy_resource_packs = copy_resource_packs;
 exports.compile_scripts = compile_scripts;
 exports.copy_content = copy_content;
 exports.build = build;
+exports.exact_version = exact_version;
 exports.clean_localmc = clean_localmc;
 exports.deploy_localmc = deploy_localmc;
 exports.default = gulp.series(build, deploy_localmc);
