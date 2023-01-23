@@ -1,5 +1,5 @@
-import { Vec3 } from "./vector";
-import { Turtle2D } from "./turtle";
+import { Vec3 } from "./vector.js";
+import { Turtle2D } from "./turtle.js";
 
 export class LSystem {
   axiom: string;

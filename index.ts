@@ -1,12 +1,12 @@
-import { Vec3 } from "./src/vector";
-import * as Exp from "./src/expression";
-import * as Generator from "./src/generator";
-import * as Transform from "./src/transform";
-import * as LSystem from "./src/lsystem";
-import * as IFS from "./src/ifs";
-import { Turtle2D, Turtle3D } from "./src/turtle";
-import { DLA2D } from "./src/DLA2D";
-import { DLA3D } from "./src/DLA3D";
+import { Vec3 } from "./src/vector.js";
+import * as Exp from "./src/expression.js";
+import * as Generator from "./src/generator.js";
+import * as Transform from "./src/transform.js";
+import * as LSystem from "./src/lsystem.js";
+import * as IFS from "./src/ifs.js";
+import { Turtle2D, Turtle3D } from "./src/turtle.js";
+import { DLA2D } from "./src/DLA2D.js";
+import { DLA3D } from "./src/DLA3D.js";
 export {
   Vec3,
   Exp,

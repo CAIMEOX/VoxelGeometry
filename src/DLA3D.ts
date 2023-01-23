@@ -1,5 +1,5 @@
-import { Vec3 } from "./vector";
-import { rand } from "./utils";
+import { Vec3 } from "./vector.js";
+import { rand } from "./utils.js";
 
 class Point {
   x: number;

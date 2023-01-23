@@ -1,4 +1,4 @@
-import { Vec3 } from "./vector";
+import { Vec3 } from "./vector.js";
 
 function BAdd(p1: Vec3, p2: Vec3): Vec3 {
   return new Vec3(p1.x + p2.x, p1.y + p2.y, p2.z + p2.z);

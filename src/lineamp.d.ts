@@ -1,4 +1,4 @@
-import { Vec3 } from "./vector";
+import { Vec3 } from "./vector.js";
 declare class Matrix {
     matrix: Array<Array<number>>;
     row: number;
