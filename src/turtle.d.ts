@@ -1,5 +1,5 @@
-import { Vec3 } from "./vector";
-import { Matrix } from "./lineamp";
+import { Vec3 } from "./vector.js";
+import { Matrix } from "./lineamp.js";
 declare class Turtle2D {
     x: number;
     y: number;

@@ -1,6 +1,6 @@
-import { Vec3 } from "./vector";
-import { LSystem } from "./lsystem";
-import { put } from "./transform";
+import { Vec3 } from "./vector.js";
+import { LSystem } from "./lsystem.js";
+import { put } from "./transform.js";
 
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
 

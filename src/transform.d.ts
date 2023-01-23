@@ -1,4 +1,4 @@
-import { Vec3 } from "./vector";
+import { Vec3 } from "./vector.js";
 declare function embed(base: Vec3[], target: Vec3[]): Vec3[];
 declare function swap(v: Vec3[], d1: number, d2: number): Vec3[];
 declare function put(k: number[]): Vec3;

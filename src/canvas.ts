@@ -1,4 +1,4 @@
-import { Vec3 } from "./vector";
+import { Vec3 } from "./vector.js";
 
 const PATH_COMMAND = {
   MOVE: "m",

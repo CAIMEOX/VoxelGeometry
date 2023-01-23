@@ -3,7 +3,7 @@
        "target":"es2020",
        "moduleResolution":"node",
        "module":"es2020",
-       "declaration":false,
+       "declaration":true,
        "noLib":false,
        "emitDecoratorMetadata":true,
        "experimentalDecorators":true,
@@ -15,7 +15,6 @@
        "noImplicitUseStrict":false,
        "outDir":"./",
        "rootDir": ".",
-       "baseUrl":"behavior_packs/",
        "listFiles":false,
        "noEmitHelpers":true
     },

@@ -1,7 +1,7 @@
-import { Vec3 } from "./vector";
-import { construct, Matrix, operation } from "./lineamp";
-import { put } from "./transform";
-import { line } from "./generator";
+import { Vec3 } from "./vector.js";
+import { construct, Matrix, operation } from "./lineamp.js";
+import { put } from "./transform.js";
+import { line } from "./generator.js";
 class Turtle2D {
   x: number;
   y: number;

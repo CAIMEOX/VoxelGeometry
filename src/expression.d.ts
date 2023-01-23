@@ -1,4 +1,4 @@
-import { Vec3 } from "./vector";
+import { Vec3 } from "./vector.js";
 declare function equation(expr: string, [xstart, xend, xstep]: [number, number, number], [ystart, yend, ystep]: [number, number, number], [zstart, zend, zstep]: [number, number, number]): Vec3[];
 declare function simple_equation(expr: string, start: number, end: number, step?: number): Vec3[];
 interface varObject {

@@ -1,5 +1,5 @@
-import { Vec3 } from "./vector";
-import { construct, operation } from "./lineamp";
+import { Vec3 } from "./vector.js";
+import { construct, operation } from "./lineamp.js";
 
 function embed(base: Vec3[], target: Vec3[]) {
   const xT: Map<number, Map<number, void>> = new Map();
