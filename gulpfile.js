@@ -80,37 +80,7 @@ function copy_pure_eval() {
     .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts/src/pureeval/src"));
 }
 
-function Replace(dir) {
-  let files = fs.readdirSync(dir);
-  files.forEach((f) => {
-    try {
-      let content = fs.readFileSync("build/behavior_packs/gen/scripts/src/" + f);
-      let c = content
-        .toString()
-        .split("\n")
-        .filter((val) => !val.endsWith('"@minecraft/server";'))
-        .map((v) =>
-          v.startsWith("import") && v.endsWith('";') && !v.endsWith('.js";') ? insert(v, v.length - 2, ".js") : v
-        );
-      c.unshift(`class BlockLocation {
-          constructor(x, y, z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-          }
-        }`);
-      c = c.join("\n");
-      fs.writeFileSync("test/" + f, c);
-    } catch (e) {}
-  });
-}
-
-function load_test(fn) {
-  Replace("build/behavior_packs/gen/scripts/src");
-  fn();
-}
-
-const build = gulp.series(clean_build, copy_content, compile_scripts, copy_pure_eval, copy_pure_eval_js, load_test);
+const build = gulp.series(clean_build, copy_content, compile_scripts, copy_pure_eval, copy_pure_eval_js);
 
 function clean_localmc(callbackFunction) {
   if (!bpfoldername || !bpfoldername.length || bpfoldername.length < 2) {
