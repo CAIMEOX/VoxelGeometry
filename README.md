@@ -14,7 +14,6 @@ A voxel represents a value on a regular grid in three-dimensional space. Geometr
 - **Canvas API** : Javascript browser graphics API support.
 - **Linear and Nonlinear Transform** : Mapping space into another one.
 - **Diffusion Limited Aggression** : Simulating particles undergoing a random walk due to Brownian motion cluster together to form aggregates of such particles.
-- **Web Viewer** : Test geometric function efficiently.
 - **Chaos Theory** : Iterated Function System which uses Chaos Game.
 
 ## Application
@@ -24,6 +23,11 @@ You can check the branches for the Application of this library in Minecraft.
 - **core** : Voxel Geometry core
 - **ws** : Voxel Geometry for Minecraft Bedrock (Based on Websocket server)
 - **gt** : Voxel Geometry for Minecraft Bedrock (Based on Gametest framework)
+- **webviewer** : Voxel Geometry Web Viewer
+
+## Screenshots
+
+Check the [gallery folder](https://github.com/CAIMEOX/VoxelGeometry/tree/webviewer/gallery#readme) for more information.
 
 ## Installation
 
