@@ -1,6 +1,6 @@
 # <center>Voxel Geometry</center>
 
-![logo](./gallery/logo.png)
+![logo](https://raw.githubusercontent.com/CAIMEOX/VoxelGeometry/webviewer/gallery/logo.png)
 
 Voxel Geometry is the next generation of Fast Builder (Or World Edit, But focus more on Geometry) based on Minecraft Game Test engine. It is turning complete, which supports native JavaScript grammar. If you are familiar with JavaScript , you can consider Voxel Geometry as a geometric library that effects on Minecraft world.
 
@@ -19,7 +19,7 @@ A voxel represents a value on a regular grid in three-dimensional space. Geometr
 
 ## Screenshots
 
-Check the [gallery folder](./gallery/README.md) for more information.
+Check the [gallery folder](https://github.com/CAIMEOX/VoxelGeometry/tree/webviewer/gallery#readme) for more information.
 
 ## Installation
 
