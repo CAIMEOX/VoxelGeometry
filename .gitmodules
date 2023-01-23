@@ -1,4 +1,0 @@
- 
-[submodule "scripts/src/pureeval"]
-	path = scripts/src/pureeval
-	url = https://github.com/pureeval/pureeval

@@ -1,27 +1,11 @@
 import * as ws from "ws";
 import readline from "readline";
 import { stdin, stdout } from "process";
-import * as E from "./expression.js";
-import * as G from "./generator.js";
-import * as T from "./transform.js";
-import * as I from "./ifs.js";
-import * as D from "./turtle.js";
-import * as L from "./lsystem.js";
-import { DLA2D } from "./DLA2D.js";
-import { DLA3D } from "./DLA3D.js";
-import { create_IFS } from "./ifs.js";
-
-class BlockLocation {
-  constructor(x, y, z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-}
+import {Vec3, Exp, Generator, Transform, LSystem, IFS, DLA2D, DLA3D, Turtle2D, Turtle3D} from '@pureeval/voxel-geometry'
 
 function hilbert(n) {
-  let tt = new D.Turtle3D();
-  let sys = new L.LSystem("X", { X: "^<XF^<XFX+F^>>XFX&F->>XFX+F>X+>" });
+  let tt = new Turtle3D();
+  let sys = new LSystem("X", { X: "^<XF^<XFX+F^>>XFX&F->>XFX+F>X+>" });
   sys.generate(n);
   let go = () => {
     tt.forward(3);
@@ -39,7 +23,7 @@ function hilbert(n) {
 }
 
 function fancy_tree(depth, thickness, branchLen) {
-  let t = new D.Turtle3D();
+  let t = new Turtle3D();
   function tree(depth, thickness, branchLen) {
     if (depth <= 0 || Math.random() < 0.2) {
       return;
@@ -68,7 +52,7 @@ function clifford_attractor(x, z, a, b, c, d) {
   for (let t = 0; t < 100000; t++) {
     x = Math.sin(a * z) + c * Math.cos(a * x);
     z = Math.sin(b * x) + d * Math.cos(b * z);
-    res.push(new BlockLocation(x, 0, z));
+    res.push(new Vec3(x, 0, z));
   }
 
   return res;
