@@ -38,4 +38,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: VoxelGeometry.mcpack
-          tag_name: v${{ steps.release_version.outputs.release_version }}
+          tag_name: Minecraft BedRock ScriptAPI v${{ steps.release_version.outputs.release_version }}
