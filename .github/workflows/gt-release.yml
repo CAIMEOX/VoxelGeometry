@@ -2,8 +2,8 @@ name: gt-release
 
 on:
   push:
-    branches: [ "gt" ]
-    paths :
+    branches: ["gt"]
+    paths:
       - "behavior_packs/gen/manifest.json"
 
 jobs:
@@ -15,29 +15,27 @@ jobs:
         node-version: [19.x]
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        
-    - name: Checkout submodules
-      run: git submodule update --init --recursive
-        
-    - name: Build
-      run: |
-        npm install
-        gulp build
-        node release
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Provide release version
-      id: release_version
-      run: echo "release_version=$(cat version)"  >> $GITHUB_OUTPUT
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
 
-    - name: Publish
-      uses: softprops/action-gh-release@v1
-      with:
-        files: VoxelGeometry.mcpack
-        tag_name : v${{ steps.release_version.outputs.release_version }}
+      - name: Build
+        run: |
+          npm install
+          gulp build
 
+      - name: Provide release version
+        id: release_version
+        run: echo "release_version=$(cat version)"  >> $GITHUB_OUTPUT
+
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: VoxelGeometry.mcpack
+          tag_name: v${{ steps.release_version.outputs.release_version }}

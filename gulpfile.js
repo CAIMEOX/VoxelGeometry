@@ -77,7 +77,7 @@ function esbuild_system() {
 }
 
 function pack_zip() {
-  return gulp.src("./build/behavior_packs/gen/**/*").pipe(zip("VoxelGeometry.mcpack")).pipe(gulp.dest("./build"));
+  return gulp.src("./build/behavior_packs/gen/**/*").pipe(zip("../VoxelGeometry.mcpack")).pipe(gulp.dest("./build"));
 }
 
 function exact_version() {
