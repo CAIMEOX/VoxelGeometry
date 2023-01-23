@@ -26,4 +26,4 @@ function rand(): number {
   else return -Math.random();
 }
 
-export { rand, BAdd, BMul, random };
+export { rand, BAdd, BMul, random, getDistance };
