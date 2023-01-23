@@ -5,7 +5,6 @@ const useMinecraftDedicatedServer = false; // Whether to use Bedrock Dedicated S
 const dedicatedServerPath = "C:/mc/bds/1.19.0/"; // if using Bedrock Dedicated Server, where to find the extracted contents of the zip package
 
 // === END CONFIGURABLE VARIABLES
-const fs = require("fs");
 const zip = require("gulp-zip");
 const gulp = require("gulp");
 const ts = require("gulp-typescript");
@@ -77,7 +76,7 @@ function esbuild_system() {
 }
 
 function pack_zip() {
-  return gulp.src("./build/behavior_packs/gen/**/*").pipe(zip("VoxelGeometry.mcpack")).pipe(gulp.dest("./build"));
+  return gulp.src("./build/behavior_packs/gen/**/*").pipe(zip("VoxelGeometry.mcpack")).pipe(gulp.dest("./"));
 }
 
 function exact_version() {
