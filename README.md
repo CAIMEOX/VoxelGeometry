@@ -1,6 +1,6 @@
 # <center>Voxel Geometry</center>
 
-![logo](./gallery/logo.png)
+![logo](https://raw.githubusercontent.com/CAIMEOX/VoxelGeometry/webviewer/gallery/logo.png)
 
 Voxel Geometry is the next generation of Fast Builder (Or World Edit, But focus more on Geometry) based on Minecraft Game Test engine. It is turning complete, which supports native JavaScript grammar. If you are familiar with JavaScript , you can consider Voxel Geometry as a geometric library that effects on Minecraft world.
 
@@ -15,12 +15,11 @@ A voxel represents a value on a regular grid in three-dimensional space. Geometr
 - **Canvas API** : Javascript browser graphics API support.
 - **Linear and Nonlinear Transform** : Mapping space into another one.
 - **Diffusion Limited Aggression** : Simulating particles undergoing a random walk due to Brownian motion cluster together to form aggregates of such particles.
-- **Web Viewer** : Test geometric function efficiently.
 - **Chaos Theory** : Iterated Function System which uses Chaos Game.
 
 ## Screenshots
 
-Check the [gallery folder](./gallery/README.md) for more information.
+Check the [gallery folder](https://github.com/CAIMEOX/VoxelGeometry/tree/webviewer/gallery#readme) for more information.
 
 ## Installation
 
@@ -38,27 +37,6 @@ For users , just simply download the mcpack file from the releases page (Not don
   gulp build # Build and Load testing file for VG Viewer
   gulp # Build and deploy (Only works on windows)
   ```
-
-## Web Viewer (For developer)
-
-Voxel Geometry Viewer (A web viewer base on [three.js](https://threejs.org/)) enables you more conveniently and efficiently debug geometric functions.
-
-To run it, please ensure the following two program installed:
-
-- Node.js LTS
-- TypeScript and gulp
-
-Next, you can enter `gulp build` in the project root directory to construct the Voxel Geometry (This automatically loads the tests).
-
-Then, enter the test folder and perform the following operations:
-
-```bash
-npm i
-node server.js # Here is console and the server of web page.
-npm run web # Web page runs on https://localhost:16384.
-```
-
-You can normally use various functions in the Web Viewer without using `polt`. In particular, you can also use command `clear` to clear the placed blocks.
 
 ## Basic Concepts
 
