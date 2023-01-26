@@ -118,9 +118,9 @@ function helix(a: number, b: number, period: number, step: number): Vec3[] {
 }
 
 function knot(p: number, q: number, step: number) {
-  let x = `(Math.cos(${q}*t)+2)*Math.cos(${p}*t)`;
-  let z = `(Math.cos(${q}*t)+2)*Math.sin(${p}*t)`;
-  let y = `-Math.sin(${q}*t)`;
+  const x = `(Math.cos(${q}*t)+2)*Math.cos(${p}*t)`;
+  const z = `(Math.cos(${q}*t)+2)*Math.sin(${p}*t)`;
+  const y = `-Math.sin(${q}*t)`;
   return simple_parametric(x, y, z, ["t", 0, Math.PI * 2, step]);
 }
 
