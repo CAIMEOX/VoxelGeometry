@@ -4,8 +4,8 @@
     "name": "Voxel Geometry",
     "description": "Play with Geometry!",
     "uuid": "14e467b4-e3aa-49d3-8352-f8439fd7b2ee",
-    "version": [2, 0, 1],
-    "min_engine_version": [1, 19, 20]
+    "version": [2, 0, 2],
+    "min_engine_version": [1, 20, 0]
   },
   "modules": [
     {
@@ -20,11 +20,11 @@
   "dependencies": [
     {
       "module_name": "@minecraft/server",
-      "version": "1.1.0-beta"
+      "version": "1.4.0-beta"
     },
     {
       "module_name": "@minecraft/server-ui",
-      "version": "1.0.0-beta"
+      "version": "1.2.0-beta"
     }
   ],
   "capabilities": ["script_eval"]

@@ -19,12 +19,20 @@ const worldsFolderName = useMinecraftDedicatedServer ? "worlds" : "minecraftWorl
 
 const activeWorldFolderName = useMinecraftDedicatedServer ? "Bedrock level" : bpfoldername + "world";
 
-const mcdir = useMinecraftDedicatedServer
-  ? dedicatedServerPath
-  : os.homedir() +
-    (useMinecraftPreview
-      ? "/AppData/Local/Packages/Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe/LocalState/games/com.mojang/"
-      : "/AppData/Local/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/");
+const get_Mojang_dir = () => {
+  const homeDir = os.homedir();
+  switch (process.platform) {
+    case "win32":
+      return homeDir + useMinecraftPreview
+        ? "/AppData/Local/Packages/Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe/LocalState/games/com.mojang/"
+        : "/AppData/Local/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/";
+    case "linux":
+      return homeDir + "/.var/app/io.mrarm.mcpelauncher/data/mcpelauncher/games/com.mojang/";
+    case "android":
+      break;
+  }
+};
+const mcdir = get_Mojang_dir();
 
 function clean_build(callbackFunction) {
   del(["build/behavior_packs/", "build/resource_packs/"]).then(
@@ -63,7 +71,7 @@ function string_src(filename, string) {
 
 function esbuild_system() {
   return gulp
-    .src("./build/behavior_packs/gen/scripts/main.js")
+    .src("./build/scripts/main.js")
     .pipe(
       gulpEsbuild({
         outfile: "main.js",
@@ -72,7 +80,7 @@ function esbuild_system() {
         format: "esm",
       })
     )
-    .pipe(gulp.dest("./build/scripts/"));
+    .pipe(gulp.dest("./build/behavior_packs/gen/scripts"));
 }
 
 function pack_zip() {
@@ -88,7 +96,7 @@ const copy_content = gulp.parallel(copy_behavior_packs, copy_resource_packs);
 
 function compile_scripts() {
   return gulp
-    .src("scripts/main.ts")
+    .src("scripts/*")
     .pipe(sourcemaps.init())
     .pipe(
       ts({
@@ -105,7 +113,7 @@ function compile_scripts() {
         destPath: bpfoldername + "/scripts/",
       })
     )
-    .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts"));
+    .pipe(gulp.dest("build/scripts"));
 }
 
 const build = gulp.series(clean_build, copy_content, compile_scripts, esbuild_system, pack_zip, exact_version);

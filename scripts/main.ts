@@ -1,26 +1,21 @@
-import * as VG from "@pureeval/voxel-geometry";
-
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-empty-function */
+import * as VG from "@pureeval/voxel-geometry";
 import {
-  BeforeChatEvent,
-  world,
-  BlockLocation,
   MinecraftBlockTypes,
   BlockType,
   Player,
   Dimension,
-  BlockPlaceEvent,
-  ItemUseEvent,
   BlockRaycastOptions,
-  system,
-  ItemStack,
   Vector3,
-  EntityInventoryComponent,
+  ChatSendAfterEvent,
+  BlockPlaceAfterEvent,
+  ItemUseAfterEvent,
+  MolangVariableMap,
+  system,
 } from "@minecraft/server";
-// @ts-ignore
-import * as PE from "pureeval";
-import { ModalFormData, ModalFormResponse } from "@minecraft/server-ui";
 
+import { OVER_WORLD, events, Vec3, eq_item } from "./wrapper";
 type Space = VG.Vec3[];
 
 class Sandbox {
@@ -46,13 +41,12 @@ interface Setting {
   block: BlockType;
   origin: VG.Vec3;
   brush_item: string;
-  console: string;
 }
 
 export default class System {
   operator: Player | null = null;
   evaluator: Sandbox;
-  dimension: Dimension;
+  dimension: Dimension = OVER_WORLD;
   setting: Setting;
   // eslint-disable-next-line @typescript-eslint/ban-types
   funcs: { [key: string]: any } = {
@@ -65,10 +59,12 @@ export default class System {
     dla3d: VG.DLA3D,
     // Effect
     plot: this.plot,
+    repeat: this.repeat,
+    render: this.spawnParticles,
+    summon: this.summonEntities,
     place: this.placeMode,
     brush: this.brush,
-    say: this.tellraw,
-    code: this.codeEditor,
+    tellraw: this.tellraw,
     getpos: () => {
       this.setPosition(this.getPlayerPosition());
     },
@@ -78,12 +74,10 @@ export default class System {
   // callbacks: { [key: string]: Function } = {};
   constructor() {
     this.setting = {
-      block: MinecraftBlockTypes.stainedGlass,
+      block: MinecraftBlockTypes.ironBlock,
       origin: new VG.Vec3(0, 0, 0),
       brush_item: "minecraft:stick",
-      console: "minecraft:blaze_rod",
     };
-    this.dimension = world.getDimension("overworld");
     for (const p of this.dimension.getPlayers({ closest: 5 })) {
       this.operator = p;
     }
@@ -93,24 +87,24 @@ export default class System {
 
   run() {
     this.subscribe();
-    world.events.worldInitialize.subscribe(() => this.boardcast("Voxel Geometry :: System initialized"));
+    events.worldInitialize.subscribe(() => this.boardcast("Voxel Geometry :: System initialized"));
     this.watch_dog();
+  }
+
+  repeat(fn: () => void, interval: number, count: number) {
+    for (let i = 0; i < count; i++) {
+      system.runTimeout(fn, i * interval);
+    }
   }
 
   // Subscribe
 
   subscribe() {
-    world.events.itemUse.subscribe((eventData) => {
-      if (eventData.item.typeId === this.setting.console) {
-        this.codeEditor(this.operator!);
-      }
-    });
-    world.events.beforeChat.subscribe((eventData: BeforeChatEvent) => {
+    events.afterChat.subscribe((eventData: ChatSendAfterEvent) => {
       const player = eventData.sender;
       if (this.operator === null) this.operator = player;
       const Chat = eventData.message;
       if (Chat.startsWith("-")) {
-        eventData.cancel = true;
         const script = Chat.substring(1).trim();
         this.tellraw(`<< §3${script}`);
         this.evaluator.updateEnv({
@@ -133,47 +127,16 @@ export default class System {
       }
     });
 
-    world.events.blockPlace.subscribe(() => {});
-  }
-
-  // Code editor : For long script editing
-  codeEditor(player: Player) {
-    const m = new ModalFormData();
-    m.title("Voxel Geometry");
-    m.textField("Console", "code here", this.savedCode);
-    m.show(player).then((v: ModalFormResponse) => {
-      if (!v.canceled) {
-        v.formValues?.forEach((v: string) => {
-          this.savedCode = v;
-          this.evaluator.updateEnv({
-            callbacks: this.callbacks,
-            setBlock: this.setBlock,
-            setting: this.setting,
-            operator: player,
-            dimension: this.dimension,
-          });
-          try {
-            const result = this.evaluator.eval(v);
-            if (result) {
-              this.tellraw(`>> §e${result}`);
-            } else {
-              this.tellraw(`>> §eSuccess`);
-            }
-          } catch (e) {
-            this.tellraw(`>> §4${e}`);
-          }
-        });
-      }
-    });
+    events.blockPlace.subscribe(() => {});
   }
 
   // World Action
-  fill(blockType: BlockType, begin: BlockLocation, end: BlockLocation) {
+  fill(blockType: BlockType, begin: Vector3, end: Vector3) {
     const [xFrom, yFrom, zFrom, xTo, yTo, zTo] = [begin.x, begin.y, begin.z, end.x, end.y, end.z];
     for (let x = xFrom; x <= xTo; ++x) {
       for (let y = yFrom; y <= yTo; ++y) {
         for (let z = zFrom; z <= zTo; ++z) {
-          this.dimension.getBlock(new BlockLocation(x, y, z)).setType(blockType);
+          this.dimension.getBlock(Vec3(x, y, z))!.setType(blockType);
         }
       }
     }
@@ -181,28 +144,49 @@ export default class System {
 
   plot(blocks: Space, pos = this.setting.origin, tile = this.setting.block): void {
     blocks.forEach((block) => {
-      this.setBlock(tile, new BlockLocation(block.x + pos.x, block.y + pos.y, block.z + pos.z));
+      this.setBlock(tile, Vec3(block.x + pos.x, block.y + pos.y, block.z + pos.z));
     });
   }
 
-  setBlocks(blockType: BlockType, blocks: VG.Vec3[]) {
+  spawnParticles(space: Space, effect: string, origin = this.setting.origin) {
+    const mvm = new MolangVariableMap();
+    space.forEach((pos) => {
+      this.dimension.spawnParticle(effect, Vec3(pos.x + origin.x, pos.y + origin.y, pos.z + origin.z), mvm);
+    });
+  }
+
+  summonEntities(space: Space, entity: string, origin = this.setting.origin) {
+    space.forEach((pos) => {
+      this.dimension.spawnEntity(entity, Vec3(pos.x + origin.x, pos.y + origin.y, pos.z + origin.z));
+    });
+  }
+
+  spawnParticle(pos: Vector3, effect: string, origin = this.setting.origin) {
+    this.dimension.spawnParticle(
+      effect,
+      Vec3(pos.x + origin.x, pos.y + origin.y, pos.z + origin.z),
+      new MolangVariableMap()
+    );
+  }
+
+  setBlocks(blockType: BlockType, blocks: Vector3[]) {
     blocks.forEach((block) => {
-      this.dimension.getBlock(toPos(block)).setType(blockType);
+      this.dimension.getBlock(block)!.setType(blockType);
     });
   }
 
-  setBlock(block: BlockType, pos: BlockLocation) {
-    this.dimension.getBlock(pos).setType(block);
+  setBlock(block: BlockType, pos: Vector3) {
+    this.dimension.getBlock(pos)!.setType(block);
   }
 
   placeMode(blocks: Space = []): void {
     if (this.callbacks["place"]) {
-      const callback: (a: BlockPlaceEvent) => void = this.callbacks["place"];
-      world.events.blockPlace.unsubscribe(callback);
+      const callback: (a: BlockPlaceAfterEvent) => void = this.callbacks["place"];
+      events.blockPlace.unsubscribe(callback);
       delete this.callbacks["place"];
     }
     if (blocks.length !== 0) {
-      this.callbacks["place"] = world.events.blockPlace.subscribe((eventData) => {
+      this.callbacks["place"] = events.blockPlace.subscribe((eventData) => {
         const pos = eventData.block.location;
         const block = eventData.block.type;
         this.plot(blocks, pos, block);
@@ -212,34 +196,34 @@ export default class System {
 
   brush(blocks: Space = []): void {
     if (this.callbacks["brush"]) {
-      const callback: (a: ItemUseEvent) => void = this.callbacks["brush"];
-      world.events.itemUse.unsubscribe(callback);
+      const callback: (a: ItemUseAfterEvent) => void = this.callbacks["brush"];
+      events.itemUse.unsubscribe(callback);
       delete this.callbacks["brush"];
     }
     if (blocks.length !== 0) {
-      this.callbacks["brush"] = world.events.itemUse.subscribe((eventData) => {
+      this.callbacks["brush"] = events.itemUse.subscribe((eventData) => {
         const opt: BlockRaycastOptions = {
           maxDistance: 256,
           includeLiquidBlocks: false,
           includePassableBlocks: true,
         };
-        const block = eventData.source.getBlockFromViewVector(opt);
-        if (block != undefined && eventData.item.typeId === this.setting.brush_item) {
-          const pos = block.location;
+        const block = eventData.source.getBlockFromViewDirection(opt);
+        if (block != undefined && eq_item(eventData.itemStack, this.setting.brush_item)) {
+          const pos = block.block.location;
           this.plot(blocks, pos);
         }
       });
     }
   }
 
-  cloneArea(target: BlockLocation, begin: BlockLocation, end: BlockLocation) {
+  cloneArea(target: Vector3, begin: Vector3, end: Vector3) {
     const [xFrom, yFrom, zFrom, xTo, yTo, zTo] = [begin.x, begin.y, begin.z, end.x, end.y, end.z];
     for (let x = xFrom; x <= xTo; ++x) {
       for (let y = yFrom; y <= yTo; ++y) {
         for (let z = zFrom; z <= zTo; ++z) {
           this.setBlock(
-            this.getBlock(new BlockLocation(x, y, z)),
-            new BlockLocation(target.x + x - xFrom, target.y + y - yFrom, target.z + z - zFrom)
+            this.getBlock(Vec3(x, y, z)),
+            Vec3(target.x + x - xFrom, target.y + y - yFrom, target.z + z - zFrom)
           );
         }
       }
@@ -256,29 +240,24 @@ export default class System {
     this.dimension.runCommandAsync(Tellraw("@a", ...message.map((m) => `§e${m}`)));
   }
 
-  getPlayerPosition(): BlockLocation {
-    return LocationTrans(this.operator!.location);
+  getPlayerPosition(): Vector3 {
+    return this.operator!.location;
   }
 
-  getBlock(pos: BlockLocation): BlockType {
-    return this.dimension.getBlock(pos).type;
+  getBlock(pos: Vector3): BlockType {
+    return this.dimension.getBlock(pos)!.type;
   }
 
   // Modify config
 
-  setPosition(pos: BlockLocation) {
+  setPosition(pos: Vector3) {
     this.setting.origin = pos;
-  }
-
-  getItemInHand(): ItemStack {
-    const playerComp: EntityInventoryComponent = this.operator?.getComponent("inventory") as EntityInventoryComponent;
-    return playerComp.container.getItem(this.operator!.selectedSlot);
   }
 
   // Watch Dog
   watch_dog() {
-    system.events.beforeWatchdogTerminate.subscribe((e) => {
-      if (e.terminateReason == "hang") {
+    events.beforeWatchdogTerminate.subscribe((e) => {
+      if (e.terminateReason.toString() == "hang") {
         e.cancel = true;
       }
     });
@@ -287,18 +266,6 @@ export default class System {
 
 function Tellraw(Player: string, ...Message: string[]) {
   return `tellraw ${Player} {"rawtext":[{"text":"${now()} ${Message.join("\n")}"}]}`;
-}
-
-function toPos(v: VG.Vec3): BlockLocation {
-  return new BlockLocation(v.x, v.y, v.z);
-}
-
-function toVec(v: BlockLocation): VG.Vec3 {
-  return new VG.Vec3(v.x, v.y, v.z);
-}
-
-function LocationTrans(pos: Vector3): BlockLocation {
-  return new BlockLocation(Math.round(pos.x), Math.round(pos.y), Math.round(pos.z));
 }
 
 function now(): string {

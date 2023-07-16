@@ -9,18 +9,18 @@
     "@typescript-eslint/parser": "^5.48.2",
     "del": "^6.0.0",
     "esbuild": "^0.17.4",
-    "eslint": "^8.32.0",
+    "eslint": "^8.45.0",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "source-map": "^0.7.4",
-    "typescript": "^4.9.4"
+    "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@minecraft/server": "^1.1.0-beta.preview.1.19.50.22",
-    "@minecraft/server-ui": "^1.0.0-beta.preview.1.19.50.22",
-    "@pureeval/voxel-geometry": "^1.0.9",
+    "@minecraft/server": "^1.4.0-beta.1.20.10-stable",
+    "@minecraft/server-ui": "^1.2.0-beta.1.20.20-preview.21",
+    "@pureeval/voxel-geometry": "^1.1.0",
     "gulp-esbuild": "^0.11.0",
     "gulp-zip": "^5.1.0",
     "pureeval": "^1.3.0",
