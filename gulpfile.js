@@ -108,11 +108,6 @@ function compile_scripts() {
         noImplicitAny: true,
       })
     )
-    .pipe(
-      sourcemaps.write("../../_" + bpfoldername + "Debug", {
-        destPath: bpfoldername + "/scripts/",
-      })
-    )
     .pipe(gulp.dest("build/scripts"));
 }
 
