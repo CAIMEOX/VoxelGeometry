@@ -42,6 +42,7 @@ export class LSystem {
     this.env[key] = v;
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   runProc(proc: { [key: string]: Function } = {}): Vec3[] {
     const t = new Turtle2D();
     const a: number = this.env["angle"];

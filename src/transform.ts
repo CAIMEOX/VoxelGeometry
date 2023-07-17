@@ -27,10 +27,6 @@ function put(k: number[]) {
   return new Vec3(k[0], k[1], k[2]);
 }
 
-function blockFromFloat(x: number, y: number, z: number): Vec3 {
-  return new Vec3(Math.round(x), Math.round(y), Math.round(z));
-}
-
 function scale(v: Vec3[], size: number): Vec3[] {
   return v.flatMap((b) =>
     move(duplicate(size), b.x * size - 1, b.y * size - 1, b.z * size - 1)
@@ -70,11 +66,7 @@ function center(b: Vec3[]): Vec3 {
     zmin = Math.min(zmin, v.z);
     zmax = Math.max(zmax, v.z);
   });
-  return blockFromFloat(
-    (xmin + xmax) / 2,
-    (ymin + ymax) / 2,
-    (zmin + zmax) / 2
-  );
+  return new Vec3((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2);
 }
 
 function move(b: Vec3[], x = 0, y = 0, z = 0): Vec3[] {

@@ -11,7 +11,7 @@ class IFS {
   height: number;
   width: number;
   track: Vec3[] = [];
-  constructor(f: number[], width: number = 100, height: number = 100) {
+  constructor(f: number[], width = 100, height = 100) {
     this.width = width;
     this.height = height;
     this.readIfs(f);
@@ -31,22 +31,22 @@ class IFS {
   }
 
   run(n: number): Vec3[] {
-    for (var i = 0; i < n; i += 1) {
+    for (let i = 0; i < n; i += 1) {
       this.next();
-      let px = this.scaleX * this.x + this.offsetX;
-      let py = this.scaleY * this.y + this.offsetY;
+      const px = this.scaleX * this.x + this.offsetX;
+      const py = this.scaleY * this.y + this.offsetY;
       this.track.push(new Vec3(px, 0, py));
     }
     return this.track;
   }
 
   next() {
-    let r = Math.random();
+    const r = Math.random();
     let probabilityThreshold = 0.0;
     for (let i = 0; i < this.fractal.length; i += 1) {
-      let t = this.fractal[i];
+      const t = this.fractal[i];
       if (r <= (probabilityThreshold += t[6])) {
-        let oldx = this.x;
+        const oldx = this.x;
         this.x = t[0] * this.x + t[1] * this.y + t[4];
         this.y = t[2] * oldx + t[3] * this.y + t[5];
         return i;
