@@ -27,7 +27,10 @@
         "gametest",
         "gametests",
         "minecart",
+        "Molang",
+        "pureeval",
         "shulker",
+        "Voxel",
         "zoglin"
     ]
 }

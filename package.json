@@ -23,7 +23,7 @@
     "@pureeval/voxel-geometry": "^1.1.0",
     "gulp-esbuild": "^0.11.0",
     "gulp-zip": "^5.1.0",
-    "pureeval": "^1.3.0",
+    "pureeval-es": "^2.4.0",
     "vinyl": "^3.0.0"
   },
   "scripts": {
