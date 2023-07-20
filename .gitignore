@@ -3,3 +3,5 @@ build
 scripts/src/pureeval
 test/node_modules
 version
+.directory
+VoxelGeometry.mcpack
