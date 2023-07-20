@@ -5,3 +5,4 @@ test/node_modules
 version
 .directory
 VoxelGeometry.mcpack
+package-lock.json
