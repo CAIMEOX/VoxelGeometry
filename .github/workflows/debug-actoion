@@ -3,8 +3,6 @@ name: debug
 on:
   push:
     branches: ["gt"]
-    paths:
-      - "behavior_packs/gen/manifest.json"
 
 jobs:
   build:
