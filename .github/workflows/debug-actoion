@@ -1,0 +1,40 @@
+name: debug
+
+on:
+  push:
+    branches: ["gt"]
+    paths:
+      - "behavior_packs/gen/manifest.json"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [19.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+
+      - name: Build
+        run: |
+          cat package-lock.json
+
+      - name: Provide release version
+        id: release_version
+        run: echo "release_version=$(cat version)" >> $GITHUB_OUTPUT
+
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: VoxelGeometry.mcpack
+          tag_name: Minecraft_BedRock_ScriptAPI_v${{ steps.release_version.outputs.release_version }}
