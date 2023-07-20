@@ -25,14 +25,5 @@ jobs:
 
       - name: Build
         run: |
+          npm install
           cat package-lock.json
-
-      - name: Provide release version
-        id: release_version
-        run: echo "release_version=$(cat version)" >> $GITHUB_OUTPUT
-
-      - name: Publish
-        uses: softprops/action-gh-release@v1
-        with:
-          files: VoxelGeometry.mcpack
-          tag_name: Minecraft_BedRock_ScriptAPI_v${{ steps.release_version.outputs.release_version }}
