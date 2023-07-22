@@ -4,3 +4,6 @@ src
 build
 src/*.ts
 !src/*.d.ts
+.prettierrc
+.eslintrc
+.eslintignore
