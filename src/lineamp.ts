@@ -6,17 +6,14 @@ class Matrix {
 	column: number;
 
 	constructor(r: number, c: number, val = 0) {
-		(this.row = r), (this.column = c);
-		for (let i = 0; i < r; ++i) {
-			this.matrix[i] = new Array<number>();
-			for (let j = 0; j < c; ++j) this.matrix[i][j] = val;
-		}
+		this.row = r;
+		this.column = c;
+		this.matrix = Array.from({ length: r }, () => Array(c).fill(val));
 	}
 
 	deepCopy(): Matrix {
 		const result = new Matrix(this.row, this.column);
-		for (let i = 0; i < this.row; ++i)
-			for (let j = 0; j < this.column; ++j) result.matrix[i][j] = this.matrix[i][j];
+		result.matrix = this.matrix.map((row) => [...row]);
 		return result;
 	}
 
@@ -29,80 +26,75 @@ class Matrix {
 	}
 
 	toString(): string {
-		let result = '';
-		for (let i = 0; i < this.row; ++i) {
-			for (let j = 0; j < this.column; ++j) result += this.matrix[i][j].toString() + ' ';
-			result += '\n';
-		}
-		return result;
+		return this.matrix.map((row) => row.join(' ')).join('\n');
 	}
 }
 
 namespace trans {
 	export function transpose(M: Matrix): Matrix {
 		const result = new Matrix(M.column, M.row);
-		for (let i = 0; i < M.row; ++i)
-			for (let j = 0; j < M.column; ++j) result.matrix[j][i] = M.matrix[i][j];
+		result.matrix = M.matrix[0].map((_, i) => M.matrix.map((row) => row[i]));
 		return result;
 	}
 
 	export function swapRow(M: Matrix, a: number, b: number): Matrix {
 		if (a > M.row || b > M.row) throw new Error('The row is too big');
 		const result = M.deepCopy();
-		let c: number;
-		for (let i = 0; i < result.column; ++i) {
-			c = result.matrix[a][i];
-			result.matrix[a][i] = result.matrix[b][i];
-			result.matrix[b][i] = c;
-		}
+		[result.matrix[a], result.matrix[b]] = [result.matrix[b], result.matrix[a]];
 		return result;
 	}
 
 	export function swapColumn(M: Matrix, a: number, b: number): Matrix {
 		if (a > M.column || b > M.column) throw new Error('The column is too big');
 		const result = M.deepCopy();
-		let c: number;
-		for (let i = 0; i < result.row; ++i) {
-			c = result.matrix[i][a];
-			result.matrix[i][a] = result.matrix[i][b];
-			result.matrix[i][b] = c;
-		}
+		result.matrix.forEach((row) => {
+			[row[a], row[b]] = [row[b], row[a]];
+		});
 		return result;
 	}
 
 	export function flipHorizontal(M: Matrix): Matrix {
-		let result = M.deepCopy();
-		for (let i = 0; i < result.row / 2; ++i) result = swapRow(result, i, this.row - i + 1);
+		const result = M.deepCopy();
+		result.matrix = result.matrix.reverse();
 		return result;
 	}
 
-	export function flipVertica(M: Matrix): Matrix {
-		let result = M.deepCopy();
-		for (let i = 0; i < this.column / 2; ++i) result = swapColumn(result, i, this.column + 1);
+	export function flipVertical(M: Matrix): Matrix {
+		const result = M.deepCopy();
+		result.matrix.forEach((row) => row.reverse());
 		return result;
 	}
 
 	export function flipMdiagonal(M: Matrix): Matrix {
 		if (M.row != M.column) throw new Error('The row must be equal to the column');
 		const result = M.deepCopy();
-		for (let i = 0; i < result.row; ++i)
-			for (let j = i + 1; j < result.row; ++j) {
-				const temp = result.matrix[i][j];
-				result.matrix[i][j] = result.matrix[j][i];
-				result.matrix[j][i] = temp;
-			}
+		result.matrix.forEach((row, i) => {
+			row.forEach((_, j) => {
+				if (j > i)
+					[result.matrix[i][j], result.matrix[j][i]] = [
+						result.matrix[j][i],
+						result.matrix[i][j]
+					];
+			});
+		});
 		return result;
 	}
 
 	export function flipSdiagonal(M: Matrix): Matrix {
 		if (M.row != M.column) throw new Error('The row must be equal to the column');
 		const result = M.deepCopy();
-		for (let i = 0; i < result.row; ++i)
-			for (let j = 0; j < result.row - i + 1; ++j) {
-				const temp = result.matrix[i][j];
-				result.matrix[i][j] = result.matrix[result.row - j + 1][result.row - i + 1];
-				result.matrix[result.row - j + 1][result.row - i + 1] = temp;
-			}
+		result.matrix.forEach((row, i) => {
+			row.forEach((_, j) => {
+				if (j < result.row - i) {
+					const oppositeI = result.row - j;
+					const oppositeJ = result.row - i;
+					[result.matrix[i][j], result.matrix[oppositeI][oppositeJ]] = [
+						result.matrix[oppositeI][oppositeJ],
+						result.matrix[i][j]
+					];
+				}
+			});
+		});
 		return result;
 	}
 }
@@ -116,7 +108,7 @@ namespace cons {
 
 	export function fromArray(A: Array<Array<number>>): Matrix {
 		const temp = new Matrix(A.length, A[0].length);
-		temp.matrix = A;
+		temp.matrix = A.map((row) => [...row]);
 		return temp;
 	}
 }
@@ -124,19 +116,19 @@ namespace cons {
 namespace oper {
 	export function add(a: Matrix, b: Matrix): Matrix {
 		if (a.row != b.row || a.column != b.column) throw new Error('Matrix size error');
-		const result = new Matrix(a.row, a.column);
-		for (let i = 0; i < a.row; ++i)
-			for (let j = 0; j < a.column; ++j)
-				result.matrix[i][j] = a.matrix[i][j] + b.matrix[i][j];
+		const result = a.deepCopy();
+		result.matrix = result.matrix.map((row, i) =>
+			row.map((value, j) => value + b.matrix[i][j])
+		);
 		return result;
 	}
 
 	export function sub(a: Matrix, b: Matrix): Matrix {
 		if (a.row != b.row || a.column != b.column) throw new Error('Matrix size error');
-		const result = new Matrix(a.row, a.column);
-		for (let i = 0; i < a.row; ++i)
-			for (let j = 0; j < a.column; ++j)
-				result.matrix[i][j] = a.matrix[i][j] - b.matrix[i][j];
+		const result = a.deepCopy();
+		result.matrix = result.matrix.map((row, i) =>
+			row.map((value, j) => value - b.matrix[i][j])
+		);
 		return result;
 	}
 
@@ -150,6 +142,12 @@ namespace oper {
 		return result;
 	}
 
+	export function scala(a: Matrix, scalar: number): Matrix {
+		const result = a.deepCopy();
+		result.matrix = result.matrix.map((row) => row.map((value) => value * scalar));
+		return result;
+	}
+
 	export function pow(a: Matrix, p: number): Matrix {
 		let result = cons.unit(a.row);
 		while (p) {
@@ -160,18 +158,15 @@ namespace oper {
 		return result;
 	}
 
-	export function map(M: Matrix, r: number, f: (v: number) => number): Matrix {
+	export function map(M: Matrix, f: (v: number) => number): Matrix {
 		const result = M.deepCopy();
-		for (let i = 0; i < result.row; ++i)
-			for (let j = 0; j < result.column; ++j) result.matrix[i][j] = f(result.matrix[i][j]);
+		result.matrix = result.matrix.map((row) => row.map(f));
 		return result;
 	}
 
 	export function equal(a: Matrix, b: Matrix): boolean {
 		if (a.row != b.row || a.column != b.column) return false;
-		for (let i = 0; i < a.row; ++i)
-			for (let j = 0; j < a.column; ++j) if (a.matrix[i][j] != b.matrix[i][j]) return false;
-		return true;
+		return a.matrix.every((row, i) => row.every((value, j) => value === b.matrix[i][j]));
 	}
 }
 

@@ -127,15 +127,9 @@ function rotate(v: Vec3[], angle: number) {
 
 // Take the last output as directional vector
 function pipe(...mat: Vec3[][]): Vec3[] {
-	let r: Vec3[] = mat.shift() ?? [];
-	mat.forEach((next) => {
-		let res: Vec3[] = [];
-		r.forEach((k) => {
-			res = res.concat(move(next, k.x, k.y, k.z));
-		});
-		r = res;
-	});
-	return r;
+	return mat.reduce((r, next) => {
+		return r.flatMap((k) => move(next, k.x, k.y, k.z));
+	}, mat.shift() ?? []);
 }
 
 function reduce_pos(v: Vec3[]): Vec3[] {

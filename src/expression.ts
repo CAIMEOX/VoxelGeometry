@@ -71,14 +71,12 @@ function simple_parametric(
 	exprz: string,
 	...intervals: Interval[][]
 ): Vec3[] {
-	const vars: varObject[] = intervals.map((v) => {
-		return {
-			name: v.shift() as string,
-			varname: 'p',
-			expr: 'p',
-			define: [v[0] as number, v[1] as number, v[2] as number]
-		};
-	});
+	const vars: varObject[] = intervals.map(([name, start, end, step]) => ({
+		name: name as string,
+		varname: 'p',
+		expr: 'p',
+		define: [start as number, end as number, step as number]
+	}));
 	return parametric(exprx, expry, exprz, ...vars);
 }
 
