@@ -1,4 +1,4 @@
-import { Matrix, cons } from './lineamp.js';
+import { Matrix, fromArray } from './lineamp.js';
 
 class Vec3 {
 	x: number;
@@ -11,11 +11,11 @@ class Vec3 {
 	}
 
 	getMatrix(): Matrix {
-		return cons.fromArray([[this.x, this.y, this.z]]);
+		return fromArray([[this.x, this.y, this.z]]);
 	}
 
 	getMatrixCol(): Matrix {
-		return cons.fromArray([[this.x], [this.y], [this.z]]);
+		return fromArray([[this.x], [this.y], [this.z]]);
 	}
 
 	map(func: (x: number) => number): Vec3 {

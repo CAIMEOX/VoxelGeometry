@@ -37,7 +37,7 @@ function parametric(exprx: string, expry: string, exprz: string, ...vars: varObj
 		const [start, end, step] = v.define;
 		return new Array(Math.floor((end - start) / step))
 			.fill(start)
-			.map((v, i) => start + i * step);
+			.map((_, i) => start + i * step);
 	});
 	const [costx, costy, costz] = [
 		new Function(...arg, `return ${exprx}`),

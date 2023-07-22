@@ -1,7 +1,7 @@
 import { Vec3 } from './vector.js';
-import { cons, Matrix, oper } from './lineamp.js';
+import { Matrix, fromArray } from './lineamp.js';
 import { put } from './transform.js';
-import { line } from './generator.js';
+import { voxelLine } from './generator.js';
 class Turtle2D {
 	x: number;
 	y: number;
@@ -154,9 +154,8 @@ class Turtle3D {
 		this.mat = this.makeMatrix(compass, vertical, roll);
 		this.pen = true;
 		this.track = [];
-
 		this.pos = new Vec3(0, 0, 0);
-		this.mat = oper.mul(this.RotateL(0.1), this.RotateH(0));
+		this.mat = this.RotateL(0.1).mul(this.RotateH(0));
 	}
 
 	// Pen
@@ -182,7 +181,7 @@ class Turtle3D {
 	// rollMatrix
 	RotateU(a: number): Matrix {
 		a = a * TO_RADIANS;
-		return cons.fromArray([
+		return fromArray([
 			[cos(a), sin(a), 0],
 			[-sin(a), cos(a), 0],
 			[0, 0, 1]
@@ -191,7 +190,7 @@ class Turtle3D {
 	// yawMatrix
 	RotateL(a: number): Matrix {
 		a = a * TO_RADIANS;
-		return cons.fromArray([
+		return fromArray([
 			[cos(a), 0, -sin(a)],
 			[0, 1, 0],
 			[sin(a), 0, cos(a)]
@@ -200,7 +199,7 @@ class Turtle3D {
 	// pitchMatrix
 	RotateH(a: number): Matrix {
 		a = a * TO_RADIANS;
-		return cons.fromArray([
+		return fromArray([
 			[1, 0, 0],
 			[0, cos(a), -sin(a)],
 			[0, sin(a), cos(a)]
@@ -212,8 +211,7 @@ class Turtle3D {
 	}
 
 	makeMatrix(compass: number, vertical: number, roll: number) {
-		const m = oper.mul(this.RotateL(compass), this.RotateH(vertical));
-		return oper.mul(m, this.RotateU(roll));
+		return this.RotateL(compass).mul(this.RotateH(vertical)).mul(this.RotateU(roll));
 	}
 
 	getHeading(): Vec3 {
@@ -228,38 +226,38 @@ class Turtle3D {
 		return [rot * TO_DEGRESS, pitch * TO_DEGRESS];
 	}
 
-	roll(a: number) {
-		this.mat = oper.mul(this.mat, this.RotateU(a));
+	roll(a: number): void {
+		this.mat = this.mat.mul(this.RotateU(a));
 	}
 
-	pitch(a: number) {
-		this.mat = oper.mul(this.mat, this.RotateH(a));
+	pitch(a: number): void {
+		this.mat = this.mat.mul(this.RotateH(a));
 	}
 
-	yaw(a: number) {
-		this.mat = oper.mul(this.mat, this.RotateL(a));
+	yaw(a: number): void {
+		this.mat = this.mat.mul(this.RotateL(a));
 	}
 
-	right(a: number) {
-		this.mat = oper.mul(this.RotateL(a), this.mat);
+	right(a: number): void {
+		this.mat = this.RotateL(a).mul(this.mat);
 	}
 
-	left(a: number) {
+	left(a: number): void {
 		this.right(-a);
 	}
 
-	forward(d: number) {
+	forward(d: number): void {
 		const heading = this.getHeading();
 		const newPos = put([
 			this.pos.x + heading.x * d,
 			this.pos.y + heading.y * d,
 			this.pos.z + heading.z * d
 		]);
-		this.track = this.track.concat(line(this.pos, newPos));
+		this.track = this.track.concat(voxelLine(this.pos, newPos));
 		this.pos = newPos;
 	}
 
-	backward(d: number) {
+	backward(d: number): void {
 		this.forward(-d);
 	}
 

@@ -1,5 +1,5 @@
 import { Vec3 } from './vector.js';
-import { cons, oper } from './lineamp.js';
+import { fromArray } from './lineamp.js';
 
 function embed(base: Vec3[], target: Vec3[]) {
 	const xT: Map<number, Map<number, void>> = new Map();
@@ -112,15 +112,15 @@ function array_gen_fn(
 }
 
 function rotate(v: Vec3[], angle: number) {
-	const R_y = cons.fromArray([
+	const R_y = fromArray([
 		[Math.cos(angle), 0, Math.sin(angle)],
 		[0, 1, 0],
 		[-Math.sin(angle), 0, Math.cos(angle)]
 	]);
 
 	return v.map((b) => {
-		const m = cons.fromArray([[b.x], [b.y], [b.z]]);
-		const r = oper.mul(R_y, m).getVector(0);
+		const m = fromArray([[b.x], [b.y], [b.z]]);
+		const r = R_y.mul(m).getVector(0);
 		return r;
 	});
 }

@@ -402,11 +402,7 @@ class Context {
 		if (!this._clip) return true;
 		const ints = calcSortedIntersections(this._clip, y);
 		const left = ints.filter((inter) => inter < x);
-		if (left.length % 2 === 0) {
-			return false;
-		} else {
-			return true;
-		}
+		return left.length % 2 === 1;
 	}
 }
 class Line {
@@ -465,8 +461,7 @@ function calcMinimumBounds(lines: any[]) {
 function calcSortedIntersections(lines: string | any[], y: number) {
 	const xlist: number[] = [];
 	for (let i = 0; i < lines.length; i++) {
-		const A = lines[i].start;
-		const B = lines[i].end;
+		const [A, B] = [lines[i].start, lines[i].end];
 		if ((A.y < y && B.y >= y) || (B.y < y && A.y >= y)) {
 			const xval: number = A.x + ((y - A.y) / (B.y - A.y)) * (B.x - A.x);
 			xlist.push(xval);

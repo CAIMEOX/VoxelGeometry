@@ -54,7 +54,7 @@ function torus(radius: number, ringRadius: number): Vec3[] {
 }
 
 // https://replit.com/@Michael_Nicol/Bresenhams-Algorithm#index.js
-const line = (p1: Vec3, p2: Vec3) => {
+function voxelLine(p1: Vec3, p2: Vec3): Vec3[] {
 	const [x1, y1, z1] = [p1.x, p1.y, p1.z];
 	const [x2, y2, z2] = [p2.x, p2.y, p2.z];
 	let dy = y2 - y1;
@@ -132,11 +132,18 @@ const line = (p1: Vec3, p2: Vec3) => {
 		}
 	}
 	return points;
-};
+}
+
+function line(a: Vec3, b: Vec3, acc: number): Vec3[] {
+	const dv = b.subtract(a);
+	return Array(Math.floor(1 / acc))
+		.fill(0)
+		.map((_, i) => a.add(dv.scale(i * acc)));
+}
 
 function turtle(actions: string) {
 	const lsys = new LSystem(actions, {});
 	return lsys.runProc();
 }
 
-export { sphere, circle, line, torus, turtle };
+export { sphere, circle, voxelLine, line, torus, turtle };
