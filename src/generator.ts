@@ -119,9 +119,7 @@ function voxelLine(p1: Vec3, p2: Vec3): Space {
 function line(a: Vec3, b: Vec3, acc: number): Space {
 	const dv = b.subtract(a);
 	return [b].concat(
-		Array(Math.floor(1 / acc))
-			.fill(0)
-			.map((_, i) => a.add(dv.scale(i * acc)))
+		new Array(Math.floor(1 / acc)).fill(0).map((_, i) => a.add(dv.scale(i * acc)))
 	);
 }
 
