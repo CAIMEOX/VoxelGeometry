@@ -123,10 +123,16 @@ function line(a: Vec3, b: Vec3, acc: number): Space {
 	);
 }
 
-function triangle(p1: Vec3, p2: Vec3, p3: Vec3, acc: number): Space {
-	const base = line(p1, p2, acc);
+function triangle(
+	p1: Vec3,
+	p2: Vec3,
+	p3: Vec3,
+	acc: number,
+	line_drawer: (a: Vec3, b: Vec3, acc?: number) => Space = line
+): Space {
+	const base = line_drawer(p1, p2, acc);
 
-	const fill = base.flatMap((point) => line(point, p3, acc));
+	const fill = base.flatMap((point) => line_drawer(point, p3, acc));
 
 	return [...base, ...fill];
 }
