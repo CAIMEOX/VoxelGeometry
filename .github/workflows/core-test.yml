@@ -1,4 +1,4 @@
-name: core-release
+name: core-check
 
 on:
     push:
