@@ -1,31 +1,31 @@
 {
-  "name": "@pureeval/voxel-geometry",
-  "version": "1.1.1",
-  "type": "module",
-  "description": "voxel-geometry",
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.48.2",
-    "@typescript-eslint/parser": "^5.48.2",
-    "del": "^6.0.0",
-    "eslint": "^8.32.0",
-    "gulp": "^4.0.2",
-    "gulp-cli": "^2.3.0",
-    "gulp-sourcemaps": "^3.0.0",
-    "gulp-typescript": "^6.0.0-alpha.1",
-    "source-map": "^0.7.4",
-    "typescript": "^4.9.4"
-  },
-  "scripts": {
-    "lint": "eslint . --ext .ts"
-  },
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CAIMEOX/VoxelGeometry.git"
-  },
-  "author": "CAIMEO,Lampese",
-  "bugs": {
-    "url": "https://github.com/CAIMEOX/VoxelGeometry/issues"
-  },
-  "homepage": "https://github.com/CAIMEOX/VoxelGeometry#readme"
+	"name": "@pureeval/voxel-geometry",
+	"version": "1.2.0",
+	"type": "module",
+	"description": "voxel-geometry",
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^5.48.2",
+		"@typescript-eslint/parser": "^5.48.2",
+		"del": "^6.0.0",
+		"eslint": "^8.32.0",
+		"gulp": "^4.0.2",
+		"gulp-cli": "^2.3.0",
+		"gulp-sourcemaps": "^3.0.0",
+		"gulp-typescript": "^6.0.0-alpha.1",
+		"source-map": "^0.7.4",
+		"typescript": "^4.9.4"
+	},
+	"scripts": {
+		"lint": "eslint . --ext .ts"
+	},
+	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CAIMEOX/VoxelGeometry.git"
+	},
+	"author": "CAIMEO,Lampese",
+	"bugs": {
+		"url": "https://github.com/CAIMEOX/VoxelGeometry/issues"
+	},
+	"homepage": "https://github.com/CAIMEOX/VoxelGeometry#readme"
 }

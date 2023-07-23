@@ -76,6 +76,10 @@ class Matrix {
 		return result;
 	}
 
+	negate(): Matrix {
+		return this.map((v) => -v);
+	}
+
 	equal(b: Matrix): boolean {
 		if (this.row != b.row || this.column != b.column) return false;
 		return this.matrix.every((row, i) => row.every((value, j) => value === b.matrix[i][j]));

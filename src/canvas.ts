@@ -474,21 +474,21 @@ function calcSortedIntersections(lines: string | any[], y: number) {
 
 function pathToLines(path: any[]) {
 	const lines: Line[] = [];
-	let curr: Point | null = null;
+	let curr: Point;
 	path.forEach(function (cmd: any[]) {
 		if (cmd[0] == PATH_COMMAND.MOVE) {
 			curr = cmd[1];
 		}
 		if (cmd[0] == PATH_COMMAND.LINE) {
 			const pt = cmd[1];
-			lines.push(new Line(curr!, pt));
+			lines.push(new Line(curr, pt));
 			curr = pt;
 		}
 		if (cmd[0] == PATH_COMMAND.QUADRATIC_CURVE) {
 			const pts: Point[] = [curr, cmd[1], cmd[2]];
 			for (let t = 0; t < 1; t += 0.1) {
 				const pt: Point = calcQuadraticAtT(pts, t);
-				lines.push(new Line(curr!, pt));
+				lines.push(new Line(curr, pt));
 				curr = pt;
 			}
 		}
@@ -496,7 +496,7 @@ function pathToLines(path: any[]) {
 			const pts: Point[] = [curr, cmd[1], cmd[2], cmd[3]];
 			for (let t = 0; t < 1; t += 0.1) {
 				const pt = calcBezierAtT(pts, t);
-				lines.push(new Line(curr!, pt));
+				lines.push(new Line(curr, pt));
 				curr = pt;
 			}
 		}
