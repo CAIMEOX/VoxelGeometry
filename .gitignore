@@ -2,6 +2,7 @@ node_modules
 build
 .gitignore
 .directory
+package-lock.json
 scripts/src/pureeval
 test/node_modules
 test/*
