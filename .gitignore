@@ -1,5 +1,7 @@
 node_modules
 build
+.gitignore
+.directory
 scripts/src/pureeval
 test/node_modules
 test/*

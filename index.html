@@ -1,84 +1,163 @@
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>VoxelGeometry Viewer</title>
-    <style>
-      body {
-        margin: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "./node_modules/three/build/three.module.js",
-          "three/addons/": "./node_modules/three/examples/jsm/"
-        }
-      }
-    </script>
-    <script type="module">
-      import * as THREE from "three";
-      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-      var scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xbfd1e5);
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      const renderer = new THREE.WebGLRenderer({
-        antialias: true
-      });
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
-      var texture = new THREE.TextureLoader().load("./texture.png");
-      var material = new THREE.MeshBasicMaterial({
-        map: texture,
-        side: THREE.DoubleSide,
-      });
-      material.transparent = true;
-      texture.magFilter = THREE.NearestFilter;
-      var geometry = new THREE.BoxGeometry(1, 1, 1);
-      function creatBlock(x, y, z) {
-        var cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
-        cube.position.x = x;
-        cube.position.y = y;
-        cube.position.z = z;
-      }
-      function clear() {
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xbfd1e5);
-      }
-      function setCamera(x, y, z) {
-        camera.position.x = x;
-        camera.position.y = y;
-        camera.position.z = z;
-      }
-      camera.position.z = 5;
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.target.set(1, 1, 1);
-      controls.update();
-      (function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-      })();
-      var ws = new WebSocket("ws://127.0.0.1:2333");
-      ws.onopen = function () {
-        alert("connected.");
-      };
-      ws.onmessage = function (msg) {
-        const op = JSON.parse(msg.data);
-        if (op["op"] == "clear") {
-          clear();
-        } else if (op["op"] == "camera") {
-          let pos = op["raw"];
-          setCamera(pos[0], pos[1], pos[2]);
-        } else {
-          for (let x of op["raw"]) {
-            creatBlock(x[0], x[1], x[2]);
-          }
-        }
-      };
-    </script>
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <title>VoxelGeometry Viewer</title>
+        <style>
+            body {
+                margin: 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "./node_modules/three/build/three.module.js",
+                    "three/addons/": "./node_modules/three/examples/jsm/"
+                }
+            }
+        </script>
+        <script type="module">
+            import * as THREE from "three";
+            import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+            const sceneSettings = {
+                background: new THREE.Color(0xbfd1e5),
+            };
+
+            const cameraSettings = {
+                perspective: {
+                    fov: 75,
+                    aspect: window.innerWidth / window.innerHeight,
+                    near: 0.1,
+                    far: 1000,
+                },
+                position: {
+                    z: 5,
+                },
+            };
+
+            const rendererSettings = {
+                antialias: true,
+                pixelRatio: window.devicePixelRatio,
+                size: {
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                },
+            };
+
+            const textureSettings = {
+                path: "./texture.png",
+                magFilter: THREE.NearestFilter,
+            };
+
+            const materialSettings = {
+                map: textureSettings.path,
+                side: THREE.DoubleSide,
+                transparent: true,
+            };
+
+            const geometrySettings = {
+                type: THREE.BoxGeometry,
+                size: [1, 1, 1],
+            };
+
+            const controlsSettings = {
+                target: {
+                    x: 1,
+                    y: 1,
+                    z: 1,
+                },
+            };
+
+            const websocketSettings = {
+                url: "ws://127.0.0.1:2333",
+            };
+
+            let scene, camera, renderer, texture, material, geometry, controls, ws;
+
+            function initScene() {
+                scene = new THREE.Scene();
+                scene.background = sceneSettings.background;
+            }
+
+            function initCamera() {
+                camera = new THREE.PerspectiveCamera(...Object.values(cameraSettings.perspective));
+                camera.position.z = cameraSettings.position.z;
+            }
+
+            function initRenderer() {
+                renderer = new THREE.WebGLRenderer(rendererSettings);
+                renderer.setPixelRatio(rendererSettings.pixelRatio);
+                renderer.setSize(rendererSettings.size.width, rendererSettings.size.height);
+                document.body.appendChild(renderer.domElement);
+            }
+
+            function initTexture() {
+                texture = new THREE.TextureLoader().load(textureSettings.path);
+                texture.magFilter = textureSettings.magFilter;
+            }
+
+            function initMaterial() {
+                material = new THREE.MeshBasicMaterial(materialSettings);
+                material.transparent = materialSettings.transparent;
+            }
+
+            function initGeometry() {
+                geometry = new geometrySettings.type(...geometrySettings.size);
+            }
+
+            function initControls() {
+                controls = new OrbitControls(camera, renderer.domElement);
+                controls.target.set(...Object.values(controlsSettings.target));
+                controls.update();
+            }
+
+            function initWebSocket() {
+                ws = new WebSocket(websocketSettings.url);
+                ws.onopen = () => alert("connected.");
+                ws.onmessage = handleWebSocketMessage;
+            }
+
+            function handleWebSocketMessage(msg) {
+                const op = JSON.parse(msg.data);
+                if (op["op"] == "clear") {
+                    clearScene();
+                } else {
+                    op["raw"].forEach((x) => createBlock(...x));
+                }
+            }
+
+            function createBlock(x, y, z) {
+                const cube = new THREE.Mesh(geometry, material);
+                scene.add(cube);
+                cube.position.set(x, y, z);
+            }
+
+            function clearScene() {
+                initScene();
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+            }
+
+            function init() {
+                initScene();
+                initCamera();
+                initRenderer();
+                initTexture();
+                initMaterial();
+                initGeometry();
+                initControls();
+                initWebSocket();
+                animate();
+            }
+
+            init();
+        </script>
+    </body>
 </html>
