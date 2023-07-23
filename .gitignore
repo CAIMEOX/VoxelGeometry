@@ -2,6 +2,8 @@ node_modules
 build
 package-lock.json
 .directory
+*.d.ts
+*.js
 scripts/src/pureeval
 test/node_modules
 test/*

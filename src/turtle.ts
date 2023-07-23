@@ -1,6 +1,6 @@
 import { Vec3, vec3, put, Space } from './vector.js';
 import { Matrix, fromArray } from './lineamp.js';
-import { voxelLine } from './generator.js';
+import { lineVoxel } from './generator.js';
 class Turtle2D {
 	x: number;
 	y: number;
@@ -252,7 +252,7 @@ class Turtle3D {
 			this.pos.y + heading.y * d,
 			this.pos.z + heading.z * d
 		]);
-		this.track = this.track.concat(voxelLine(this.pos, newPos));
+		this.track = this.track.concat(lineVoxel(this.pos, newPos));
 		this.pos = newPos;
 	}
 

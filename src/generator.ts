@@ -52,88 +52,96 @@ function torus(radius: number, ringRadius: number): Space {
 	return result;
 }
 
-// https://replit.com/@Michael_Nicol/Bresenhams-Algorithm#index.js
-function voxelLine(p1: Vec3, p2: Vec3): Space {
-	const [x1, y1, z1] = [p1.x, p1.y, p1.z];
-	const [x2, y2, z2] = [p2.x, p2.y, p2.z];
-	let [dx, dy, dz] = [x2 - x1, y2 - y1, z2 - z1];
-	const qChange = [dx, dy, dz].map(Math.sign);
-	[dx, dy, dz] = [dx, dy, dz].map(Math.abs);
-
-	const largestChange = [dy, dx, dz].indexOf(Math.max(dy, dx, dz));
-	const largestTarget = Math.max(dy, dx, dz);
-	const startAxis = [x1, y1, z1][largestChange];
-
-	let [x, y, z] = [x1, y1, z1];
+function lineVoxel(p1: Vec3, p2: Vec3): Space {
+	const [dx, dy, dz] = [Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y), Math.abs(p2.z - p1.z)];
+	const [sx, sy, sz] = [p1.x < p2.x ? 1 : -1, p1.y < p2.y ? 1 : -1, p1.z < p2.z ? 1 : -1];
+	let [x, y, z] = [p1.x, p1.y, p1.z];
 	const points: Space = [];
-	let [rx, ry, rz] = [0, 0, 0];
 
-	const endCoord =
-		qChange[largestChange] === 1 ? startAxis + largestTarget : startAxis - largestTarget;
-	for (
-		let i = startAxis;
-		qChange[largestChange] === 1 ? i <= endCoord : i >= endCoord;
-		i += qChange[largestChange]
-	) {
-		if (largestChange === 0) {
-			if (ry >= dx) {
-				ry -= dx;
-				y += qChange[1];
+	if (dx >= dy && dx >= dz) {
+		let err1 = dy - dx;
+		let err2 = dz - dx;
+		while (x != p2.x) {
+			points.push(put([x, y, z]));
+			if (err1 > 0) {
+				y += sy;
+				err1 -= 2 * dx;
 			}
-			if (rz >= dx) {
-				rz -= dx;
-				z += qChange[2];
+			if (err2 > 0) {
+				z += sz;
+				err2 -= 2 * dx;
 			}
-			ry += dy;
-			rz += dz;
-			points.push(put([i, y, z]));
-		} else if (largestChange === 1) {
-			if (rx >= dy) {
-				rx -= dy;
-				x += qChange[0];
+			x += sx;
+			err1 += 2 * dy;
+			err2 += 2 * dz;
+		}
+	} else if (dy >= dx && dy >= dz) {
+		let err1 = dx - dy;
+		let err2 = dz - dy;
+		while (y != p2.y) {
+			points.push(put([x, y, z]));
+			if (err1 > 0) {
+				x += sx;
+				err1 -= 2 * dy;
 			}
-			if (rz >= dy) {
-				rz -= dy;
-				z += qChange[2];
+			if (err2 > 0) {
+				z += sz;
+				err2 -= 2 * dy;
 			}
-			rx += dx;
-			rz += dz;
-			points.push(put([x, i, z]));
-		} else if (largestChange === 2) {
-			if (rx >= dz) {
-				rx -= dz;
-				x += qChange[2];
+			y += sy;
+			err1 += 2 * dx;
+			err2 += 2 * dz;
+		}
+	} else {
+		let err1 = dy - dz;
+		let err2 = dx - dz;
+		while (z != p2.z) {
+			points.push(put([x, y, z]));
+			if (err1 > 0) {
+				y += sy;
+				err1 -= 2 * dz;
 			}
-			if (ry >= dz) {
-				ry -= dz;
-				y += qChange[1];
+			if (err2 > 0) {
+				x += sx;
+				err2 -= 2 * dz;
 			}
-			rx += dx;
-			ry += dy;
-			points.push(put([x, y, i]));
+			z += sz;
+			err1 += 2 * dy;
+			err2 += 2 * dx;
 		}
 	}
+	points.push(put([x, y, z]));
+
 	return points;
 }
 
-function line(a: Vec3, b: Vec3, acc: number): Space {
-	const dv = b.subtract(a);
-	return [b].concat(
-		new Array(Math.floor(1 / acc)).fill(0).map((_, i) => a.add(dv.scale(i * acc)))
-	);
+function line(p1: Vec3, p2: Vec3): Space {
+	const [dx, dy, dz] = [p2.x - p1.x, p2.y - p1.y, p2.z - p1.z];
+	const steps = Math.max(Math.abs(dx), Math.abs(dy), Math.abs(dz));
+	const stepX = dx / steps;
+	const stepY = dy / steps;
+	const stepZ = dz / steps;
+	const points: Space = [];
+
+	for (let i = 0; i <= steps; ++i) {
+		const x = p1.x + i * stepX;
+		const y = p1.y + i * stepY;
+		const z = p1.z + i * stepZ;
+		points.push(vec3(x, y, z));
+	}
+
+	return points;
 }
 
-function triangle(
-	p1: Vec3,
-	p2: Vec3,
-	p3: Vec3,
-	acc: number,
-	line_drawer: (a: Vec3, b: Vec3, acc?: number) => Space = line
-): Space {
-	const base = line_drawer(p1, p2, acc);
+function triangle(p1: Vec3, p2: Vec3, p3: Vec3): Space {
+	const base = line(p1, p2);
+	const fill = base.flatMap((point) => line(point, p3));
+	return [...base, ...fill];
+}
 
-	const fill = base.flatMap((point) => line_drawer(point, p3, acc));
-
+function triangleVoxel(p1: Vec3, p2: Vec3, p3: Vec3): Space {
+	const base = lineVoxel(p1, p2);
+	const fill = base.flatMap((point) => lineVoxel(point, p3));
 	return [...base, ...fill];
 }
 
@@ -142,4 +150,4 @@ function turtle(actions: string) {
 	return lsys.runProc();
 }
 
-export { sphere, circle, torus, voxelLine, line, triangle, turtle };
+export { sphere, circle, torus, lineVoxel, line, triangle, triangleVoxel, turtle };
