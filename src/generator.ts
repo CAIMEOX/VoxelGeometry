@@ -52,72 +52,9 @@ function torus(radius: number, ringRadius: number): Space {
 	return result;
 }
 
-function lineVoxel(p1: Vec3, p2: Vec3): Space {
-	const [dx, dy, dz] = [Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y), Math.abs(p2.z - p1.z)];
-	const [sx, sy, sz] = [p1.x < p2.x ? 1 : -1, p1.y < p2.y ? 1 : -1, p1.z < p2.z ? 1 : -1];
-	let [x, y, z] = [p1.x, p1.y, p1.z];
-	const points: Space = [];
-
-	if (dx >= dy && dx >= dz) {
-		let err1 = dy - dx;
-		let err2 = dz - dx;
-		while (x != p2.x) {
-			points.push(put([x, y, z]));
-			if (err1 > 0) {
-				y += sy;
-				err1 -= 2 * dx;
-			}
-			if (err2 > 0) {
-				z += sz;
-				err2 -= 2 * dx;
-			}
-			x += sx;
-			err1 += 2 * dy;
-			err2 += 2 * dz;
-		}
-	} else if (dy >= dx && dy >= dz) {
-		let err1 = dx - dy;
-		let err2 = dz - dy;
-		while (y != p2.y) {
-			points.push(put([x, y, z]));
-			if (err1 > 0) {
-				x += sx;
-				err1 -= 2 * dy;
-			}
-			if (err2 > 0) {
-				z += sz;
-				err2 -= 2 * dy;
-			}
-			y += sy;
-			err1 += 2 * dx;
-			err2 += 2 * dz;
-		}
-	} else {
-		let err1 = dy - dz;
-		let err2 = dx - dz;
-		while (z != p2.z) {
-			points.push(put([x, y, z]));
-			if (err1 > 0) {
-				y += sy;
-				err1 -= 2 * dz;
-			}
-			if (err2 > 0) {
-				x += sx;
-				err2 -= 2 * dz;
-			}
-			z += sz;
-			err1 += 2 * dy;
-			err2 += 2 * dx;
-		}
-	}
-	points.push(put([x, y, z]));
-
-	return points;
-}
-
-function line(p1: Vec3, p2: Vec3): Space {
+function line(p1: Vec3, p2: Vec3, resolution: number): Space {
 	const [dx, dy, dz] = [p2.x - p1.x, p2.y - p1.y, p2.z - p1.z];
-	const steps = Math.max(Math.abs(dx), Math.abs(dy), Math.abs(dz));
+	const steps = Math.max(Math.abs(dx), Math.abs(dy), Math.abs(dz)) * resolution;
 	const stepX = dx / steps;
 	const stepY = dy / steps;
 	const stepZ = dz / steps;
@@ -133,9 +70,13 @@ function line(p1: Vec3, p2: Vec3): Space {
 	return points;
 }
 
-function triangle(p1: Vec3, p2: Vec3, p3: Vec3): Space {
-	const base = line(p1, p2);
-	const fill = base.flatMap((point) => line(point, p3));
+function lineVoxel(p1: Vec3, p2: Vec3): Space {
+	return line(p1, p2, 1);
+}
+
+function triangle(p1: Vec3, p2: Vec3, p3: Vec3, acc: number): Space {
+	const base = line(p1, p2, acc);
+	const fill = base.flatMap((point) => line(point, p3, acc));
 	return [...base, ...fill];
 }
 
