@@ -3,8 +3,6 @@ name: core-release
 on:
     push:
         branches: ['core']
-        paths:
-            - 'package.json'
 
 jobs:
     build:
@@ -27,8 +25,3 @@ jobs:
 
             - name: Build
               run: tsc
-
-            - name: Publish
-              run: npm publish --access public
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.LAMPESE_PUSSY}}

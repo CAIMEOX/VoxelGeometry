@@ -57,30 +57,18 @@ function torus(radius: number, ringRadius: number): Vec3[] {
 function voxelLine(p1: Vec3, p2: Vec3): Vec3[] {
 	const [x1, y1, z1] = [p1.x, p1.y, p1.z];
 	const [x2, y2, z2] = [p2.x, p2.y, p2.z];
-	let dy = y2 - y1;
-	let dx = x2 - x1;
-	let dz = z2 - z1;
-	const qChange = [dx < 0 ? -1 : 1, dy < 0 ? -1 : 1, dz < 0 ? -1 : 1];
-	dx = Math.abs(dx);
-	dy = Math.abs(dy);
-	dz = Math.abs(dz);
-	let largestChange;
-	if (dy >= dz && dy >= dx) {
-		largestChange = 1;
-	} else if (dx >= dy && dx >= dz) {
-		largestChange = 0;
-	} else {
-		largestChange = 2;
-	}
+	let [dx, dy, dz] = [x2 - x1, y2 - y1, z2 - z1];
+	const qChange = [dx, dy, dz].map(Math.sign);
+	[dx, dy, dz] = [dx, dy, dz].map(Math.abs);
+
+	const largestChange = [dy, dx, dz].indexOf(Math.max(dy, dx, dz));
 	const largestTarget = Math.max(dy, dx, dz);
-	const startAxis = largestChange === 1 ? y1 : largestChange === 0 ? x1 : z1;
-	let x = x1;
-	let y = y1;
-	let z = z1;
+	const startAxis = [x1, y1, z1][largestChange];
+
+	let [x, y, z] = [x1, y1, z1];
 	const points: Vec3[] = [];
-	let rx = 0;
-	let ry = 0;
-	let rz = 0;
+	let [rx, ry, rz] = [0, 0, 0];
+
 	const endCoord =
 		qChange[largestChange] === 1 ? startAxis + largestTarget : startAxis - largestTarget;
 	for (
@@ -100,9 +88,7 @@ function voxelLine(p1: Vec3, p2: Vec3): Vec3[] {
 			ry += dy;
 			rz += dz;
 			points.push(put([i, y, z]));
-			continue;
-		}
-		if (largestChange === 1) {
+		} else if (largestChange === 1) {
 			if (rx >= dy) {
 				rx -= dy;
 				x += qChange[0];
@@ -114,9 +100,7 @@ function voxelLine(p1: Vec3, p2: Vec3): Vec3[] {
 			rx += dx;
 			rz += dz;
 			points.push(put([x, i, z]));
-			continue;
-		}
-		if (largestChange === 2) {
+		} else if (largestChange === 2) {
 			if (rx >= dz) {
 				rx -= dz;
 				x += qChange[2];
@@ -125,10 +109,9 @@ function voxelLine(p1: Vec3, p2: Vec3): Vec3[] {
 				ry -= dz;
 				y += qChange[1];
 			}
-			ry += dy;
 			rx += dx;
+			ry += dy;
 			points.push(put([x, y, i]));
-			continue;
 		}
 	}
 	return points;

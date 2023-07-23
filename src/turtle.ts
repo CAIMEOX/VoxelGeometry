@@ -169,8 +169,8 @@ class Turtle3D {
 
 	pop() {
 		const state = this.stack.pop();
-		this.pos = state!.pos;
-		this.mat = state!.mat;
+		this.pos = state.pos;
+		this.mat = state.mat;
 	}
 
 	push() {
