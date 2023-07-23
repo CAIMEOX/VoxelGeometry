@@ -20,7 +20,6 @@ import {
 const wss = new ws.WebSocketServer({ port: 2333 });
 
 function pack(bs) {
-    console.log(bs);
     return {
         op: "put",
         raw: bs.map((v) => [v.x, v.y, v.z]),
