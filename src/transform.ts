@@ -1,7 +1,7 @@
-import { Vec3 } from './vector.js';
+import { Vec3, Space, put, view, vec3 } from './vector.js';
 import { fromArray } from './lineamp.js';
 
-function embed(base: Vec3[], target: Vec3[]) {
+function embed(base: Space, target: Space) {
 	const xT: Map<number, Map<number, void>> = new Map();
 	base.forEach((v) => {
 		if (!xT.has(v.x)) xT.set(v.x, new Map());
@@ -11,7 +11,7 @@ function embed(base: Vec3[], target: Vec3[]) {
 }
 
 // Swap The Direction of the Structure
-function swap(v: Vec3[], d1: number, d2: number): Vec3[] {
+function swap(v: Space, d1: number, d2: number): Space {
 	return v.map((b) => {
 		const k = view(b);
 		[k[d1], k[d2]] = [k[d2], k[d1]];
@@ -19,40 +19,28 @@ function swap(v: Vec3[], d1: number, d2: number): Vec3[] {
 	});
 }
 
-function view(v: Vec3) {
-	return [v.x, v.y, v.z];
+function scale(v: Space, size: number): Space {
+	return v.flatMap((b) => move(duplicate(size), b.scale(size).subtract(vec3(1, 1, 1))));
 }
 
-function put(k: number[]) {
-	return new Vec3(k[0], k[1], k[2]);
-}
-
-function scale(v: Vec3[], size: number): Vec3[] {
-	return v.flatMap((b) => move(duplicate(size), b.x * size - 1, b.y * size - 1, b.z * size - 1));
-}
-
-function diffusion(v: Vec3[], factor: number): Vec3[] {
-	return v.map((b) => new Vec3(b.x * factor, b.y * factor, b.z * factor));
-}
-
-function P(x: number, y: number, z: number): Vec3 {
-	return new Vec3(x, y, z);
+function diffusion(v: Space, factor: number): Space {
+	return v.map((b) => vec3(b.x * factor, b.y * factor, b.z * factor));
 }
 
 // Create a Tile
-function duplicate(n: number): Vec3[] {
-	const r: Vec3[] = [];
+function duplicate(n: number): Space {
+	const r: Space = [];
 	for (let x = -n; x < n; ++x) {
 		for (let y = -n; y < n; ++y) {
 			for (let z = -n; z < n; ++z) {
-				r.push(new Vec3(x, y, z));
+				r.push(vec3(x, y, z));
 			}
 		}
 	}
 	return r;
 }
 
-function center(b: Vec3[]): Vec3 {
+function center(b: Space): Vec3 {
 	let [xmin, xmax, ymin, ymax, zmin, zmax] = [
 		1000000000, -1000000000, 1000000000, -1000000000, 1000000000, -1000000000
 	];
@@ -64,28 +52,24 @@ function center(b: Vec3[]): Vec3 {
 		zmin = Math.min(zmin, v.z);
 		zmax = Math.max(zmax, v.z);
 	});
-	return new Vec3((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2);
+	return vec3((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2);
 }
 
-function move(b: Vec3[], x = 0, y = 0, z = 0): Vec3[] {
-	return b.map((k) => new Vec3(x + k.x, y + k.y, z + k.z));
+function move(b: Space, point: Vec3): Space {
+	return b.map((k) => point.add(k));
 }
 
-function moveTo(b: Vec3[], from: Vec3, to: Vec3): Vec3[] {
-	return move(b, to.x - from.x, to.y - from.y, to.z - from.z);
-}
-
-function moveCenter(b: Vec3[]): Vec3[] {
-	return moveTo(b, center(b), P(0, 0, 0));
+function moveTo(b: Space, from: Vec3, to: Vec3): Space {
+	return move(b, to.subtract(from));
 }
 
 // Array Generator
-function array_gen(xn: number, yn: number, zn: number, dx = 1, dy = 1, dz = 1): Vec3[] {
-	const r: Vec3[] = [];
+function array_gen(xn: number, yn: number, zn: number, dx = 1, dy = 1, dz = 1): Space {
+	const r: Space = [];
 	for (let x = 1; x < xn; ++x) {
 		for (let y = 1; y < yn; ++y) {
 			for (let z = 1; z < zn; ++z) {
-				r.push(new Vec3(x * dx, y * dy, z * dz));
+				r.push(vec3(x * dx, y * dy, z * dz));
 			}
 		}
 	}
@@ -99,19 +83,19 @@ function array_gen_fn(
 	dx: (a: number) => number,
 	dy: (a: number) => number,
 	dz: (a: number) => number
-): Vec3[] {
-	const r: Vec3[] = [];
+): Space {
+	const r: Space = [];
 	for (let x = 1; x < xn; ++x) {
 		for (let y = 1; y < yn; ++y) {
 			for (let z = 1; z < zn; ++z) {
-				r.push(new Vec3(dx(x), dy(y), dz(z)));
+				r.push(vec3(dx(x), dy(y), dz(z)));
 			}
 		}
 	}
 	return r;
 }
 
-function rotate(v: Vec3[], angle: number) {
+function rotate(v: Space, angle: number) {
 	const R_y = fromArray([
 		[Math.cos(angle), 0, Math.sin(angle)],
 		[0, 1, 0],
@@ -126,27 +110,20 @@ function rotate(v: Vec3[], angle: number) {
 }
 
 // Take the last output as directional vector
-function pipe(...mat: Vec3[][]): Vec3[] {
-	return mat.reduce((r, next) => {
-		return r.flatMap((k) => move(next, k.x, k.y, k.z));
-	}, mat.shift() ?? []);
+function pipe(...mat: Space[]): Space {
+	return mat.reduce((r, next) => r.flatMap((k) => move(next, k)), mat.shift() ?? []);
 }
 
-function reduce_pos(v: Vec3[]): Vec3[] {
+function reduce_pos(v: Space): Space {
 	return embed(v, v);
 }
 
-function round_pos(v: Vec3[]): Vec3[] {
-	return v.map(fmap(Math.round));
+function round_pos(v: Space): Space {
+	return v.map((k) => k.map(Math.round));
 }
-
-const fmap = (f: (arg: number) => number) => (v: Vec3) => {
-	return new Vec3(f(v.x), f(v.y), f(v.z));
-};
 
 export {
 	put,
-	fmap,
 	round_pos,
 	scale,
 	diffusion,
@@ -155,7 +132,6 @@ export {
 	embed,
 	move,
 	center,
-	moveCenter,
 	moveTo,
 	pipe,
 	array_gen,

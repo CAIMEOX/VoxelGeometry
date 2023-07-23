@@ -1,4 +1,4 @@
-import { Vec3 } from './vector.js';
+import { Vec3, Space, vec3 } from './vector.js';
 import { rand } from './utils.js';
 
 class Point {
@@ -47,7 +47,7 @@ class DLASystem {
 		iterations: number,
 		step: number,
 		Temperature: number,
-		stuck: Vec3[] = [],
+		stuck: Space = [],
 		summoner: (width: number) => number[] = randPoint
 	) {
 		this.width = width;
@@ -65,7 +65,7 @@ class DLASystem {
 		}
 	}
 
-	run(): Vec3[] {
+	run(): Space {
 		while (this.Walkering.length) {
 			for (let i = 1; i <= this.iterations; ++i) {
 				for (let j = 0; j < this.Walkering.length; ++j) {
@@ -86,7 +86,7 @@ class DLASystem {
 				this.Temperature *= 0.995;
 			}
 		}
-		return this.Stucked.map((v) => new Vec3(v.x, v.y, v.z));
+		return this.Stucked.map((v) => vec3(v.x, v.y, v.z));
 	}
 }
 
@@ -112,9 +112,9 @@ function DLA3D(
 	iterations: number,
 	step: number,
 	Temperature: number,
-	stuck: Vec3[] = [],
+	stuck: Space = [],
 	summoner: (width: number) => number[] = randPoint
-): Vec3[] {
+): Space {
 	const sys = new DLASystem(width, maxWalk, iterations, step, Temperature, stuck, summoner);
 	return sys.run();
 }

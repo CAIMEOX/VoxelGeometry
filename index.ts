@@ -1,4 +1,4 @@
-import { Vec3 } from './src/vector.js';
+import { Vec3, Space, vec3, put, view } from './src/vector.js';
 import * as Exp from './src/expression.js';
 import * as Generator from './src/generator.js';
 import * as Transform from './src/transform.js';
@@ -11,4 +11,19 @@ import { DLA3D } from './src/DLA3D.js';
 
 const DLA = { DLA2D, DLA3D };
 
-export { Vec3, Exp, Generator, Transform, Lineamp, LSystem, IFS, DLA, Turtle2D, Turtle3D };
+export {
+	Vec3,
+	Space,
+	vec3,
+	put,
+	view,
+	Exp,
+	Generator,
+	Transform,
+	Lineamp,
+	LSystem,
+	IFS,
+	DLA,
+	Turtle2D,
+	Turtle3D
+};

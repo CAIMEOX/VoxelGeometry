@@ -6,24 +6,24 @@ Voxel Geometry is voxel geometry library which is used to construct **Space** (A
 
 A voxel represents a value on a regular grid in three-dimensional space. Geometry means this software is very **mathematically** and owns more features as follows for generating awesome structures.
 
-- **Basic Geometry** : Sphere, circle, cylinder, torus, line and more.
-- **Lindenmayer system** (**L-System**) : A parallel rewriting system. The recursive nature of the L-system rules leads to self-similarity and thereby, fractal-like forms are easy to describe with an L-system.
-- **Turtle Graphic** : Full features and extensions of turtle graphics.
-- **Transformer** : Transforming space into another by pipe, compose, scale, diffusion and more.
-- **Expression drawing** : Constructing from math expression or parametric equation.
-- **Canvas API** : Javascript browser graphics API support.
-- **Linear and Nonlinear Transform** : Mapping space into another one.
-- **Diffusion Limited Aggression** : Simulating particles undergoing a random walk due to Brownian motion cluster together to form aggregates of such particles.
-- **Chaos Theory** : Iterated Function System which uses Chaos Game.
+-   **Basic Geometry** : Sphere, circle, cylinder, torus, line and more.
+-   **Lindenmayer system** (**L-System**) : A parallel rewriting system. The recursive nature of the L-system rules leads to self-similarity and thereby, fractal-like forms are easy to describe with an L-system.
+-   **Turtle Graphic** : Full features and extensions of turtle graphics.
+-   **Transformer** : Transforming space into another by pipe, compose, scale, diffusion and more.
+-   **Expression drawing** : Constructing from math expression or parametric equation.
+-   **Canvas API** : Javascript browser graphics API support.
+-   **Linear and Nonlinear Transform** : Mapping space into another one.
+-   **Diffusion Limited Aggression** : Simulating particles undergoing a random walk due to Brownian motion cluster together to form aggregates of such particles.
+-   **Chaos Theory** : Iterated Function System which uses Chaos Game.
 
 ## Application
 
 You can check the branches for the Application of this library in Minecraft.
 
-- **core** : Voxel Geometry core
-- **ws** : Voxel Geometry for Minecraft Bedrock (Based on Websocket server)
-- **gt** : Voxel Geometry for Minecraft Bedrock (Based on Gametest framework)
-- **webviewer** : Voxel Geometry Web Viewer
+-   **core** : Voxel Geometry core
+-   **ws** : Voxel Geometry for Minecraft Bedrock (Based on Websocket server)
+-   **gt** : Voxel Geometry for Minecraft Bedrock (Based on Gametest framework)
+-   **webviewer** : Voxel Geometry Web Viewer
 
 ## Screenshots
 
@@ -43,7 +43,7 @@ A vector represent a voxel in the Space, which has 3 components.
 
 ```js
 // Create a unit vector
-const vec: Vec3 = new Vec3(1, 1, 1);
+const vec: Vec3 = vec3(1, 1, 1);
 ```
 
 ### Space
@@ -51,7 +51,6 @@ const vec: Vec3 = new Vec3(1, 1, 1);
 Many Voxel Geometry functions will return a **Space** (A array of 3D vectors).
 
 ```ts
-type Space = Vec3[];
 const ball: Space = sphere(5, 4);
 ```
 
@@ -142,8 +141,8 @@ Construct a discrete set of points.
 array_gen :: (xn, yn, zn, dx, dy, dz) -> Space
 ```
 
-- \_n : Count
-- d\_ : Interval
+-   \_n : Count
+-   d\_ : Interval
 
 With step function:
 
@@ -184,12 +183,12 @@ For instance, we can create Peano curve by using l-system.
 
 ```javascript
 lsystem(
-  "X",
-  {
-    X: "XFYFX+F+YFXFY-F-XFYFX",
-    Y: "YFXFY-F-XFYFX+F+YFXFY",
-  },
-  5
+	'X',
+	{
+		X: 'XFYFX+F+YFXFY-F-XFYFX',
+		Y: 'YFXFY-F-XFYFX+F+YFXFY'
+	},
+	5
 );
 ```
 
@@ -217,14 +216,7 @@ Express this in Voxel Geometry (step represent the changing value of the paramet
 
 ```javascript
 let step = 0.1;
-plot(
-  simple_parametric("5*Math.cos(t)", "0", "10*Math.sin(t)", [
-    "t",
-    0,
-    Math.PI * 2,
-    step,
-  ])
-);
+plot(simple_parametric('5*Math.cos(t)', '0', '10*Math.sin(t)', ['t', 0, Math.PI * 2, step]));
 ```
 
 ### Expression
@@ -238,7 +230,7 @@ simple_equation :: (Expr, start, end, step) -> Space
 For instance we can construct a sphere:
 
 ```javascript
-plot(simple_equation("x*x+y*y+z*z<=5", -5, 5, 1));
+plot(simple_equation('x*x+y*y+z*z<=5', -5, 5, 1));
 ```
 
 ## Diffusion Limited Aggression
@@ -251,12 +243,12 @@ Simulating particles undergoing a random walk due to Brownian motion cluster tog
 DLA2D :: (width, maxWalk, iterations, stepLength, temperature, stuckSpace = centerPoint) -> Space
 ```
 
-- width : Width of operation space.
-- maxWalk : Maximum number of particles that can exist simultaneously.
-- iterations : Determine how many times before each particle supplement.
-- stepLength : Step size of particles.
-- temperature : The temperature of the iterative system will gradually decrease, which is related to the number of subsequent replenishment points.
-- stuckSpace : A collection of particles that have been fixed at the beginning.
+-   width : Width of operation space.
+-   maxWalk : Maximum number of particles that can exist simultaneously.
+-   iterations : Determine how many times before each particle supplement.
+-   stepLength : Step size of particles.
+-   temperature : The temperature of the iterative system will gradually decrease, which is related to the number of subsequent replenishment points.
+-   stuckSpace : A collection of particles that have been fixed at the beginning.
 
 ### DLA3D
 

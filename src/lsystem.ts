@@ -1,4 +1,4 @@
-import { Vec3 } from './vector.js';
+import { Vec3, Space } from './vector.js';
 import { Turtle2D } from './turtle.js';
 
 export class LSystem {
@@ -39,7 +39,7 @@ export class LSystem {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	runProc(proc: { [key: string]: Function } = {}): Vec3[] {
+	runProc(proc: { [key: string]: Function } = {}): Space {
 		const t = new Turtle2D();
 		const a: number = this.env['angle'];
 
@@ -74,14 +74,14 @@ function lsystem(
 	rules: { [key: string]: string },
 	generation = 1,
 	angle = Math.PI / 2
-): Vec3[] {
+): Space {
 	const lsys = new LSystem(axiom, rules);
 	lsys.setEnv('angle', angle);
 	lsys.generate(generation);
 	return lsys.runProc();
 }
 
-function leaf(n: number): Vec3[] {
+function leaf(n: number): Space {
 	return lsystem(
 		'a',
 		{
@@ -95,7 +95,7 @@ function leaf(n: number): Vec3[] {
 	);
 }
 
-function triangle(n: number): Vec3[] {
+function triangle(n: number): Space {
 	return lsystem(
 		'F+F+F',
 		{
@@ -106,7 +106,7 @@ function triangle(n: number): Vec3[] {
 	);
 }
 
-function quadratic_gosper(n: number): Vec3[] {
+function quadratic_gosper(n: number): Space {
 	return lsystem(
 		'-YF',
 		{
@@ -117,7 +117,7 @@ function quadratic_gosper(n: number): Vec3[] {
 	);
 }
 
-function square_sierpinski(n: number): Vec3[] {
+function square_sierpinski(n: number): Space {
 	return lsystem(
 		'F+XF+F+XF',
 		{
@@ -127,7 +127,7 @@ function square_sierpinski(n: number): Vec3[] {
 	);
 }
 
-function crystal(n: number): Vec3[] {
+function crystal(n: number): Space {
 	return lsystem(
 		'F+F+F+F',
 		{
@@ -137,7 +137,7 @@ function crystal(n: number): Vec3[] {
 	);
 }
 
-function peano_curve(n: number): Vec3[] {
+function peano_curve(n: number): Space {
 	return lsystem(
 		'X',
 		{
@@ -148,7 +148,7 @@ function peano_curve(n: number): Vec3[] {
 	);
 }
 
-function quadratic_snowflake_square(n: number): Vec3[] {
+function quadratic_snowflake_square(n: number): Space {
 	return lsystem(
 		'FF+FF+FF+FF',
 		{
@@ -158,7 +158,7 @@ function quadratic_snowflake_square(n: number): Vec3[] {
 	);
 }
 
-function rings(n: number): Vec3[] {
+function rings(n: number): Space {
 	return lsystem(
 		'F+F+F+F',
 		{

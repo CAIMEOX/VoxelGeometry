@@ -1,11 +1,10 @@
-import { Vec3 } from './vector.js';
+import { Vec3, Space, vec3, put } from './vector.js';
 import { LSystem } from './lsystem.js';
-import { put } from './transform.js';
 
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
 
-function sphere(radius: number, inner_radius: number): Vec3[] {
-	const result: Vec3[] = [];
+function sphere(radius: number, inner_radius: number): Space {
+	const result: Space = [];
 	for (let x = -radius; x <= radius; x++) {
 		for (let y = -radius; y <= radius; y++) {
 			for (let z = -radius; z <= radius; z++) {
@@ -13,7 +12,7 @@ function sphere(radius: number, inner_radius: number): Vec3[] {
 					x * x + y * y + z * z <= radius * radius &&
 					x * x + y * y + z * z >= inner_radius * inner_radius
 				) {
-					result.push(new Vec3(x, y, z));
+					result.push(vec3(x, y, z));
 				}
 			}
 		}
@@ -21,20 +20,20 @@ function sphere(radius: number, inner_radius: number): Vec3[] {
 	return result;
 }
 
-function circle(radius: number, inner_radius: number): Vec3[] {
-	const result: Vec3[] = [];
+function circle(radius: number, inner_radius: number): Space {
+	const result: Space = [];
 	for (let x = -radius; x <= radius; x++) {
 		for (let z = -radius; z <= radius; z++) {
 			if (x * x + z * z <= radius * radius && x * x + z * z >= inner_radius * inner_radius) {
-				result.push(new Vec3(x, 0, z));
+				result.push(vec3(x, 0, z));
 			}
 		}
 	}
 	return result;
 }
 
-function torus(radius: number, ringRadius: number): Vec3[] {
-	const result: Vec3[] = [];
+function torus(radius: number, ringRadius: number): Space {
+	const result: Space = [];
 	for (let x = -radius - ringRadius; x <= radius + ringRadius; x++) {
 		for (let z = -radius - ringRadius; z <= radius + ringRadius; z++) {
 			const xz_distance = Math.sqrt(x * x + z * z);
@@ -44,7 +43,7 @@ function torus(radius: number, ringRadius: number): Vec3[] {
 				const rd = Math.sqrt(x - rx) + Math.sqrt(z - rz);
 				for (let y = -radius - ringRadius; y <= radius + ringRadius; y++) {
 					if (rd + z * z <= radius * radius) {
-						result.push(new Vec3(x, y, z));
+						result.push(vec3(x, y, z));
 					}
 				}
 			}
@@ -54,7 +53,7 @@ function torus(radius: number, ringRadius: number): Vec3[] {
 }
 
 // https://replit.com/@Michael_Nicol/Bresenhams-Algorithm#index.js
-function voxelLine(p1: Vec3, p2: Vec3): Vec3[] {
+function voxelLine(p1: Vec3, p2: Vec3): Space {
 	const [x1, y1, z1] = [p1.x, p1.y, p1.z];
 	const [x2, y2, z2] = [p2.x, p2.y, p2.z];
 	let [dx, dy, dz] = [x2 - x1, y2 - y1, z2 - z1];
@@ -66,7 +65,7 @@ function voxelLine(p1: Vec3, p2: Vec3): Vec3[] {
 	const startAxis = [x1, y1, z1][largestChange];
 
 	let [x, y, z] = [x1, y1, z1];
-	const points: Vec3[] = [];
+	const points: Space = [];
 	let [rx, ry, rz] = [0, 0, 0];
 
 	const endCoord =
@@ -117,11 +116,21 @@ function voxelLine(p1: Vec3, p2: Vec3): Vec3[] {
 	return points;
 }
 
-function line(a: Vec3, b: Vec3, acc: number): Vec3[] {
+function line(a: Vec3, b: Vec3, acc: number): Space {
 	const dv = b.subtract(a);
-	return Array(Math.floor(1 / acc))
-		.fill(0)
-		.map((_, i) => a.add(dv.scale(i * acc)));
+	return [b].concat(
+		Array(Math.floor(1 / acc))
+			.fill(0)
+			.map((_, i) => a.add(dv.scale(i * acc)))
+	);
+}
+
+function triangle(p1: Vec3, p2: Vec3, p3: Vec3, acc: number): Space {
+	const base = line(p1, p2, acc);
+
+	const fill = base.flatMap((point) => line(point, p3, acc));
+
+	return [...base, ...fill];
 }
 
 function turtle(actions: string) {
@@ -129,4 +138,4 @@ function turtle(actions: string) {
 	return lsys.runProc();
 }
 
-export { sphere, circle, voxelLine, line, torus, turtle };
+export { sphere, circle, torus, voxelLine, line, triangle, turtle };

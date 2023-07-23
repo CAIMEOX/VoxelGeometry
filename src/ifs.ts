@@ -1,4 +1,4 @@
-import { Vec3 } from './vector.js';
+import { Vec3, Space, vec3 } from './vector.js';
 
 class IFS {
 	fractal: number[][] = [];
@@ -10,7 +10,7 @@ class IFS {
 	offsetY = 0;
 	height: number;
 	width: number;
-	track: Vec3[] = [];
+	track: Space = [];
 	constructor(f: number[], width = 100, height = 100) {
 		this.width = width;
 		this.height = height;
@@ -18,8 +18,7 @@ class IFS {
 		this.findBounds();
 	}
 
-	readIfs(f: number[]) {
-		for (let i = 0; i < f.length; i++) f[i] = f[i] * 1;
+	readIfs(f: number[]): void {
 		if (!(f.length > 0 && f.length % 7 == 0)) {
 			throw new Error('Invalid IFS');
 		} else {
@@ -30,12 +29,12 @@ class IFS {
 		}
 	}
 
-	run(n: number): Vec3[] {
-		for (let i = 0; i < n; i += 1) {
+	run(n: number): Space {
+		for (let i = 0; i < n; ++i) {
 			this.next();
 			const px = this.scaleX * this.x + this.offsetX;
 			const py = this.scaleY * this.y + this.offsetY;
-			this.track.push(new Vec3(px, 0, py));
+			this.track.push(vec3(px, 0, py));
 		}
 		return this.track;
 	}
@@ -43,7 +42,7 @@ class IFS {
 	next() {
 		const r = Math.random();
 		let probabilityThreshold = 0.0;
-		for (let i = 0; i < this.fractal.length; i += 1) {
+		for (let i = 0; i < this.fractal.length; ++i) {
 			const t = this.fractal[i];
 			if (r <= (probabilityThreshold += t[6])) {
 				const oldx = this.x;
@@ -62,11 +61,11 @@ class IFS {
 		this.x = 0;
 		this.y = 0;
 
-		for (let i = 0; i < 100; i += 1) {
+		for (let i = 0; i < 100; ++i) {
 			this.next();
 		}
 
-		for (let i = 0; i < 10000; i += 1) {
+		for (let i = 0; i < 10000; ++i) {
 			this.next();
 			if (this.x < left) left = this.x;
 			if (this.x > right) right = this.x;

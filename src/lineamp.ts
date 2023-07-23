@@ -1,4 +1,4 @@
-import { Vec3 } from './vector.js';
+import { Vec3, vec3 } from './vector.js';
 
 class Matrix {
 	matrix: number[][] = [];
@@ -18,11 +18,11 @@ class Matrix {
 	}
 
 	getVector(row: number): Vec3 {
-		return new Vec3(this.matrix[row][0], this.matrix[row][1], this.matrix[row][2]);
+		return vec3(this.matrix[row][0], this.matrix[row][1], this.matrix[row][2]);
 	}
 
 	getVectorCol(col: number): Vec3 {
-		return new Vec3(this.matrix[0][col], this.matrix[1][col], this.matrix[2][col]);
+		return vec3(this.matrix[0][col], this.matrix[1][col], this.matrix[2][col]);
 	}
 
 	add(b: Matrix): Matrix {

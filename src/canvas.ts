@@ -1,4 +1,4 @@
-import { Vec3 } from './vector.js';
+import { Vec3, Space, vec3 } from './vector.js';
 
 const PATH_COMMAND = {
 	MOVE: 'm',
@@ -192,7 +192,7 @@ class Point {
 class Bitmap {
 	width: number;
 	height: number;
-	data: Vec3[];
+	data: Space;
 
 	constructor(w: number, h: number) {
 		this.width = Math.floor(w);
@@ -201,7 +201,7 @@ class Bitmap {
 	}
 
 	dot(x: number, y: number) {
-		this.data.push(new Vec3(x, 0, y));
+		this.data.push(vec3(x, 0, y));
 	}
 
 	getContext() {

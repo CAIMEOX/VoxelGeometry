@@ -78,4 +78,18 @@ class Vec3 {
 	}
 }
 
-export { Vec3 };
+function vec3(x: number, y: number, z: number): Vec3 {
+	return new Vec3(x, y, z);
+}
+
+function view(v: Vec3): number[] {
+	return [v.x, v.y, v.z];
+}
+
+function put(k: number[]): Vec3 {
+	return vec3(k[0], k[1], k[2]);
+}
+
+type Space = Vec3[];
+
+export { Vec3, Space, view, put, vec3 };

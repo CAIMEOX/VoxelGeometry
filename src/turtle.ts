@@ -1,6 +1,5 @@
-import { Vec3 } from './vector.js';
+import { Vec3, vec3, put, Space } from './vector.js';
 import { Matrix, fromArray } from './lineamp.js';
-import { put } from './transform.js';
 import { voxelLine } from './generator.js';
 class Turtle2D {
 	x: number;
@@ -68,7 +67,7 @@ class Turtle2D {
 
 	goto(x: number, y: number) {
 		if (this.pen) {
-			this.track.push(new Vec3(this.x, 0, this.y));
+			this.track.push(vec3(this.x, 0, this.y));
 		}
 		this.x = x;
 		this.y = y;
@@ -81,13 +80,13 @@ class Turtle2D {
 	dot(x: number, y: number) {
 		if (this.pen) {
 			if (this.thickness === 1) {
-				this.track.push(new Vec3(x, 0, y));
+				this.track.push(vec3(x, 0, y));
 			} else {
 				const r = this.thickness / 2;
 				for (let i = -r; i <= r; i++) {
 					for (let j = -r; j <= r; j++) {
 						for (let k = -r; k <= r; k++) {
-							this.track.push(new Vec3(x + i, k, y + j));
+							this.track.push(vec3(x + i, k, y + j));
 						}
 					}
 				}
@@ -132,7 +131,7 @@ class Turtle2D {
 		this.forward(-distance);
 	}
 
-	getTrack(): Vec3[] {
+	getTrack(): Space {
 		return this.track;
 	}
 }
@@ -149,12 +148,12 @@ class Turtle3D {
 	// H x L = U
 	mat: Matrix;
 	stack: { pos: Vec3; mat: Matrix }[] = [];
-	track: Vec3[];
+	track: Space;
 	constructor(compass = 0, vertical = 0, roll = 0) {
 		this.mat = this.makeMatrix(compass, vertical, roll);
 		this.pen = true;
 		this.track = [];
-		this.pos = new Vec3(0, 0, 0);
+		this.pos = vec3(0, 0, 0);
 		this.mat = this.RotateL(0.1).mul(this.RotateH(0));
 	}
 
@@ -207,7 +206,7 @@ class Turtle3D {
 	}
 
 	goto(x: number, y: number, z: number) {
-		this.pos = new Vec3(x, y, z);
+		this.pos = vec3(x, y, z);
 	}
 
 	makeMatrix(compass: number, vertical: number, roll: number) {
@@ -261,7 +260,7 @@ class Turtle3D {
 		this.forward(-d);
 	}
 
-	getTrack(): Vec3[] {
+	getTrack(): Space {
 		return this.track;
 	}
 }
