@@ -3,6 +3,7 @@ tsconfig.json
 build
 webviewer
 *.ts
+!*.d.ts
 .prettierrc
 .eslintrc
 .eslintignore
