@@ -54,6 +54,7 @@ function torus(radius: number, ringRadius: number): Space {
 }
 
 function line(p1: Vec3, p2: Vec3, resolution: number): Space {
+	if (p1.equals(p2)) return [];
 	const [dx, dy, dz] = [p2.x - p1.x, p2.y - p1.y, p2.z - p1.z];
 	const steps = Math.max(Math.abs(dx), Math.abs(dy), Math.abs(dz)) * resolution;
 	const stepX = dx / steps;
