@@ -95,17 +95,6 @@ function leaf(n: number): Space {
 	);
 }
 
-function triangle(n: number): Space {
-	return lsystem(
-		'F+F+F',
-		{
-			F: 'F-F+F'
-		},
-		n,
-		(Math.PI / 3) * 2
-	);
-}
-
 function quadratic_gosper(n: number): Space {
 	return lsystem(
 		'-YF',
@@ -171,7 +160,6 @@ function rings(n: number): Space {
 export {
 	lsystem,
 	leaf,
-	triangle,
 	quadratic_gosper,
 	square_sierpinski,
 	crystal,
