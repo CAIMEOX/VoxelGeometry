@@ -1,9 +1,8 @@
 index.ts
 tsconfig.json
-src
 build
-src/*.ts
-!src/*.d.ts
+webviewer
+*.ts
 .prettierrc
 .eslintrc
 .eslintignore
