@@ -1,4 +1,5 @@
-import { Vec3, Space, vec3, put } from './vector.js';
+import { Vec3, Space, vec3 } from './vector.js';
+import { round_pos } from './transform.js';
 import { LSystem } from './lsystem.js';
 
 // Universal configs : block, origin, player, dimension, env , facing , hollow?
@@ -58,7 +59,7 @@ function line(p1: Vec3, p2: Vec3, resolution: number): Space {
 	const stepX = dx / steps;
 	const stepY = dy / steps;
 	const stepZ = dz / steps;
-	const points: Space = [];
+	const points: Space = [p2];
 
 	for (let i = 0; i <= steps; ++i) {
 		const x = p1.x + i * stepX;
@@ -71,19 +72,18 @@ function line(p1: Vec3, p2: Vec3, resolution: number): Space {
 }
 
 function lineVoxel(p1: Vec3, p2: Vec3): Space {
-	return line(p1, p2, 1);
+	return round_pos(line(p1, p2, 1.2));
 }
 
 function triangle(p1: Vec3, p2: Vec3, p3: Vec3, acc: number): Space {
-	const base = line(p1, p2, acc);
-	const fill = base.flatMap((point) => line(point, p3, acc));
-	return [...base, ...fill];
+	const basel = line(p1, p2, acc);
+	const baser = line(p1, p3, acc);
+	const fill = basel.flatMap((p, i) => line(p, baser[i], acc));
+	return [...basel, ...baser, ...fill];
 }
 
 function triangleVoxel(p1: Vec3, p2: Vec3, p3: Vec3): Space {
-	const base = lineVoxel(p1, p2);
-	const fill = base.flatMap((point) => lineVoxel(point, p3));
-	return [...base, ...fill];
+	return round_pos(triangle(p1, p2, p3, 1.2));
 }
 
 function turtle(actions: string) {
