@@ -11,3 +11,4 @@ test/*
 !test/package.json
 !test/index.html
 !test/texture.png
+!webviewer/server.js
