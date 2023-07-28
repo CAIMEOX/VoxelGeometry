@@ -11,7 +11,7 @@ class VectorN {
 		return this.values.length;
 	}
 
-	map(fn: (n: number, i?: number) => number) {
+	map(fn: (n: number, i?: number) => number): VectorN {
 		return new VectorN(...this.values.map(fn));
 	}
 
@@ -19,11 +19,11 @@ class VectorN {
 		return this.map((value, index) => value + vector.values[index]);
 	}
 
-	magnitude() {
+	magnitude(): number {
 		return Math.sqrt(this.values.reduce((sum, v) => (sum += v * v), 0));
 	}
 
-	asVector3() {
+	asVector3(): Vec3 {
 		return new Vec3(this.values[0], this.values[1], this.values[2]);
 	}
 }
@@ -43,20 +43,6 @@ function symmetry(rank: number, space: GeneralSpace): GeneralSpace {
 	} else {
 		return space.map((p) => symmetry_points(rank, p)).flat();
 	}
-}
-
-function test_ball(radius: number) {
-	const result = [];
-	for (let x = 0; x <= radius; ++x) {
-		for (let y = 0; y <= radius; ++y) {
-			for (let z = 0; z <= radius; ++z) {
-				if (x * x + y * y + z * z <= radius * radius) {
-					result.push(new VectorN(x, y, z));
-				}
-			}
-		}
-	}
-	return symmetry(3, result).map((p) => p.asVector3);
 }
 
 export { VectorN, symmetry };

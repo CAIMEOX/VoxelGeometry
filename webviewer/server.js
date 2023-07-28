@@ -1,10 +1,9 @@
-import * as ws from 'ws';
+import { WebSocketServer } from 'ws';
 import readline from 'readline';
 import { stdin, stdout } from 'process';
 import express from 'express';
 import { fileURLToPath } from 'url';
-import { dirname, join, extname, resolve } from 'path';
-import { readdirSync, renameSync, unlinkSync, mkdirSync, statSync, existsSync } from 'fs';
+import { dirname, join, resolve } from 'path';
 import {
 	Vec3,
 	vec3,
@@ -20,7 +19,7 @@ import {
 	Turtle2D,
 	Turtle3D,
 	Symmetry
-} from './dist/index.js';
+} from '../index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -32,46 +31,8 @@ function pack(bs) {
 	};
 }
 
-function rmdirSync(dirpath) {
-	if (existsSync(dirpath) && statSync(dirpath).isDirectory()) {
-		readdirSync(dirpath).forEach(function (file) {
-			const curPath = join(dirpath, file);
-			if (statSync(curPath).isDirectory()) {
-				rmdirSync(curPath);
-			} else {
-				unlinkSync(curPath);
-			}
-		});
-		rmdirSync(dirpath);
-	}
-}
-
-function removeCache() {
-	rmdirSync('./dist');
-}
-
-function moveScripts(sourceDir, targetDir, excludeDirs) {
-	const entries = readdirSync(sourceDir, { withFileTypes: true });
-
-	entries.forEach((entry) => {
-		const sourcePath = join(sourceDir, entry.name);
-		const targetPath = join(targetDir, entry.name);
-
-		if (entry.isDirectory()) {
-			if (!excludeDirs.includes(entry.name)) {
-				moveScripts(sourcePath, targetPath, excludeDirs);
-			}
-		} else if (entry.name.endsWith('.js') || entry.name.endsWith('.d.ts')) {
-			if (!existsSync(targetDir)) {
-				mkdirSync(targetDir, { recursive: true });
-			}
-			renameSync(sourcePath, targetPath);
-		}
-	});
-}
-
 function handleWebSocket() {
-	const wss = new ws.WebSocketServer({ port: 2333 });
+	const wss = new WebSocketServer({ port: 2333 });
 
 	wss.on('error', (e) => {
 		console.log(e);
@@ -79,10 +40,12 @@ function handleWebSocket() {
 
 	wss.on('connection', (socket) => {
 		const rl = readline.createInterface({ input: stdin, output: stdout });
-		rl.on('line', handleLine(socket));
+		rl.on('line', handleMessage(socket));
+		socket.on('message', (str) => handleMessage(socket)(str.toString()));
+		socket.on('close', () => rl.close());
 	});
 
-	function handleLine(socket) {
+	function handleMessage(socket) {
 		return (s) => {
 			try {
 				if (s === 'clear') sendClear(socket);
@@ -113,7 +76,5 @@ function handleHttpServer() {
 	});
 }
 
-removeCache();
-moveScripts(resolve(__dirname, '..'), resolve(__dirname, 'dist'), ['node_modules', 'webviewer']);
 handleWebSocket();
 handleHttpServer();
