@@ -7,7 +7,4 @@ package-lock.json
 scripts/src/pureeval
 test/node_modules
 test/*
-!test/server.js
-!test/package.json
-!test/index.html
-!test/texture.png
+!webviewer/server.js
