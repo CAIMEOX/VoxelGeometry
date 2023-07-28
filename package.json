@@ -20,7 +20,7 @@
 	},
 	"scripts": {
 		"lint": "eslint . --ext .ts",
-		"webviewer": "tsc && node ./webviewer/server.js"
+		"webviewer": "tsc && node webviewer/server.js"
 	},
 	"main": "index.js",
 	"repository": {

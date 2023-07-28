@@ -30,19 +30,10 @@ class VectorN {
 
 type GeneralSpace = VectorN[];
 
-function gen_patterns(d: string): number[] {
-	return d.split('').map((value) => (value === '0' ? -1 : 1));
-}
-
 function symmetry_points(rank: number, point: VectorN): GeneralSpace {
 	const res: GeneralSpace = [];
-	for (let i = 0; i < 2 ** rank; i++) {
-		let m = i.toString(2);
-		m = '0'.repeat(rank - m.length) + m;
-		const x = gen_patterns(m);
-		const y = point.map((y, i) => y * x[i]);
-		res.push(y);
-	}
+	for (let i = 0; i < 1 << rank; ++i)
+		res.push(point.map((y, j) => ((i >> (rank - j - 1)) & 1 ? y : -y)));
 	return res;
 }
 
@@ -56,9 +47,9 @@ function symmetry(rank: number, space: GeneralSpace): GeneralSpace {
 
 function test_ball(radius: number) {
 	const result = [];
-	for (let x = 0; x <= radius; x++) {
-		for (let y = 0; y <= radius; y++) {
-			for (let z = 0; z <= radius; z++) {
+	for (let x = 0; x <= radius; ++x) {
+		for (let y = 0; y <= radius; ++y) {
+			for (let z = 0; z <= radius; ++z) {
 				if (x * x + y * y + z * z <= radius * radius) {
 					result.push(new VectorN(x, y, z));
 				}
