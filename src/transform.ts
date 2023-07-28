@@ -24,7 +24,7 @@ function scale(v: Space, size: number): Space {
 }
 
 function diffusion(v: Space, factor: number): Space {
-	return v.map((b) => vec3(b.x * factor, b.y * factor, b.z * factor));
+	return v.map((b) => b.map((x) => x * factor));
 }
 
 // Create a Tile
@@ -56,7 +56,7 @@ function center(b: Space): Vec3 {
 }
 
 function move(b: Space, point: Vec3): Space {
-	return b.map((k) => point.add(k));
+	return b.map(point.add);
 }
 
 function moveTo(b: Space, from: Vec3, to: Vec3): Space {

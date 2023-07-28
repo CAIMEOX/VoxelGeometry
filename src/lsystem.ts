@@ -1,4 +1,4 @@
-import { Vec3, Space } from './vector.js';
+import { Space } from './vector.js';
 import { Turtle2D } from './turtle.js';
 
 export class LSystem {

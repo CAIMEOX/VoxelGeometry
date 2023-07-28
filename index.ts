@@ -5,6 +5,7 @@ import * as Transform from './src/transform.js';
 import * as LSystem from './src/lsystem.js';
 import * as IFS from './src/ifs.js';
 import * as Lineamp from './src/lineamp.js';
+import * as Symmetry from './src/hyper.js';
 import { Turtle2D, Turtle3D } from './src/turtle.js';
 import { DLA2D } from './src/DLA2D.js';
 import { DLA3D } from './src/DLA3D.js';
@@ -18,6 +19,7 @@ export {
 	put,
 	view,
 	Exp,
+	Symmetry,
 	Generator,
 	Transform,
 	Lineamp,
