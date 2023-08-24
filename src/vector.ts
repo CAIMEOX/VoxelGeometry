@@ -43,7 +43,7 @@ class Vec3 {
 	}
 
 	scale(scalar: number): Vec3 {
-		return new Vec3(this.x * scalar, this.y * scalar, this.z * scalar);
+		return this.map((v) => v * scalar);
 	}
 
 	equals(other: Vec3): boolean {
@@ -52,29 +52,37 @@ class Vec3 {
 
 	normalize(): Vec3 {
 		const mag = this.magnitude();
+
 		if (mag === 0) {
 			return new Vec3(0, 0, 0);
 		}
-		return new Vec3(this.x / mag, this.y / mag, this.z / mag);
+
+		return this.map((v) => v / mag);
 	}
 
 	magnitude(): number {
-		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+		return Math.sqrt(this.dot(this));
 	}
 
 	angle(other: Vec3): number {
 		const dotProduct = this.dot(other);
 		const magProduct = this.magnitude() * other.magnitude();
+
 		return Math.acos(dotProduct / magProduct);
 	}
 
 	projectOnto(other: Vec3): Vec3 {
 		const scalar = this.dot(other) / other.magnitude() ** 2;
+
 		return other.scale(scalar);
 	}
 
 	negate(): Vec3 {
-		return new Vec3(-this.x, -this.y, -this.z);
+		return this.map((v) => -v);
+	}
+
+	view(): [x: number, y: number, z: number] {
+		return [this.x, this.y, this.z];
 	}
 }
 
@@ -82,14 +90,6 @@ function vec3(x: number, y: number, z: number): Vec3 {
 	return new Vec3(x, y, z);
 }
 
-function view(v: Vec3): number[] {
-	return [v.x, v.y, v.z];
-}
-
-function put(k: number[]): Vec3 {
-	return vec3(k[0], k[1], k[2]);
-}
-
 type Space = Vec3[];
 
-export { Vec3, Space, view, put, vec3 };
+export { Vec3, Space, vec3 };

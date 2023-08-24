@@ -1,4 +1,4 @@
-import { Vec3, Space, vec3, put, view } from './src/vector.js';
+import { Vec3, Space, vec3 } from './src/vector.js';
 import * as Exp from './src/expression.js';
 import * as Generator from './src/generator.js';
 import * as Transform from './src/transform.js';
@@ -16,8 +16,6 @@ export {
 	Vec3,
 	Space,
 	vec3,
-	put,
-	view,
 	Exp,
 	Symmetry,
 	Generator,

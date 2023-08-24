@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { Vec3, Space, vec3 } from './vector.js';
+import { Space, vec3 } from './vector.js';
 
 function equation(
 	expr: string,

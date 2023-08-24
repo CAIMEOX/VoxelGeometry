@@ -7,8 +7,6 @@ import { dirname, join, resolve } from 'path';
 import {
 	Vec3,
 	vec3,
-	put,
-	view,
 	Exp,
 	Generator,
 	Transform,

@@ -1,4 +1,4 @@
-import { Vec3, Space, put, view, vec3 } from './vector.js';
+import { Vec3, Space, vec3 } from './vector.js';
 import { fromArray } from './lineamp.js';
 
 function embed(base: Space, target: Space) {
@@ -13,9 +13,9 @@ function embed(base: Space, target: Space) {
 // Swap The Direction of the Structure
 function swap(v: Space, d1: number, d2: number): Space {
 	return v.map((b) => {
-		const k = view(b);
+		const k = b.view();
 		[k[d1], k[d2]] = [k[d2], k[d1]];
-		return put(k);
+		return vec3(...k);
 	});
 }
 
@@ -123,7 +123,6 @@ function round_pos(v: Space): Space {
 }
 
 export {
-	put,
 	round_pos,
 	scale,
 	diffusion,
@@ -134,6 +133,7 @@ export {
 	center,
 	moveTo,
 	pipe,
+	duplicate,
 	array_gen,
 	array_gen_fn,
 	reduce_pos

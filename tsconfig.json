@@ -1,7 +1,7 @@
 { 
     "compilerOptions":{ 
        "target":"es2020",
-       "moduleResolution":"node",
+       "moduleResolution":"classic",
        "module":"es2020",
        "declaration":true,
        "noLib":false,
