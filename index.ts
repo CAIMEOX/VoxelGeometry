@@ -7,10 +7,10 @@ import * as IFS from './src/ifs.js';
 import * as Lineamp from './src/lineamp.js';
 import * as Symmetry from './src/hyper.js';
 import { Turtle2D, Turtle3D } from './src/turtle.js';
-import { DLA2D } from './src/DLA2D.js';
+import { DLA2D, DLA2DLazy } from './src/DLA2D.js';
 import { DLA3D } from './src/DLA3D.js';
 
-const DLA = { DLA2D, DLA3D };
+const DLA = { DLA2D, DLA3D, DLA2DLazy };
 
 export {
 	Vec3,
